@@ -279,7 +279,7 @@ function subscribeChats(){
    loadChats();
    notifCount++;BBadge.textContent=notifCount;BN.classList.add('has-badge','ring');
    setTimeout(function(){BN.classList.remove('ring')},600);
-   if(Notification.permission==='granted')new Notification('Nexatrack Chat',{body:'New chat from '+(payload.new.visitor_name||'a visitor'),icon:'https://nexatrackcourierservices.com/img/favicon.ico'})
+   if(Notification.permission==='granted')new Notification('Nexatrack Chat',{body:'New chat from '+(payload.new.visitor_name||'a visitor'),icon:'https://nexatrack.vercel.app/img/favicon.ico'})
   })
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'livechat_chats'},function(){loadChats()})
   .on('postgres_changes',{event:'DELETE',schema:'public',table:'livechat_chats'},function(){loadChats()})

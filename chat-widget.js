@@ -212,7 +212,7 @@
             btn.classList.add('has-badge', 'ring');
             setTimeout(function () { btn.classList.remove('ring'); }, 600);
             if (!win.classList.contains('open') && Notification.permission === 'granted') {
-              new Notification('Nexatrack Chat', { body: m.message, icon: 'https://nexatrackcourierservices.com/img/favicon.ico' });
+              new Notification('Nexatrack Chat', { body: m.message, icon: 'https://nexatrack.vercel.app/img/favicon.ico' });
             }
             notifySound();
           }
