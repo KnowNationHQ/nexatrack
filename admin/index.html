@@ -95,6 +95,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .btn-close-chat:hover{background:#5c636a}
 .btn-reopen{background:#198754;color:#fff}
 .btn-reopen:hover{background:#157347}
+.btn-delete{background:#fff;color:#dc3545;border:1.5px solid #dc3545 !important}
+.btn-delete:hover{background:#dc3545;color:#fff}
 
 #messages{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:10px}
 #messages::-webkit-scrollbar{width:6px}
@@ -183,6 +185,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <button class="btn-ban" id="ban-btn">Ban Visitor</button>
         <button class="btn-close-chat" id="close-chat-btn">Close</button>
         <button class="btn-reopen" id="reopen-btn" style="display:none">Reopen</button>
+        <button class="btn-delete" id="delete-chat-btn" style="display:none">Delete</button>
       </div>
     </div>
     <div id="messages" style="display:none"></div>
@@ -212,7 +215,7 @@ var user=null,selectedChatId=null,chatChannel=null,chatsChannel=null,tab='active
 
 var LS=document.getElementById('login-screen'),APP=document.getElementById('app');
 var LE=document.getElementById('login-email'),LP=document.getElementById('login-password'),LB=document.getElementById('login-btn'),LERR=document.getElementById('login-error'),SU=document.getElementById('show-signup');
-var LO=document.getElementById('logout-btn'),CL=document.getElementById('chat-list'),NC=document.getElementById('no-chat'),CH=document.getElementById('chat-header'),CN=document.getElementById('chat-name'),CM=document.getElementById('chat-meta'),MSG=document.getElementById('messages'),IA=document.getElementById('input-area'),MI=document.getElementById('msg-input'),SB=document.getElementById('send-btn'),CB=document.getElementById('close-chat-btn'),RB=document.getElementById('reopen-btn'),BB=document.getElementById('ban-btn'),TA=document.getElementById('tab-active'),TC=document.getElementById('tab-closed'),QR=document.getElementById('quick-replies'),QT=document.getElementById('qr-toggle'),BN=document.getElementById('bell-btn'),BBadge=document.getElementById('bell-badge');
+var LO=document.getElementById('logout-btn'),CL=document.getElementById('chat-list'),NC=document.getElementById('no-chat'),CH=document.getElementById('chat-header'),CN=document.getElementById('chat-name'),CM=document.getElementById('chat-meta'),MSG=document.getElementById('messages'),IA=document.getElementById('input-area'),MI=document.getElementById('msg-input'),SB=document.getElementById('send-btn'),CB=document.getElementById('close-chat-btn'),RB=document.getElementById('reopen-btn'),BB=document.getElementById('ban-btn'),DLB=document.getElementById('delete-chat-btn'),TA=document.getElementById('tab-active'),TC=document.getElementById('tab-closed'),QR=document.getElementById('quick-replies'),QT=document.getElementById('qr-toggle'),BN=document.getElementById('bell-btn'),BBadge=document.getElementById('bell-badge');
 var notifCount=0,prevChatCount=0;
 
 TA.addEventListener('click',function(){setTab('active')});
@@ -243,10 +246,18 @@ LO.addEventListener('click',function(){
   if(chatsChannel)sb.removeChannel(chatsChannel);if(chatChannel)sb.removeChannel(chatChannel)})
 });
 
+function autoCloseStaleChats(cb){
+ var cutoff=new Date(Date.now()-30*60*1000).toISOString();
+ sb.from('livechat_chats').update({status:'closed',updated_at:new Date().toISOString()})
+  .eq('status','active').lt('updated_at',cutoff).then(function(){if(cb)cb()})
+}
+
 function loadChats(){
- var statusFilter=tab==='active'?'active':'closed';
- sb.from('livechat_chats').select('*').eq('status',statusFilter).order('updated_at',{ascending:false}).then(function(r){
-  if(r.error)return;renderChats(r.data||[])
+ autoCloseStaleChats(function(){
+  var statusFilter=tab==='active'?'active':'closed';
+  sb.from('livechat_chats').select('*').eq('status',statusFilter).order('updated_at',{ascending:false}).then(function(r){
+   if(r.error)return;renderChats(r.data||[])
+  })
  })
 }
 
@@ -295,6 +306,7 @@ function selectChat(chat){
  RB.style.display=isClosed?'inline-block':'none';
  CB.style.display=isClosed?'none':'inline-block';
   BB.style.display=isClosed?'none':'inline-block';
+  DLB.style.display=isClosed?'inline-block':'none';
   QR.style.display=isClosed?'none':'flex';QR.classList.add('open');
  CN.textContent=chat.visitor_name||'Anonymous';
  CM.textContent=chat.visitor_email||'No email';
@@ -376,6 +388,20 @@ BB.addEventListener('click',function(){
   sb.from('blocked_tokens').insert({token:token,chat_id:selectedChatId,blocked_by:user.email}).then(function(){
    sb.from('livechat_chats').update({status:'closed'}).eq('id',selectedChatId).then(function(){
     selectedChatId=null;NC.style.display='flex';CH.style.display='none';MSG.style.display='none';IA.style.display='none';
+    if(chatChannel)sb.removeChannel(chatChannel);loadChats()
+   })
+  })
+ })
+});
+
+DLB.addEventListener('click',function(){
+ if(!selectedChatId)return;
+ if(!confirm('Delete this chat and all its messages? This cannot be undone.'))return;
+ var cid=selectedChatId;
+ sb.from('blocked_tokens').delete().eq('chat_id',cid).then(function(){
+  sb.from('livechat_messages').delete().eq('chat_id',cid).then(function(){
+   sb.from('livechat_chats').delete().eq('id',cid).then(function(){
+    selectedChatId=null;NC.style.display='flex';CH.style.display='none';MSG.style.display='none';IA.style.display='none';QR.style.display='none';
     if(chatChannel)sb.removeChannel(chatChannel);loadChats()
    })
   })
