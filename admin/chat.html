@@ -143,6 +143,27 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   #main{display:none}
   #main.active-mobile{display:flex;position:fixed;top:0;left:0;right:0;bottom:0;z-index:10;background:#F8F2F0}
 }
+
+/* ── HAMBURGER ── */
+#menu-btn{display:none;align-items:center;justify-content:center;width:40px;height:40px;background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;border-radius:8px;transition:all .15s;flex-shrink:0;font-size:22px}
+#menu-btn:hover{color:#fff;background:rgba(255,255,255,.06)}
+#nav-drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;-webkit-tap-highlight-color:transparent}
+#nav-drawer-overlay.open{display:block}
+#nav-drawer{position:fixed;top:0;right:0;bottom:0;width:240px;z-index:400;background:#060315;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
+#nav-drawer.open{transform:translateX(0)}
+#nav-drawer .nd-header{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:flex-end}
+#nav-drawer .nd-close{width:36px;height:36px;background:rgba(255,255,255,.06);border:none;border-radius:8px;color:rgba(255,255,255,.4);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+#nav-drawer .nd-close:hover{color:#fff;background:rgba(255,255,255,.1)}
+#nav-drawer .nd-body{flex:1;padding:8px 10px}
+#nav-drawer .nav-item{display:flex;align-items:center;gap:10px;padding:12px;border-radius:8px;color:rgba(255,255,255,.4);font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:2px;text-decoration:none}
+#nav-drawer .nav-item:hover{color:#fff;background:rgba(255,255,255,.06)}
+@media(max-width:1023px){
+  #menu-btn{display:flex}
+  .desktop-nav{display:none!important}
+}
+@media(min-width:1024px){
+  #nav-drawer,#nav-drawer-overlay{display:none!important}
+}
 </style>
 </head>
 <body>
@@ -173,12 +194,13 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     <div id="sidebar-header">
       <div class="brand"><div class="brand-icon">N</div><h2>Nexatrack</h2></div>
       <div style="display:flex;align-items:center;gap:6px">
-        <a href="/admin" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;font-weight:500;font-family:'Inter',sans-serif">Dashboard</a>
+        <a class="desktop-nav" href="/admin" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;font-weight:500;font-family:'Inter',sans-serif">Dashboard</a>
         <button class="bell-btn" id="bell-btn" title="Notifications">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           <span id="bell-badge"></span>
         </button>
-        <button class="logout-btn" id="logout-btn">Logout</button>
+        <button class="logout-btn desktop-nav" id="logout-btn">Logout</button>
+        <button id="menu-btn">☰</button>
       </div>
     </div>
     <div id="tabs">
@@ -186,6 +208,20 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <button id="tab-closed">Closed</button>
     </div>
     <div id="chat-list"></div>
+  </div>
+  <div id="nav-drawer-overlay"></div>
+  <div id="nav-drawer">
+    <div class="nd-header"><button class="nd-close" id="nav-close">✕</button></div>
+    <div class="nd-body">
+      <a class="nav-item" href="/admin">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+        Dashboard
+      </a>
+      <div class="nav-item" id="drawer-logout">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </div>
+    </div>
   </div>
   <div id="main">
     <div id="no-chat">Select a chat to start</div>
@@ -254,6 +290,11 @@ LB.addEventListener('click',function(){
 
 LP.addEventListener('keydown',function(e){if(e.key==='Enter')LB.click()});
 
+var MBtn=document.getElementById('menu-btn'),NDOverlay=document.getElementById('nav-drawer-overlay'),NDrawer=document.getElementById('nav-drawer'),NDClose=document.getElementById('nav-close'),NDLogout=document.getElementById('drawer-logout');
+if(MBtn){MBtn.addEventListener('click',function(){NDrawer.classList.toggle('open');NDOverlay.classList.toggle('open')})}
+if(NDOverlay){NDOverlay.addEventListener('click',function(){NDrawer.classList.remove('open');NDOverlay.classList.remove('open')})}
+if(NDClose){NDClose.addEventListener('click',function(){NDrawer.classList.remove('open');NDOverlay.classList.remove('open')})}
+if(NDLogout){NDLogout.addEventListener('click',function(){NDrawer.classList.remove('open');NDOverlay.classList.remove('open');LO.click()})}
 LO.addEventListener('click',function(){
  sb.auth.signOut().then(function(){user=null;APP.classList.remove('active');LS.style.display='flex';
   if(chatsChannel)sb.removeChannel(chatsChannel);if(chatChannel)sb.removeChannel(chatChannel)})
