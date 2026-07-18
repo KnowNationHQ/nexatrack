@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexatrack — Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#F8F2F0;color:#060315;height:100vh}
+
+/* ── LOGIN ── */
+#login-screen{display:flex;align-items:center;justify-content:center;height:100vh;
+  background:linear-gradient(135deg,#060315 0%,#1a0a2e 40%,#FF3E41 100%);position:relative;overflow:hidden}
+#login-screen::before{content:'';position:absolute;width:700px;height:700px;border-radius:50%;
+  background:rgba(81,207,237,.08);top:-250px;right:-200px}
+#login-screen::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;
+  background:rgba(255,62,65,.06);bottom:-150px;left:-100px}
+.login-card{background:#fff;padding:44px 40px 36px;
+  border-radius:24px;width:400px;max-width:90vw;box-shadow:0 25px 80px rgba(0,0,0,.35);position:relative;z-index:1;
+  animation:fadeUp .5s ease;border-top:4px solid #FF3E41}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.login-logo{font-size:28px;font-weight:800;color:#060315;margin-bottom:4px;letter-spacing:-.5px}
+.login-logo span{color:#FF3E41}
+.login-dot{display:inline-block;width:8px;height:8px;background:#51CFED;border-radius:50%;margin-left:2px;vertical-align:middle}
+.login-sub{color:#6c757d;font-size:14px;margin-bottom:28px;font-weight:400}
+.login-card label{font-size:13px;font-weight:600;color:#060315;display:block;margin-bottom:4px}
+.login-card input{width:100%;padding:12px 16px;border:2px solid #e9ecef;border-radius:12px;font-size:14px;
+  outline:none;transition:border .2s;margin-bottom:16px;background:#F8F2F0;font-family:'Inter',sans-serif}
+.login-card input:focus{border-color:#FF3E41;background:#fff;box-shadow:0 0 0 4px rgba(255,62,65,.1)}
+.login-card button{width:100%;padding:14px;background:#FF3E41;color:#fff;
+  border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;
+  letter-spacing:.3px}
+.login-card button:hover{background:#e03538;transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,62,65,.3)}
+.login-card button:active{transform:translateY(0)}
+.login-error{color:#FF3E41;font-size:13px;text-align:center;margin-top:10px;min-height:20px;font-weight:500}
+.login-footer{text-align:center;margin-top:20px;font-size:13px;color:#6c757d}
+.login-footer a{color:#FF3E41;cursor:pointer;text-decoration:none;font-weight:600}
+.login-footer a:hover{text-decoration:underline}
+
+/* ── APP LAYOUT ── */
+#app{display:none;height:100vh}
+#app.active{display:flex}
+
+#sidebar{width:320px;background:#060315;display:flex;flex-direction:column;flex-shrink:0}
+#sidebar-header{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
+#sidebar-header .brand{display:flex;align-items:center;gap:10px}
+#sidebar-header .brand-icon{width:32px;height:32px;background:#FF3E41;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff}
+#sidebar-header h2{font-size:18px;color:#fff;font-weight:700;letter-spacing:-.3px}
+#sidebar-header .logout-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:12px;color:rgba(255,255,255,.5);transition:all .15s;font-family:'Inter',sans-serif;font-weight:500}
+#sidebar-header .logout-btn:hover{background:rgba(255,62,65,.2);border-color:#FF3E41;color:#FF3E41}
+.bell-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);padding:4px;border-radius:6px;position:relative;transition:all .15s;display:flex;align-items:center}
+.bell-btn:hover{color:#fff;background:rgba(255,255,255,.08)}
+.bell-btn.has-badge{color:#51CFED}
+#bell-badge{position:absolute;top:0;right:0;min-width:16px;height:16px;border-radius:8px;background:#FF3E41;color:#fff;font-size:9px;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 4px;border:1.5px solid #060315;line-height:1}
+.bell-btn.has-badge #bell-badge{display:flex}
+@keyframes bell-ring{0%{transform:rotate(0)}20%{transform:rotate(12deg)}40%{transform:rotate(-10deg)}60%{transform:rotate(6deg)}80%{transform:rotate(-4deg)}100%{transform:rotate(0)}}
+.bell-btn.ring{animation:bell-ring .5s ease;color:#51CFED}
+
+#tabs{display:flex;padding:8px 12px;gap:8px}
+#tabs button{flex:1;padding:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:8px;color:rgba(255,255,255,.4);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;letter-spacing:.3px;text-transform:uppercase}
+#tabs button:hover{color:rgba(255,255,255,.7)}
+#tabs button.active{background:#FF3E41;border-color:#FF3E41;color:#fff}
+
+#chat-list{flex:1;overflow-y:auto}
+#chat-list::-webkit-scrollbar{width:4px}
+#chat-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+.chat-item{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:all .2s}
+.chat-item:hover{background:rgba(255,255,255,.04)}
+.chat-item.active{background:rgba(255,62,65,.12);border-left:3px solid #FF3E41}
+.chat-item .name{font-weight:600;font-size:14px;color:#fff;display:flex;justify-content:space-between;align-items:center}
+.chat-item .name .time{font-size:11px;color:rgba(255,255,255,.3);font-weight:400}
+.chat-item .visitor-label{font-size:12px;color:rgba(255,255,255,.35);margin-top:3px;font-weight:400}
+.chat-item .chat-indicator{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:8px}
+.chat-item .chat-indicator.active{background:#51CFED}
+.chat-item .chat-indicator.closed{background:rgba(255,255,255,.2)}
+.chat-item .visitor-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FF3E41,#51CFED);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0}
+.chat-item .chat-row{display:flex;align-items:center;gap:12px}
+.chat-item.closed{opacity:.5}
+.chat-item.closed .name{color:rgba(255,255,255,.5)}
+
+/* ── MAIN ── */
+#main{flex:1;display:flex;flex-direction:column;background:#F8F2F0}
+#chat-header{padding:16px 24px;background:#fff;border-bottom:1px solid #e9ecef;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+#chat-header .info h3{font-size:16px;margin-bottom:2px;font-weight:700}
+#chat-header .info .meta{font-size:12px;color:#6c757d}
+#chat-header .actions{display:flex;gap:6px}
+#chat-header .actions button{padding:7px 16px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.btn-ban{background:#fff;color:#FF3E41;border:1.5px solid #FF3E41 !important}
+.btn-ban:hover{background:#FF3E41;color:#fff}
+.btn-close-chat{background:#6c757d;color:#fff}
+.btn-close-chat:hover{background:#5c636a}
+.btn-reopen{background:#198754;color:#fff}
+.btn-reopen:hover{background:#157347}
+
+#messages{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:10px}
+#messages::-webkit-scrollbar{width:6px}
+#messages::-webkit-scrollbar-thumb{background:#d5cbc7;border-radius:6px}
+.msg{max-width:75%;padding:12px 18px;border-radius:16px;font-size:14px;line-height:1.5;position:relative}
+.msg.visitor{align-self:flex-start;background:#fff;color:#060315;border-bottom-left-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.msg.agent{align-self:flex-end;background:#FF3E41;color:#fff;border-bottom-right-radius:4px}
+.msg .time{font-size:11px;opacity:.7;margin-top:4px;display:block}
+.msg .del-btn{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:#fff;color:#FF3E41;
+  border:1.5px solid #FF3E41;font-size:12px;cursor:pointer;display:none;align-items:center;justify-content:center;line-height:1;padding:0;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);z-index:2;font-weight:700;transition:all .15s}
+.msg:hover .del-btn{display:flex}
+.del-btn:hover{background:#FF3E41;color:#fff}
+
+#input-area{padding:14px 24px;background:#fff;border-top:1px solid #e9ecef;display:flex;gap:10px;box-shadow:0 -1px 3px rgba(0,0,0,.04)}
+#input-area input{flex:1;padding:11px 20px;border:2px solid #e9ecef;border-radius:12px;font-size:14px;outline:none;font-family:'Inter',sans-serif;background:#F8F2F0;transition:border .2s}
+#input-area input:focus{border-color:#FF3E41;background:#fff}
+#input-area button{padding:11px 28px;background:#FF3E41;color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+#input-area button:hover{background:#e03538;box-shadow:0 4px 16px rgba(255,62,65,.25)}
+#input-area button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+
+/* ── QUICK REPLIES ── */
+#quick-replies{display:none;flex-direction:column;background:#fff;border-top:1px solid #e9ecef;padding:10px 16px 4px;gap:8px;position:relative}
+#quick-replies.open{display:flex}
+#qr-toggle{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:6px;background:#F8F2F0;border:1px solid #e9ecef;color:#6c757d;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;transition:all .15s;font-family:'Inter',sans-serif;padding:0}
+#qr-toggle:hover{background:#FF3E41;border-color:#FF3E41;color:#fff}
+#qr-list{display:flex;flex-wrap:wrap;gap:6px;padding-right:32px}
+.qr-chip{padding:6px 12px;border-radius:20px;background:#F8F2F0;border:1.5px solid #e9ecef;color:#060315;font-size:12px;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;font-weight:500;white-space:nowrap}
+.qr-chip:hover{background:#FF3E41;border-color:#FF3E41;color:#fff}
+
+#no-chat{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#b5a8a0;font-size:15px;gap:12px}
+#no-chat svg{opacity:.3}
+#no-chat span{font-weight:500}
+
+.empty-state{padding:40px 20px;text-align:center;color:rgba(255,255,255,.3);font-size:13px}
+
+@media(max-width:768px){
+  #sidebar{width:100%}
+  #main{display:none}
+  #main.active-mobile{display:flex;position:fixed;top:0;left:0;right:0;bottom:0;z-index:10;background:#F8F2F0}
+}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Nexatrack <span>Admin</span></div>
+    <div class="login-sub">Sign in to manage live chat</div>
+    <label>Email</label>
+    <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+    <label>Password</label>
+    <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+    <button id="login-btn">Sign In</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-footer">Don't have an account? <a id="show-signup">Create one</a></div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <div class="brand"><div class="brand-icon">N</div><h2>Nexatrack</h2></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="bell-btn" id="bell-btn" title="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span id="bell-badge"></span>
+        </button>
+        <button class="logout-btn" id="logout-btn">Logout</button>
+      </div>
+    </div>
+    <div id="tabs">
+      <button id="tab-active" class="active">Active</button>
+      <button id="tab-closed">Closed</button>
+    </div>
+    <div id="chat-list"></div>
+  </div>
+  <div id="main">
+    <div id="no-chat">Select a chat to start</div>
+    <div id="chat-header" style="display:none">
+      <div class="info">
+        <h3 id="chat-name">Visitor</h3>
+        <span class="meta" id="chat-meta"></span>
+      </div>
+      <div class="actions">
+        <button class="btn-ban" id="ban-btn">Ban Visitor</button>
+        <button class="btn-close-chat" id="close-chat-btn">Close</button>
+        <button class="btn-reopen" id="reopen-btn" style="display:none">Reopen</button>
+      </div>
+    </div>
+    <div id="messages" style="display:none"></div>
+    <div id="quick-replies" style="display:none">
+      <button class="qr-toggle" id="qr-toggle" title="Suggested replies">&lt;/&gt;</button>
+      <div id="qr-list">
+        <button class="qr-chip" data-text="Hello! How can I help you today?">👋 Quick hello</button>
+        <button class="qr-chip" data-text="Could you please provide your tracking number so I can look into this?">🔍 Request tracking #</button>
+        <button class="qr-chip" data-text="Let me check the status of your package and get back to you shortly.">📦 Check package</button>
+        <button class="qr-chip" data-text="What's your pickup address?">📍 Pickup address</button>
+        <button class="qr-chip" data-text="What's the delivery address?">🎯 Delivery address</button>
+        <button class="qr-chip" data-text="Thank you for contacting Nexatrack! Is there anything else I can help with?">✅ Anything else?</button>
+      </div>
+    </div>
+    <div id="input-area" style="display:none">
+      <input type="text" id="msg-input" placeholder="Type a reply..." autocomplete="off">
+      <button id="send-btn" disabled>Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var SUPABASE_URL='https://ujcokrzjvjdrcrdhcnjy.supabase.co';
+var ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqY29rcnpqdmpkcmNyZGhjbmp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzNzA1MzksImV4cCI6MjA5OTk0NjUzOX0.SFgd7FP8lnkbIJ0CxoXXfD5-yo8XIyHGlOS_aK1J9-I';
+var sb=supabase.createClient(SUPABASE_URL,ANON_KEY);
+var user=null,selectedChatId=null,chatChannel=null,chatsChannel=null,tab='active';
+
+var LS=document.getElementById('login-screen'),APP=document.getElementById('app');
+var LE=document.getElementById('login-email'),LP=document.getElementById('login-password'),LB=document.getElementById('login-btn'),LERR=document.getElementById('login-error'),SU=document.getElementById('show-signup');
+var LO=document.getElementById('logout-btn'),CL=document.getElementById('chat-list'),NC=document.getElementById('no-chat'),CH=document.getElementById('chat-header'),CN=document.getElementById('chat-name'),CM=document.getElementById('chat-meta'),MSG=document.getElementById('messages'),IA=document.getElementById('input-area'),MI=document.getElementById('msg-input'),SB=document.getElementById('send-btn'),CB=document.getElementById('close-chat-btn'),RB=document.getElementById('reopen-btn'),BB=document.getElementById('ban-btn'),TA=document.getElementById('tab-active'),TC=document.getElementById('tab-closed'),QR=document.getElementById('quick-replies'),QT=document.getElementById('qr-toggle'),BN=document.getElementById('bell-btn'),BBadge=document.getElementById('bell-badge');
+var notifCount=0,prevChatCount=0;
+
+TA.addEventListener('click',function(){setTab('active')});
+TC.addEventListener('click',function(){setTab('closed')});
+
+function setTab(t){tab=t;document.querySelectorAll('#tabs button').forEach(function(b){b.classList.remove('active')});(t==='active'?TA:TC).classList.add('active');loadChats()}
+
+SU.addEventListener('click',function(){
+ var e=LE.value.trim(),p=LP.value.trim();if(!e||!p){LERR.textContent='Enter email and password to sign up.';return}
+ LB.textContent='Creating...';LB.disabled=true;
+ sb.auth.signUp({email:e,password:p}).then(function(r){LB.textContent='Sign In';LB.disabled=false;
+  if(r.error){LERR.textContent=r.error.message;return}
+  LERR.textContent='Account created! You can now sign in.';LERR.style.color='#198754'})
+});
+
+LB.addEventListener('click',function(){
+ var e=LE.value.trim(),p=LP.value.trim();if(!e||!p){LERR.textContent='Enter email and password.';return}
+ LB.textContent='Signing in...';LB.disabled=true;
+ sb.auth.signInWithPassword({email:e,password:p}).then(function(r){LB.textContent='Sign In';LB.disabled=false;
+  if(r.error){LERR.textContent=r.error.message;return}
+  user=r.data.user;LS.style.display='none';APP.classList.add('active');loadChats();subscribeChats()})
+});
+
+LP.addEventListener('keydown',function(e){if(e.key==='Enter')LB.click()});
+
+LO.addEventListener('click',function(){
+ sb.auth.signOut().then(function(){user=null;APP.classList.remove('active');LS.style.display='flex';
+  if(chatsChannel)sb.removeChannel(chatsChannel);if(chatChannel)sb.removeChannel(chatChannel)})
+});
+
+function loadChats(){
+ var statusFilter=tab==='active'?'active':'closed';
+ sb.from('livechat_chats').select('*').eq('status',statusFilter).order('updated_at',{ascending:false}).then(function(r){
+  if(r.error)return;renderChats(r.data||[])
+ })
+}
+
+function renderChats(chats){
+ CL.innerHTML='';
+ if(!chats||!chats.length){CL.innerHTML='<div class="empty-state">No '+tab+' chats</div>';return}
+ chats.forEach(function(chat){
+  var el=document.createElement('div');
+  el.className='chat-item'+(chat.id===selectedChatId?' active':'')+(chat.status==='closed'?' closed':'');
+  var name=chat.visitor_name||'Anonymous';
+  el.innerHTML='<div class="name"><span>'+esc(name)+'</span><span class="time">'+fmt(chat.updated_at||chat.created_at)+'</span></div>'+
+   '<div class="visitor-label">'+visitorLabel(chat)+'</div>';
+  el.addEventListener('click',function(){selectChat(chat)});
+  CL.appendChild(el)
+ })
+}
+
+function visitorLabel(chat){var s=chat.visitor_email||'';if(s)return esc(s);return''}
+function fmt(d){return new Date(d).toLocaleDateString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}
+function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+
+function subscribeChats(){
+ if(chatsChannel)sb.removeChannel(chatsChannel);
+ chatsChannel=sb.channel('admin-chats')
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'livechat_chats'},function(payload){
+   loadChats();
+   notifCount++;BBadge.textContent=notifCount;BN.classList.add('has-badge','ring');
+   setTimeout(function(){BN.classList.remove('ring')},600);
+   if(Notification.permission==='granted')new Notification('Nexatrack Chat',{body:'New chat from '+(payload.new.visitor_name||'a visitor'),icon:'https://nexatrack.vercel.app/img/favicon.ico'})
+  })
+  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'livechat_chats'},function(){loadChats()})
+  .on('postgres_changes',{event:'DELETE',schema:'public',table:'livechat_chats'},function(){loadChats()})
+  .subscribe()
+}
+
+BN.addEventListener('click',function(){notifCount=0;BBadge.textContent='';BN.classList.remove('has-badge')});
+
+function selectChat(chat){
+ selectedChatId=chat.id;NC.style.display='none';CH.style.display='flex';MSG.style.display='flex';
+ var isClosed=chat.status==='closed';
+ IA.style.display=isClosed?'none':'flex';
+ RB.style.display=isClosed?'inline-block':'none';
+ CB.style.display=isClosed?'none':'inline-block';
+  BB.style.display=isClosed?'none':'inline-block';
+  QR.style.display=isClosed?'none':'flex';QR.classList.add('open');
+ CN.textContent=chat.visitor_name||'Anonymous';
+ CM.textContent=chat.visitor_email||'No email';
+ MSG.innerHTML='';
+ document.querySelectorAll('.chat-item').forEach(function(el){el.classList.remove('active')});
+ loadMessages(chat.id);
+ if(!isClosed)subscribeChatMessages(chat.id)
+}
+
+function loadMessages(cid){
+ sb.from('livechat_messages').select('*').eq('chat_id',cid).order('created_at',{ascending:true}).then(function(r){
+  if(r.error||!r.data)return;MSG.innerHTML='';
+  r.data.forEach(function(m){renderMsg(m)});scrollBottom()
+ })
+}
+
+function subscribeChatMessages(cid){
+ if(chatChannel)sb.removeChannel(chatChannel);
+ chatChannel=sb.channel('admin-chat-'+cid)
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'livechat_messages',filter:'chat_id=eq.'+cid},function(p){renderMsg(p.new);scrollBottom()})
+  .on('postgres_changes',{event:'DELETE',schema:'public',table:'livechat_messages',filter:'chat_id=eq.'+cid},function(p){
+   var el=MSG.querySelector('[data-msgid="'+p.old.id+'"]');if(el)el.remove()
+  })
+  .subscribe()
+}
+
+function renderMsg(m){
+ var div=document.createElement('div');
+ div.className='msg '+(m.sender_type==='agent'?'agent':'visitor');
+ div.dataset.msgid=m.id;
+ var del='<button class="del-btn" onclick="deleteMsg(\''+m.id+'\')" title="Delete">&times;</button>';
+ div.innerHTML=del+m.content+'<span class="time">'+new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+ '</span>';
+ MSG.appendChild(div);scrollBottom()
+}
+
+function scrollBottom(){MSG.scrollTop=MSG.scrollHeight}
+
+window.deleteMsg=function(id){
+ if(!confirm('Delete this message?'))return;
+ sb.from('livechat_messages').delete().eq('id',id).then(function(r){
+  if(r.error){alert('Failed to delete');return}
+ })
+};
+
+MI.addEventListener('input',function(){SB.disabled=!MI.value.trim()});
+MI.addEventListener('keydown',function(e){if(e.key==='Enter'&&!SB.disabled)send()});
+SB.addEventListener('click',send);
+
+function send(){
+ var t=MI.value.trim();if(!t||!selectedChatId)return;
+ MI.value='';SB.disabled=true;
+ sb.from('livechat_messages').insert({chat_id:selectedChatId,sender_type:'agent',content:t}).then(function(){
+  sb.from('livechat_chats').update({updated_at:new Date().toISOString()}).eq('id',selectedChatId).then(function(){});
+  SB.disabled=false
+ })
+}
+
+CB.addEventListener('click',function(){
+ if(!selectedChatId)return;
+ sb.from('livechat_chats').update({status:'closed'}).eq('id',selectedChatId).then(function(){
+  selectedChatId=null;NC.style.display='flex';CH.style.display='none';MSG.style.display='none';IA.style.display='none';QR.style.display='none';
+  if(chatChannel)sb.removeChannel(chatChannel);loadChats()
+ })
+});
+
+RB.addEventListener('click',function(){
+ if(!selectedChatId)return;
+ sb.from('livechat_chats').update({status:'active',updated_at:new Date().toISOString()}).eq('id',selectedChatId).then(function(){
+  selectedChatId=null;NC.style.display='flex';CH.style.display='none';MSG.style.display='none';IA.style.display='none';QR.style.display='none';
+  if(chatChannel)sb.removeChannel(chatChannel);setTab('active');loadChats()
+ })
+});
+
+BB.addEventListener('click',function(){
+ if(!selectedChatId)return;if(!confirm('Ban this visitor? They will not be able to send messages.'))return;
+ sb.from('livechat_chats').select('visitor_token').eq('id',selectedChatId).single().then(function(r){
+  if(r.error||!r.data)return;
+  var token=r.data.visitor_token;
+  sb.from('blocked_tokens').insert({token:token,chat_id:selectedChatId,blocked_by:user.email}).then(function(){
+   sb.from('livechat_chats').update({status:'closed'}).eq('id',selectedChatId).then(function(){
+    selectedChatId=null;NC.style.display='flex';CH.style.display='none';MSG.style.display='none';IA.style.display='none';
+    if(chatChannel)sb.removeChannel(chatChannel);loadChats()
+   })
+  })
+ })
+});
+
+QT.addEventListener('click',function(){QR.classList.toggle('open')});
+document.querySelectorAll('.qr-chip').forEach(function(chip){
+ chip.addEventListener('click',function(){
+  MI.value=chip.dataset.text;SB.disabled=false;MI.focus();send()
+ })
+});
+
+if(Notification.permission==='default')Notification.requestPermission();
+
+sb.auth.getSession().then(function(r){
+ if(r.data.session){user=r.data.session.user;LS.style.display='none';APP.classList.add('active');loadChats();subscribeChats()}
+});
+</script>
+</body>
+</html>
