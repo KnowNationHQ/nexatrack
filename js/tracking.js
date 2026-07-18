@@ -3,28 +3,9 @@
 
     var SB_URL = 'https://ujcokrzjvjdrcrdhcnjy.supabase.co';
     var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqY29rcnpqdmpkcmNyZGhjbmp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzNzA1MzksImV4cCI6MjA5OTk0NjUzOX0.SFgd7FP8lnkbIJ0CxoXXfD5-yo8XIyHGlOS_aK1J9-I';
+    var FN_URL = 'https://ujcokrzjvjdrcrdhcnjy.supabase.co/functions/v1/shipments-api';
     var sb = null;
     var map = null, marker = null, currentSub = null;
-
-    function getSb(cb) {
-        if (sb) { cb(sb); return; }
-        var sc = document.getElementById('supabase-js');
-        if (!sc) {
-            sc = document.createElement('script');
-            sc.id = 'supabase-js';
-            sc.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-            sc.onload = function () { sb = supabase.createClient(SB_URL, SB_KEY); cb(sb); };
-            document.head.appendChild(sc);
-        } else {
-            var check = setInterval(function () {
-                if (typeof supabase !== 'undefined') {
-                    sb = supabase.createClient(SB_URL, SB_KEY);
-                    cb(sb);
-                    clearInterval(check);
-                }
-            }, 100);
-        }
-    }
 
     function initMap(lat, lng, label) {
         if (!map) {
@@ -46,6 +27,7 @@
             return;
         }
         var html = '';
+        if (typeof data.tracking_events === 'string') data.tracking_events = JSON.parse(data.tracking_events);
         $.each(data.tracking_events, function (i, u) {
             html += '<div class="timeline-item active">';
             html += '<div class="timeline-dot"></div>';
@@ -64,10 +46,11 @@
         $('#trackingNumber').text(data.tracking_number || $('#trackingInput').val().trim().toUpperCase());
         $('#estDelivery').text(data.estimated_delivery ? new Date(data.estimated_delivery).toLocaleDateString() : '—');
 
-        var originText = data.origin || '—';
-        var destText = data.destination || '—';
-        $('#trackingResult .col-lg-5 .bg-light .p-4:first strong').eq(0).text(originText);
-        $('#trackingResult .col-lg-5 .bg-light .p-4:first strong').eq(1).text(destText);
+        var originText = data.shipper_city && data.shipper_state ? data.shipper_city + ', ' + data.shipper_state : data.origin || '—';
+        var destText = data.receiver_city && data.receiver_state ? data.receiver_city + ', ' + data.receiver_state : data.destination || '—';
+        var s = $('#trackingResult .bg-light .p-4:last strong');
+        s.eq(0).text(originText);
+        s.eq(1).text(destText);
 
         $('#trackingResult').removeClass('d-none').addClass('d-block');
 
@@ -79,20 +62,12 @@
         }
     }
 
-    function subscribeToShipment(tn) {
-        if (currentSub) { getSb(function (s) { s.removeChannel(currentSub); }); currentSub = null; }
-        getSb(function (s) {
-            s.from('shipments').select('tracking_number').eq('tracking_number', tn).single().then(function (r) {
-                if (r.error || !r.data) return;
-                var sid = r.data.tracking_number;
-                currentSub = s.channel('pub-track-' + sid.replace(/[^a-zA-Z0-9]/g, ''))
-                    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'shipments', filter: 'tracking_number=eq.' + tn },
-                        function () { doTrack(true); })
-                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'tracking_events', filter: undefined },
-                        function () { doTrack(true); })
-                    .subscribe();
-            });
-        });
+    function fn(action, cb) {
+        var url = FN_URL + '?action=' + action;
+        if (action === 'get') url += '&tracking=' + encodeURIComponent($('#trackingInput').val().trim().toUpperCase());
+        fetch(url, {
+            headers: { 'apikey': SB_KEY }
+        }).then(function (r) { r.json().then(function (d) { cb(d) }) });
     }
 
     function doTrack(silent) {
@@ -101,15 +76,12 @@
             $('#trackingError').addClass('d-none');
             if (!num) { $('#trackingError').removeClass('d-none'); return; }
         }
-        getSb(function (s) {
-            s.from('shipments').select('*,tracking_events(*)').eq('tracking_number', num).order('tracking_events.event_time', { ascending: false }).single().then(function (r) {
-                if (r.error || !r.data) {
-                    if (!silent) $('#trackingError').text('Tracking number not found.').removeClass('d-none');
-                    return;
-                }
-                renderResult(r.data);
-                subscribeToShipment(num);
-            });
+        fn('get', function (data) {
+            if (!data || data.error) {
+                if (!silent) $('#trackingError').text('Tracking number not found.').removeClass('d-none');
+                return;
+            }
+            renderResult(data);
         });
     }
 
