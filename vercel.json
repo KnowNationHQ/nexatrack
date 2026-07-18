@@ -1,8 +1,13 @@
 {
   "rewrites": [
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/service", "destination": "/service.html" },
+    { "source": "/tracking", "destination": "/tracking.html" },
+    { "source": "/feature", "destination": "/feature.html" },
+    { "source": "/quote", "destination": "/quote.html" },
     { "source": "/chatbot", "destination": "/chatbot.html" },
     { "source": "/admin", "destination": "/admin/index.html" },
-    { "source": "/admin/", "destination": "/admin/index.html" },
-    { "source": "/about", "destination": "/about.html" }
+    { "source": "/admin/", "destination": "/admin/index.html" }
   ]
 }
