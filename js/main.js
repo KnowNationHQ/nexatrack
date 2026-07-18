@@ -1,6 +1,9 @@
 (function ($) {
     "use strict";
 
+    // ponytail: phone number in one place
+    var NXT_PHONE = '+1 (506) 501-4402';
+
     // Spinner
     var spinner = function () {
         setTimeout(function () {

@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <title>Nexatrack - Track Your Parcel</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+    <meta content="package tracking, courier tracking, parcel tracking, nexatrack, delivery status, Florida" name="keywords">
+    <meta content="Real-time package tracking for Nexatrack Courier Services across Florida. Enter your tracking number to get delivery status updates." name="description">
     <meta property="og:title" content="Nexatrack - Track Your Parcel">
     <meta property="og:description" content="Real-time package tracking for Nexatrack Courier Services across Florida.">
     <meta property="og:image" content="https://nexatrack.vercel.app/img/about.jpg">
@@ -33,7 +33,7 @@
 <body>
     <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
+            <span class="visually-hidden">Loading...</span>
         </div>
     </div>
 
@@ -69,8 +69,8 @@
             <h1 class="display-3 text-white mb-3 animated slideInDown">Track Your Parcel</h1>
             <nav aria-label="breadcrumb animated slideInDown">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a class="text-white" href="#">More</a></li>
+                    <li class="breadcrumb-item"><a class="text-white" href="/">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-white" href="/feature">More</a></li>
                     <li class="breadcrumb-item text-white active" aria-current="page">Tracking</li>
                 </ol>
             </nav>
@@ -124,7 +124,7 @@
                                 <div class="timeline-content">
                                     <h6 class="mb-1">Package Picked Up</h6>
                                     <small class="text-muted">Jul 16, 2026 - 09:30 AM</small>
-                                    <p class="mb-0 mt-1">Warehouse, Lagos</p>
+                                    <p class="mb-0 mt-1">Distribution Hub, Miami</p>
                                 </div>
                             </div>
                             <div class="timeline-item active">
@@ -132,7 +132,7 @@
                                 <div class="timeline-content">
                                     <h6 class="mb-1">In Transit</h6>
                                     <small class="text-muted">Jul 17, 2026 - 02:15 PM</small>
-                                    <p class="mb-0 mt-1">Sorting Center, Abuja</p>
+                                    <p class="mb-0 mt-1">Sorting Center, Orlando</p>
                                 </div>
                             </div>
                             <div class="timeline-item">
@@ -212,10 +212,10 @@
                 <div class="col-lg-3 col-md-6">
                     <h4 class="text-light mb-4">Newsletter</h4>
                     <p>Stay informed about our latest services and promotions.</p>
-                    <div class="position-relative mx-auto" style="max-width: 400px;">
-                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
-                        <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
-                    </div>
+                    <form action="https://formspree.io/f/meoebapa" method="POST" class="position-relative mx-auto" style="max-width: 400px;">
+                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="email" name="email" placeholder="Your email" required>
+                        <button type="submit" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -240,7 +240,7 @@
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/tracking.js"></script>
-<script src="chat-widget.js"></script>
+<script src="chat-widget.js?v=2"></script>
 </body>
 
 </html>
