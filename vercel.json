@@ -7,9 +7,11 @@
     { "source": "/feature", "destination": "/feature.html" },
     { "source": "/quote", "destination": "/quote.html" },
     { "source": "/chatbot", "destination": "/chatbot.html" },
-    { "source": "/admin", "destination": "/admin/tracking.html" },
-    { "source": "/admin/", "destination": "/admin/tracking.html" },
-    { "source": "/admin/chat", "destination": "/admin/index.html" },
+    { "source": "/admin", "destination": "/admin/dashboard.html" },
+    { "source": "/admin/", "destination": "/admin/dashboard.html" },
+    { "source": "/admin/dashboard", "destination": "/admin/dashboard.html" },
+    { "source": "/admin/tracking", "destination": "/admin/dashboard.html" },
+    { "source": "/admin/chat", "destination": "/admin/chat.html" },
     { "source": "/", "has": [{ "type": "host", "value": "widget.nexatrackcourierservices.com" }], "destination": "/chatbot.html" }
   ]
 }
