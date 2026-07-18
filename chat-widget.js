@@ -64,15 +64,7 @@
 .nxt-welcome h4{margin:0 0 6px;color:#060315;font-size:18px}
 .nxt-welcome p{margin:0;font-size:14px;line-height:1.5}
 
-#nxt-history-list{padding:16px;background:#fff;border-bottom:1px solid #e9ecef}
-#nxt-history-list h5{font-size:13px;color:#6c757d;margin:0 0 12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.nxt-history-item{padding:10px 14px;border-radius:10px;cursor:pointer;font-size:13px;color:#060315;display:flex;justify-content:space-between;align-items:center;transition:background .15s}
-.nxt-history-item:hover{background:#F8F2F0}
-.nxt-history-item .chip-status{font-size:11px;color:#6c757d}
-.nxt-new-chat-btn{display:block;width:100%;padding:10px;margin-top:10px;background:linear-gradient(135deg,#FF3E41,#d92e31);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:transform .15s}
-.nxt-new-chat-btn:hover{transform:translateY(-1px)}
-.nxt-history-back{background:none;border:none;color:#FF3E41;font-size:13px;cursor:pointer;padding:4px 0;margin-bottom:10px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
-.nxt-readonly-banner{text-align:center;font-size:12px;color:#6c757d;padding:8px 12px;background:#fff3cd;border-bottom:1px solid #ffc107;flex-shrink:0}
+
 
 @media(max-width:480px){
   #nxt-chat-window{width:calc(100vw - 24px);right:12px;bottom:84px;height:calc(100vh - 120px)}
@@ -228,48 +220,6 @@
     });
   }
 
-  function showHistory(chats, s) {
-    mc.innerHTML = '';
-    var h = document.createElement('div');
-    h.id = 'nxt-history-list';
-    h.innerHTML = '<h5>Previous conversations</h5>';
-    chats.forEach(function (chat) {
-      var item = document.createElement('div');
-      item.className = 'nxt-history-item';
-      item.innerHTML = '<span>' + (chat.visitor_name || 'Chat') + '</span><span class="chip-status">' + new Date(chat.created_at).toLocaleDateString() + (chat.status === 'active' ? ' (active)' : '') + '</span>';
-      item.addEventListener('click', function () {
-        mc.innerHTML = '';
-        var b = document.createElement('button');
-        b.className = 'nxt-history-back';
-        b.innerHTML = '&larr; Back to history';
-        b.addEventListener('click', function () { showHistory(chats, s); });
-        mc.appendChild(b);
-        if (chat.status === 'closed') {
-          var bn = document.createElement('div');
-          bn.className = 'nxt-readonly-banner';
-          bn.textContent = 'This conversation is closed.';
-          mc.appendChild(bn);
-        }
-        cid = chat.id;
-        localStorage.setItem(CK, cid);
-        loadMessages(s, chat.id);
-        document.getElementById('nxt-chat-input-area').style.display = chat.status === 'active' ? 'flex' : 'none';
-      });
-      h.appendChild(item);
-    });
-    var nb = document.createElement('button');
-    nb.className = 'nxt-new-chat-btn';
-    nb.textContent = 'Start new chat';
-    nb.addEventListener('click', function () {
-      cid = null;
-      localStorage.removeItem(CK);
-      mc.innerHTML = '<div class="nxt-welcome"><h4>Welcome to Nexatrack!</h4><p>Ask us anything about our courier services. We\'re here to help!</p></div>';
-      document.getElementById('nxt-chat-input-area').style.display = 'flex';
-    });
-    h.appendChild(nb);
-    mc.appendChild(h);
-  }
-
   function openChat() {
     win.classList.add('open');
     unread = 0;
@@ -291,8 +241,8 @@
             loadMessages(s, cid);
             document.getElementById('nxt-chat-input-area').style.display = 'flex';
           } else {
-            document.getElementById('nxt-chat-input-area').style.display = 'none';
-            showHistory(r.data, s);
+            mc.innerHTML = '<div class="nxt-welcome"><h4>Welcome to Nexatrack!</h4><p>Ask us anything about our courier services. We\'re here to help!</p></div>';
+            document.getElementById('nxt-chat-input-area').style.display = 'flex';
           }
         });
       });
