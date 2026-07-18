@@ -13,6 +13,8 @@
         }, 1);
     };
     spinner();
+
+    $('.back-to-top').hide();
     
     
     // Initiate the wowjs
