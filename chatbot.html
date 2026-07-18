@@ -8,8 +8,8 @@
     <meta content="" name="description">
     <meta property="og:title" content="Nexatrack - Live Chat">
     <meta property="og:description" content="Chat with our team for real-time support.">
-    <meta property="og:image" content="https://nexatrack.vercel.app/img/about.jpg">
-    <meta property="og:url" content="https://nexatrack.vercel.app/chatbot">
+    <meta property="og:image" content="https://nexatrackcourierservices.com/img/about.jpg">
+    <meta property="og:url" content="https://nexatrackcourierservices.com/chatbot">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -24,27 +24,35 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 <style>
-#chat-container { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.08); display: flex; flex-direction: column; height: 600px; }
-#chat-header-bar { background: #0d6efd; color: #fff; padding: 16px 24px; border-radius: 12px 12px 0 0; display: flex; align-items: center; gap: 12px; }
-#chat-header-bar h5 { margin: 0; font-weight: 600; }
-#chat-header-bar .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #198754; display: inline-block; }
-#chat-messages { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 10px; background: #f8f9fa; }
-.chat-msg { max-width: 75%; padding: 10px 16px; border-radius: 12px; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
-.chat-msg.visitor { align-self: flex-end; background: #0d6efd; color: #fff; border-bottom-right-radius: 4px; }
-.chat-msg.agent { align-self: flex-start; background: #e9ecef; color: #212529; border-bottom-left-radius: 4px; }
-.chat-msg .time { font-size: 11px; opacity: .7; margin-top: 4px; display: block; }
-#chat-input-area { display: flex; padding: 16px 24px; gap: 10px; border-top: 1px solid #dee2e6; background: #fff; border-radius: 0 0 12px 12px; }
-#chat-input { flex: 1; border: 1px solid #dee2e6; border-radius: 24px; padding: 10px 18px; font-size: 14px; outline: none; }
-#chat-input:focus { border-color: #0d6efd; }
-#chat-send { padding: 10px 24px; background: #0d6efd; color: #fff; border: none; border-radius: 24px; font-size: 14px; font-weight: 600; cursor: pointer; }
-#chat-send:disabled { opacity: .5; cursor: not-allowed; }
+#chat-container { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 16px; box-shadow: 0 8px 32px rgba(6,3,21,.1); display: flex; flex-direction: column; height: 600px; overflow: hidden; }
+#chat-header-bar { background: linear-gradient(135deg,#060315 0%,#1a0a2e 50%,#FF3E41 100%); color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+#chat-header-bar .brand-icon { width: 28px; height: 28px; background: #FF3E41; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #fff; flex-shrink: 0; }
+#chat-header-bar h5 { margin: 0; font-weight: 700; font-size: 15px; letter-spacing: -.2px; }
+#chat-header-bar .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #51CFED; display: inline-block; margin-left: 4px; animation: chat-pulse 2s infinite; }
+@keyframes chat-pulse { 0%{opacity:1} 50%{opacity:.4} 100%{opacity:1} }
+#chat-bell-wrap { position: relative; display: flex; align-items: center; cursor: default; padding: 4px; border-radius: 8px; margin-left: auto; color: rgba(255,255,255,.6); }
+#chat-bell-badge { position: absolute; top: -2px; right: -2px; min-width: 16px; height: 16px; border-radius: 8px; background: #FF3E41; color: #fff; font-size: 9px; font-weight: 700; display: none; align-items: center; justify-content: center; padding: 0 4px; border: 1.5px solid #060315; line-height: 1; }
+#chat-bell-wrap.has-badge #chat-bell-badge { display: flex; }
+#chat-messages { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 10px; background: #F8F2F0; }
+#chat-messages::-webkit-scrollbar { width: 5px; }
+#chat-messages::-webkit-scrollbar-thumb { background: #d5cbc7; border-radius: 6px; }
+.chat-msg { max-width: 78%; padding: 11px 18px; border-radius: 16px; font-size: 14px; line-height: 1.5; word-wrap: break-word; position: relative; }
+.chat-msg.visitor { align-self: flex-end; background: linear-gradient(135deg,#FF3E41,#d92e31); color: #fff; border-bottom-right-radius: 4px; box-shadow: 0 2px 8px rgba(255,62,65,.15); }
+.chat-msg.agent { align-self: flex-start; background: #fff; color: #060315; border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+.chat-msg .time { font-size: 10px; opacity: .65; margin-top: 5px; display: block; letter-spacing: .2px; }
+#chat-input-area { display: flex; padding: 14px 24px 16px; gap: 10px; border-top: 1px solid #e9ecef; background: #fff; }
+#chat-input { flex: 1; border: 2px solid #e9ecef; border-radius: 24px; padding: 10px 20px; font-size: 14px; outline: none; background: #F8F2F0; transition: border-color .2s; }
+#chat-input:focus { border-color: #FF3E41; background: #fff; }
+#chat-send { padding: 10px 32px; background: linear-gradient(135deg,#FF3E41,#d92e31); color: #fff; border: none; border-radius: 24px; font-size: 14px; font-weight: 700; cursor: pointer; transition: transform .15s,box-shadow .15s; box-shadow: 0 2px 8px rgba(255,62,65,.25); }
+#chat-send:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(255,62,65,.35); }
+#chat-send:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
 #landing { text-align: center; padding: 60px 24px; }
-#landing h3 { margin-bottom: 8px; color: #1a1a2e; }
-#landing p { color: #6c757d; margin-bottom: 24px; }
-#name-input { max-width: 360px; margin: 0 auto 12px; border: 1px solid #dee2e6; border-radius: 8px; padding: 12px 16px; font-size: 15px; width: 100%; outline: none; }
-#name-input:focus { border-color: #0d6efd; }
-#start-btn { padding: 12px 40px; background: #0d6efd; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
-#start-btn:hover { background: #0b5ed7; }
+#landing h3 { margin-bottom: 8px; color: #060315; font-size: 20px; }
+#landing p { color: #6c757d; margin-bottom: 24px; font-size: 15px; }
+#name-input { max-width: 360px; margin: 0 auto 12px; border: 2px solid #e9ecef; border-radius: 10px; padding: 12px 16px; font-size: 15px; width: 100%; outline: none; background: #F8F2F0; transition: border-color .2s; }
+#name-input:focus { border-color: #FF3E41; background: #fff; }
+#start-btn { padding: 12px 48px; background: linear-gradient(135deg,#FF3E41,#d92e31); color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform .15s,box-shadow .15s; box-shadow: 0 2px 8px rgba(255,62,65,.25); }
+#start-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(255,62,65,.35); }
 .loader { text-align: center; padding: 40px; color: #6c757d; }
 </style>
 </head>
@@ -101,9 +109,12 @@
                 <div class="col-lg-10 col-xl-8">
                     <div id="chat-container">
                         <div id="chat-header-bar">
-                            <span class="status-dot"></span>
-                            <h5>Nexatrack Support</h5>
-                            <small class="ms-auto opacity-75">Online</small>
+                            <div class="brand-icon">N</div>
+                            <h5>Nexatrack <span class="status-dot"></span></h5>
+                            <div id="chat-bell-wrap" title="Notifications">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                                <span id="chat-bell-badge"></span>
+                            </div>
                         </div>
                         <div id="chat-messages">
                             <div id="landing">
@@ -192,18 +203,18 @@
 var SUPABASE_URL='https://ujcokrzjvjdrcrdhcnjy.supabase.co';
 var ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqY29rcnpqdmpkcmNyZGhjbmp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzNzA1MzksImV4cCI6MjA5OTk0NjUzOX0.SFgd7FP8lnkbIJ0CxoXXfD5-yo8XIyHGlOS_aK1J9-I';
 var TOKEN_KEY='nxt_chat_token',CID_KEY='nxt_chat_id';
-var token=localStorage.getItem(TOKEN_KEY)||'v_'+crypto.randomUUID();localStorage.setItem(TOKEN_KEY,token);
+var visitorId=localStorage.getItem(TOKEN_KEY)||'v_'+crypto.randomUUID();localStorage.setItem(TOKEN_KEY,visitorId);
 var chatId=localStorage.getItem(CID_KEY);
 var sb,listener,blocked=false;
-var landing=document.getElementById('landing'),msgDiv=document.getElementById('chat-messages'),input=document.getElementById('chat-input'),sendBtn=document.getElementById('chat-send'),startBtn=document.getElementById('start-btn'),nameInput=document.getElementById('name-input'),headerBar=document.getElementById('chat-header-bar');
+var landing=document.getElementById('landing'),msgDiv=document.getElementById('chat-messages'),input=document.getElementById('chat-input'),sendBtn=document.getElementById('chat-send'),startBtn=document.getElementById('start-btn'),nameInput=document.getElementById('name-input'),inputArea=document.getElementById('chat-input-area'),bellBadge=document.getElementById('chat-bell-badge'),bellWrap=document.getElementById('chat-bell-wrap');
 
 function checkBlocked(cb){
  loadSb(function(sb){
-  sb.from('blocked_tokens').select('token').eq('token',token).then(function(r){
+  sb.from('blocked_tokens').select('token').eq('token',visitorId).then(function(r){
    blocked=r.data&&r.data.length>0;
    if(blocked){
     msgDiv.innerHTML='<div style="text-align:center;padding:60px 20px"><h3 style="color:#dc3545;margin:0 0 8px">You\'ve been blocked</h3><p style="color:#6c757d;font-size:15px;margin:0">You are no longer able to send messages through this chat.</p></div>';
-    document.getElementById('chat-input-area').style.display='none';
+    inputArea.style.display='none';
    }
    cb(blocked)
   })
@@ -218,6 +229,26 @@ function loadSb(cb){
   sb=supabase.createClient(SUPABASE_URL,ANON_KEY);cb(sb)
  };
  document.head.appendChild(s);
+}
+
+function notifySound(){
+ try{
+  var ctx=new(window.AudioContext||window.webkitAudioContext)();
+  var o=ctx.createOscillator(),g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);
+  o.type='sine';o.frequency.value=660;
+  g.gain.setValueAtTime(.3,ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(.01,ctx.currentTime+.3);
+  o.start(ctx.currentTime);o.stop(ctx.currentTime+.3);
+  setTimeout(function(){
+   var o2=ctx.createOscillator(),g2=ctx.createGain();
+   o2.connect(g2);g2.connect(ctx.destination);
+   o2.type='sine';o2.frequency.value=880;
+   g2.gain.setValueAtTime(.25,ctx.currentTime);
+   g2.gain.exponentialRampToValueAtTime(.01,ctx.currentTime+.25);
+   o2.start(ctx.currentTime);o2.stop(ctx.currentTime+.25);
+  },150)
+ }catch(e){}
 }
 
 function scrollBottom(){msgDiv.scrollTop=msgDiv.scrollHeight}
@@ -242,48 +273,96 @@ function subscribe(){
  if(listener)return;
  loadSb(function(sb){
   listener=sb.channel('chat-'+chatId).on('postgres_changes',{event:'INSERT',schema:'public',table:'livechat_messages',filter:'chat_id=eq.'+chatId},function(p){
-   if(p.new.sender_type==='agent')addMsg(p.new.content,'agent',new Date(p.new.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+    if(p.new.sender_type==='agent'){
+     addMsg(p.new.content,'agent',new Date(p.new.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+    bellBadge.textContent='1';bellWrap.classList.add('has-badge');
+    setTimeout(function(){bellWrap.classList.remove('has-badge')},3000);
+    notifySound();
+   }
   }).subscribe();
  });
 }
 
-function loadHistory(){
- if(!chatId)return;
+function loadMessages(cid){
+ if(!cid)return;
  loadSb(function(sb){
-  sb.from('livechat_messages').select('*').eq('chat_id',chatId).order('created_at',{ascending:true}).then(function(r){
+  sb.from('livechat_messages').select('*').eq('chat_id',cid).order('created_at',{ascending:true}).then(function(r){
    if(r.error||!r.data)return;
    if(landing)landing.remove();
+   msgDiv.querySelectorAll('.chat-msg').forEach(function(e){e.remove()});
+   msgDiv.querySelectorAll('.nxt-hist').forEach(function(e){e.remove()});
    r.data.forEach(function(m){addMsg(m.content,m.sender_type==='visitor'?'visitor':'agent',new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));});
    subscribe();
   });
  });
 }
 
-startBtn.addEventListener('click',function(){
+function showHistory(chats){
+ msgDiv.innerHTML='';
+ var hist=document.createElement('div');hist.style.padding='20px 24px';hist.className='nxt-hist';
+ hist.innerHTML='<h5 style="color:#6c757d;margin:0 0 12px;font-weight:600">Previous conversations</h5>';
+ chats.forEach(function(chat){
+  var item=document.createElement('div');item.style.cssText='padding:10px 14px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;justify-content:space-between;align-items:center';
+  item.innerHTML='<span>'+(chat.visitor_name||'Chat')+'</span><span style="font-size:12px;color:#6c757d">'+new Date(chat.created_at).toLocaleDateString()+'</span>';
+  item.addEventListener('click',function(){
+   chatId=chat.id;localStorage.setItem(CID_KEY,chatId);
+   if(chat.status==='active'){inputArea.style.display='flex'}else{inputArea.style.display='none'}
+   loadMessages(chat.id);
+  });
+  item.addEventListener('mouseenter',function(){item.style.background='#f0f0f0'});
+  item.addEventListener('mouseleave',function(){item.style.background='transparent'});
+  hist.appendChild(item)
+ });
+ var nb=document.createElement('button');nb.style.cssText='display:block;width:100%;padding:10px;margin-top:12px;background:#FF3E41;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer';
+ nb.textContent='Start new chat';
+ nb.addEventListener('click',function(){
+  chatId=null;localStorage.removeItem(CID_KEY);
+  msgDiv.innerHTML=landing.outerHTML;landing=msgDiv.querySelector('#landing');
+  inputArea.style.display='flex';
+  nameInput=document.getElementById('name-input');startBtn=document.getElementById('start-btn');
+  startBtn.addEventListener('click',doStart);
+  nameInput.addEventListener('keydown',function(e){if(e.key==='Enter')startBtn.click()});
+ });
+ hist.appendChild(nb);msgDiv.appendChild(hist);
+}
+
+function doStart(){
  checkBlocked(function(){
   if(blocked)return;
   var name=nameInput.value.trim()||'Website Visitor';
   loadSb(function(sb){
    if(landing)landing.remove();
-   sb.from('livechat_chats').insert({visitor_token:token,visitor_name:name,status:'active'}).select().then(function(r){
+   sb.from('livechat_chats').insert({visitor_token:visitorId,visitor_name:name,status:'active'}).select().then(function(r){
     if(r.error)return;
     chatId=r.data[0].id;localStorage.setItem(CID_KEY,chatId);
-     subscribe();
-     msgDiv.innerHTML='';
-     sb.from('livechat_messages').insert({chat_id:chatId,sender_type:'agent',content:'Thank you for contacting Nexatrack! An agent will be with you shortly.'});
+    subscribe();
+    msgDiv.innerHTML='';
+    inputArea.style.display='flex';
+    sb.from('livechat_messages').insert({chat_id:chatId,sender_type:'agent',content:'Thank you for contacting Nexatrack! An agent will be with you shortly.'});
    });
   });
  });
-});
+}
 
+startBtn.addEventListener('click',doStart);
 nameInput.addEventListener('keydown',function(e){if(e.key==='Enter')startBtn.click();});
 input.addEventListener('input',function(){sendBtn.disabled=!input.value.trim();});
 input.addEventListener('keydown',function(e){if(e.key==='Enter')sendMsg();});
 sendBtn.addEventListener('click',sendMsg);
 
 loadSb(function(sb){
- sb.from('livechat_chats').select('id').eq('visitor_token',token).eq('status','active').order('created_at',{ascending:false}).limit(1).then(function(r){
-  if(r.data&&r.data.length>0){chatId=r.data[0].id;localStorage.setItem(CID_KEY,chatId);loadHistory();}
+ sb.from('livechat_chats').select('*').eq('visitor_token',visitorId).order('created_at',{ascending:false}).then(function(r){
+  if(!r.data||r.data.length===0)return;
+  var active=r.data.filter(function(c){return c.status==='active'});
+  if(active.length>0){
+   chatId=active[0].id;localStorage.setItem(CID_KEY,chatId);
+   if(landing)landing.remove();
+   inputArea.style.display='flex';
+   loadMessages(chatId);
+  } else {
+   inputArea.style.display='none';
+   showHistory(r.data);
+  }
  });
 });
 })();

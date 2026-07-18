@@ -264,7 +264,11 @@ function renderChats(chats){
  })
 }
 
-function visitorLabel(chat){var s=chat.visitor_email||'';if(s)return esc(s);return''}
+function visitorLabel(chat){
+ var parts=[];
+ if(chat.visitor_email)parts.push(esc(chat.visitor_email));
+ return parts.join(' &middot; ')||''
+}
 function fmt(d){return new Date(d).toLocaleDateString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}
 function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
 
@@ -275,7 +279,7 @@ function subscribeChats(){
    loadChats();
    notifCount++;BBadge.textContent=notifCount;BN.classList.add('has-badge','ring');
    setTimeout(function(){BN.classList.remove('ring')},600);
-   if(Notification.permission==='granted')new Notification('Nexatrack Chat',{body:'New chat from '+(payload.new.visitor_name||'a visitor'),icon:'https://nexatrack.vercel.app/img/favicon.ico'})
+   if(Notification.permission==='granted')new Notification('Nexatrack Chat',{body:'New chat from '+(payload.new.visitor_name||'a visitor'),icon:'https://nexatrackcourierservices.com/img/favicon.ico'})
   })
   .on('postgres_changes',{event:'UPDATE',schema:'public',table:'livechat_chats'},function(){loadChats()})
   .on('postgres_changes',{event:'DELETE',schema:'public',table:'livechat_chats'},function(){loadChats()})
@@ -319,10 +323,10 @@ function subscribeChatMessages(cid){
 
 function renderMsg(m){
  var div=document.createElement('div');
- div.className='msg '+(m.sender_type==='agent'?'agent':'visitor');
+  div.className='msg '+(m.sender_type==='agent'?'agent':'visitor');
  div.dataset.msgid=m.id;
  var del='<button class="del-btn" onclick="deleteMsg(\''+m.id+'\')" title="Delete">&times;</button>';
- div.innerHTML=del+m.content+'<span class="time">'+new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+ '</span>';
+  div.innerHTML=del+m.content+'<span class="time">'+new Date(m.created_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+ '</span>';
  MSG.appendChild(div);scrollBottom()
 }
 
@@ -342,7 +346,7 @@ SB.addEventListener('click',send);
 function send(){
  var t=MI.value.trim();if(!t||!selectedChatId)return;
  MI.value='';SB.disabled=true;
- sb.from('livechat_messages').insert({chat_id:selectedChatId,sender_type:'agent',content:t}).then(function(){
+  sb.from('livechat_messages').insert({chat_id:selectedChatId,sender_type:'agent',content:t}).then(function(){
   sb.from('livechat_chats').update({updated_at:new Date().toISOString()}).eq('id',selectedChatId).then(function(){});
   SB.disabled=false
  })
@@ -366,9 +370,9 @@ RB.addEventListener('click',function(){
 
 BB.addEventListener('click',function(){
  if(!selectedChatId)return;if(!confirm('Ban this visitor? They will not be able to send messages.'))return;
- sb.from('livechat_chats').select('visitor_token').eq('id',selectedChatId).single().then(function(r){
-  if(r.error||!r.data)return;
-  var token=r.data.visitor_token;
+  sb.from('livechat_chats').select('visitor_token').eq('id',selectedChatId).single().then(function(r){
+   if(r.error||!r.data)return;
+   var token=r.data.visitor_token;
   sb.from('blocked_tokens').insert({token:token,chat_id:selectedChatId,blocked_by:user.email}).then(function(){
    sb.from('livechat_chats').update({status:'closed'}).eq('id',selectedChatId).then(function(){
     selectedChatId=null;NC.style.display='flex';CH.style.display='none';MSG.style.display='none';IA.style.display='none';
