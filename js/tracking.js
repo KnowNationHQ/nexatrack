@@ -1,53 +1,30 @@
 (function ($) {
     "use strict";
 
-    var sampleData = {
-        "NXT-2024-001": {
-            status: "In Transit",
-            statusBadge: "bg-primary",
-            estimated: "Jul 20, 2026",
-            origin: "Miami, FL",
-            destination: "Orlando, FL",
-            location: { lat: 28.5383, lng: -81.3792, name: "Orlando" },
-            updates: [
-                { title: "Package Picked Up", time: "Jul 16, 2026 - 09:30 AM", place: "Distribution Hub, Miami", done: true },
-                { title: "In Transit", time: "Jul 17, 2026 - 02:15 PM", place: "Sorting Center, Orlando", done: true },
-                { title: "Out for Delivery", time: "Pending", place: "Local Delivery Hub", done: false },
-                { title: "Delivered", time: "Pending", place: "Destination", done: false }
-            ]
-        },
-        "NXT-2024-002": {
-            status: "Delivered",
-            statusBadge: "bg-success",
-            estimated: "Jul 15, 2026",
-            origin: "Jacksonville, FL",
-            destination: "Tampa, FL",
-            location: { lat: 27.9506, lng: -82.4572, name: "Tampa" },
-            updates: [
-                { title: "Package Picked Up", time: "Jul 12, 2026 - 08:00 AM", place: "Warehouse, Jacksonville", done: true },
-                { title: "In Transit", time: "Jul 13, 2026 - 11:30 AM", place: "Transit Hub, Gainesville", done: true },
-                { title: "Out for Delivery", time: "Jul 14, 2026 - 07:00 AM", place: "Local Hub, Tampa", done: true },
-                { title: "Delivered", time: "Jul 14, 2026 - 02:45 PM", place: "Downtown, Tampa", done: true }
-            ]
-        },
-        "NXT-2024-003": {
-            status: "Out for Delivery",
-            statusBadge: "bg-warning text-dark",
-            estimated: "Jul 17, 2026",
-            origin: "Fort Lauderdale, FL",
-            destination: "West Palm Beach, FL",
-            location: { lat: 26.7153, lng: -80.0534, name: "West Palm Beach" },
-            updates: [
-                { title: "Package Picked Up", time: "Jul 15, 2026 - 10:00 AM", place: "Warehouse, Fort Lauderdale", done: true },
-                { title: "In Transit", time: "Jul 16, 2026 - 09:00 AM", place: "Sorting Center, Boca Raton", done: true },
-                { title: "Out for Delivery", time: "Jul 17, 2026 - 08:30 AM", place: "Local Hub, West Palm Beach", done: true },
-                { title: "Delivered", time: "Pending", place: "Destination", done: false }
-            ]
-        }
-    };
+    var SB_URL = 'https://ujcokrzjvjdrcrdhcnjy.supabase.co';
+    var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqY29rcnpqdmpkcmNyZGhjbmp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzNzA1MzksImV4cCI6MjA5OTk0NjUzOX0.SFgd7FP8lnkbIJ0CxoXXfD5-yo8XIyHGlOS_aK1J9-I';
+    var sb = null;
+    var map = null, marker = null, currentSub = null;
 
-    var map = null;
-    var marker = null;
+    function getSb(cb) {
+        if (sb) { cb(sb); return; }
+        var sc = document.getElementById('supabase-js');
+        if (!sc) {
+            sc = document.createElement('script');
+            sc.id = 'supabase-js';
+            sc.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+            sc.onload = function () { sb = supabase.createClient(SB_URL, SB_KEY); cb(sb); };
+            document.head.appendChild(sc);
+        } else {
+            var check = setInterval(function () {
+                if (typeof supabase !== 'undefined') {
+                    sb = supabase.createClient(SB_URL, SB_KEY);
+                    cb(sb);
+                    clearInterval(check);
+                }
+            }, 100);
+        }
+    }
 
     function initMap(lat, lng, label) {
         if (!map) {
@@ -63,57 +40,93 @@
     }
 
     function renderResult(data) {
+        if (!data || !data.tracking_events) {
+            $('#trackingResult').removeClass('d-block').addClass('d-none');
+            $('#trackingError').text('Tracking number not found.').removeClass('d-none');
+            return;
+        }
         var html = '';
-        $.each(data.updates, function (i, u) {
-            var active = u.done ? 'active' : '';
-            html += '<div class="timeline-item ' + active + '">';
+        $.each(data.tracking_events, function (i, u) {
+            html += '<div class="timeline-item active">';
             html += '<div class="timeline-dot"></div>';
             html += '<div class="timeline-content">';
             html += '<h6 class="mb-1">' + u.title + '</h6>';
-            html += '<small class="text-muted">' + u.time + '</small>';
-            html += '<p class="mb-0 mt-1">' + u.place + '</p>';
+            html += '<small class="text-muted">' + new Date(u.event_time).toLocaleString() + '</small>';
+            if (u.location) html += '<p class="mb-0 mt-1">' + u.location + '</p>';
             html += '</div></div>';
         });
-        $('.tracking-timeline').html(html);
 
-        $('#statusBadge').text(data.status).removeClass().addClass('badge px-3 py-2 ' + data.statusBadge);
-        $('#trackingNumber').text($('#trackingInput').val().trim().toUpperCase());
-        $('#estDelivery').text(data.estimated);
+        $('.tracking-timeline').html(html || '<div class="text-center py-4 text-muted">No tracking events yet.</div>');
+
+        var labels = { pending: 'Pending', in_transit: 'In Transit', out_for_delivery: 'Out for Delivery', delivered: 'Delivered', exception: 'Exception' };
+        var colors = { pending: 'bg-warning text-dark', in_transit: 'bg-primary', out_for_delivery: 'bg-danger', delivered: 'bg-success', exception: 'bg-dark' };
+        $('#statusBadge').text(labels[data.status] || data.status).removeClass().addClass('badge px-3 py-2 ' + (colors[data.status] || 'bg-secondary'));
+        $('#trackingNumber').text(data.tracking_number || $('#trackingInput').val().trim().toUpperCase());
+        $('#estDelivery').text(data.estimated_delivery ? new Date(data.estimated_delivery).toLocaleDateString() : '—');
+
+        var originText = data.origin || '—';
+        var destText = data.destination || '—';
+        $('#trackingResult .col-lg-5 .bg-light .p-4:first strong').eq(0).text(originText);
+        $('#trackingResult .col-lg-5 .bg-light .p-4:first strong').eq(1).text(destText);
+
         $('#trackingResult').removeClass('d-none').addClass('d-block');
 
-        $('#trackingResult').find('.col-lg-5 .bg-light .p-4:first strong').eq(0).text(data.origin);
-        $('#trackingResult').find('.col-lg-5 .bg-light .p-4:first strong').eq(1).text(data.destination);
-
-        setTimeout(function () {
-            initMap(data.location.lat, data.location.lng, data.location.name);
-            if (map) setTimeout(function () { map.invalidateSize(); }, 100);
-        }, 200);
+        if (data.current_lat && data.current_lng) {
+            setTimeout(function () {
+                initMap(data.current_lat, data.current_lng, data.current_location || 'Current Location');
+                if (map) setTimeout(function () { map.invalidateSize(); }, 100);
+            }, 200);
+        }
     }
 
-    function doTrack() {
+    function subscribeToShipment(tn) {
+        if (currentSub) { getSb(function (s) { s.removeChannel(currentSub); }); currentSub = null; }
+        getSb(function (s) {
+            s.from('shipments').select('tracking_number').eq('tracking_number', tn).single().then(function (r) {
+                if (r.error || !r.data) return;
+                var sid = r.data.tracking_number;
+                currentSub = s.channel('pub-track-' + sid.replace(/[^a-zA-Z0-9]/g, ''))
+                    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'shipments', filter: 'tracking_number=eq.' + tn },
+                        function () { doTrack(true); })
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'tracking_events', filter: undefined },
+                        function () { doTrack(true); })
+                    .subscribe();
+            });
+        });
+    }
+
+    function doTrack(silent) {
         var num = $('#trackingInput').val().trim().toUpperCase();
-        $('#trackingError').addClass('d-none');
-        if (!num) {
-            $('#trackingError').removeClass('d-none');
-            return;
+        if (!silent) {
+            $('#trackingError').addClass('d-none');
+            if (!num) { $('#trackingError').removeClass('d-none'); return; }
         }
-        if (sampleData[num]) {
-            renderResult(sampleData[num]);
-        } else {
-            $('#trackingError').text('Tracking number not found. Try NXT-2024-001, NXT-2024-002, or NXT-2024-003.').removeClass('d-none');
-        }
+        getSb(function (s) {
+            s.from('shipments').select('*,tracking_events(*)').eq('tracking_number', num).order('tracking_events.event_time', { ascending: false }).single().then(function (r) {
+                if (r.error || !r.data) {
+                    if (!silent) $('#trackingError').text('Tracking number not found.').removeClass('d-none');
+                    return;
+                }
+                renderResult(r.data);
+                subscribeToShipment(num);
+            });
+        });
     }
 
     $(document).ready(function () {
-        var css = document.createElement('link');
-        css.rel = 'stylesheet';
-        css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-        document.head.appendChild(css);
+        var lcss = document.createElement('link');
+        lcss.rel = 'stylesheet';
+        lcss.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(lcss);
+
+        var ljs = document.createElement('script');
+        ljs.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        document.head.appendChild(ljs);
     });
 
-    $(document).on('click', '#trackBtn', doTrack);
+    $(document).on('click', '#trackBtn', function () { doTrack(false); });
     $(document).on('keypress', '#trackingInput', function (e) {
-        if (e.which === 13) doTrack();
+        if (e.which === 13) doTrack(false);
     });
 
 })(jQuery);
