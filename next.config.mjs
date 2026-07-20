@@ -8,6 +8,12 @@ const nextConfig = {
       { protocol: "https", hostname: "ujcokrzjvjdrcrdhcnjy.supabase.co" },
     ],
   },
-};
+  webpack: (config) => {
+    config.watchOptions = {
+      ignored: ["**/supabase/functions/**"],
+    }
+    return config
+  },
+}
 
 export default nextConfig;
