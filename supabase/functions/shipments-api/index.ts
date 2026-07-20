@@ -67,6 +67,22 @@ Deno.serve(async (req: Request) => {
 
     if (action === 'create-shipment') {
       const body = await req.json()
+      // ponytail: sequential from existing max — fine until 100k shipments
+      if (!body.tracking_number) {
+        const { data: maxRow } = await supabase
+          .from('shipments')
+          .select('tracking_number')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+        let seq = 1
+        if (maxRow?.tracking_number) {
+          const parts = maxRow.tracking_number.split('-')
+          seq = (parseInt(parts[1] || '0') % 100000) + 1
+        }
+        const year = new Date().getFullYear()
+        body.tracking_number = `NXT-${year}${String(seq).padStart(5, '0')}`
+      }
       const { data, error } = await supabase.from('shipments').insert({
         tracking_number: body.tracking_number?.toUpperCase(),
         status: body.status || 'pending',
@@ -82,6 +98,7 @@ Deno.serve(async (req: Request) => {
         shipper_city: body.shipper_city || null,
         shipper_state: body.shipper_state || null,
         shipper_zip: body.shipper_zip || null,
+        shipper_country: body.shipper_country || null,
         receiver_name: body.receiver_name || null,
         receiver_company: body.receiver_company || null,
         receiver_email: body.receiver_email || null,
@@ -90,6 +107,7 @@ Deno.serve(async (req: Request) => {
         receiver_city: body.receiver_city || null,
         receiver_state: body.receiver_state || null,
         receiver_zip: body.receiver_zip || null,
+        receiver_country: body.receiver_country || null,
         weight: body.weight || null,
         weight_unit: body.weight_unit || 'lb',
         length: body.length || null,
