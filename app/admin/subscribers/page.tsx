@@ -10,7 +10,7 @@ export default function SubscribersPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
   useEffect(() => {
-    db("subscribers", "select", { order: { column: "created_at", ascending: false } }).then((data) => {
+    db<any[]>("subscribers", "select", { order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setItems(data)
     })
   }, [])
@@ -44,3 +44,4 @@ export default function SubscribersPage() {
     </div>
   )
 }
+

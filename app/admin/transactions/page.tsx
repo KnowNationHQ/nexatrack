@@ -11,7 +11,7 @@ export default function TransactionsPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
   useEffect(() => {
-    db("transactions", "select", { order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
+    db<any[]>("transactions", "select", { order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
       if (data) setItems(data)
     })
   }, [])
@@ -45,3 +45,4 @@ export default function TransactionsPage() {
     </div>
   )
 }
+

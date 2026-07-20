@@ -11,7 +11,7 @@ export default function PricingPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
   useEffect(() => {
-    db("delivery_charges", "select", { columns: "*, delivery_categories(name)", order: { column: "created_at", ascending: false } }).then((data) => {
+    db<any[]>("delivery_charges", "select", { columns: "*, delivery_categories(name)", order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setItems(data)
     })
   }, [])

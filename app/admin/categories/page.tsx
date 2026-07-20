@@ -12,7 +12,7 @@ export default function CategoriesPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
   useEffect(() => {
-    db("delivery_categories", "select", { order: { column: "created_at", ascending: false } }).then((data) => {
+    db<any[]>("delivery_categories", "select", { order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setItems(data)
     })
   }, [])
@@ -49,3 +49,4 @@ export default function CategoriesPage() {
     </div>
   )
 }
+

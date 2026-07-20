@@ -12,7 +12,7 @@ export default function WalletPage() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      db("wallets", "select", { eq: { merchant_id: user.id }, single: true }).then((data) => {
+      db<any[]>("wallets", "select", { eq: { merchant_id: user.id }, single: true }).then((data) => {
         if (data) setWallet(data)
       })
     })
@@ -31,3 +31,4 @@ export default function WalletPage() {
     </div>
   )
 }
+

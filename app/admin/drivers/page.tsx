@@ -11,7 +11,7 @@ export default function DriversPage() {
   const [drivers, setDrivers] = useState<any[]>([])
   const [search, setSearch] = useState("")
   useEffect(() => {
-    db("profiles", "select", { eq: { role: "driver" }, order: { column: "created_at", ascending: false } }).then((data) => {
+    db<any[]>("profiles", "select", { eq: { role: "driver" }, order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setDrivers(data)
     })
   }, [])
@@ -68,3 +68,4 @@ export default function DriversPage() {
     </div>
   )
 }
+

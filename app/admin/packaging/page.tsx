@@ -11,7 +11,7 @@ export default function PackagingPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
   useEffect(() => {
-    db("packaging_options", "select", { order: { column: "created_at", ascending: false } }).then((data) => {
+    db<any[]>("packaging_options", "select", { order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setItems(data)
     })
   }, [])
@@ -48,3 +48,4 @@ export default function PackagingPage() {
     </div>
   )
 }
+

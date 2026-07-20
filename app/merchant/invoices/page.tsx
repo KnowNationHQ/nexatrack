@@ -13,7 +13,7 @@ export default function MerchantInvoices() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      db("invoices", "select", { eq: { merchant_id: user.id }, order: { column: "created_at", ascending: false } }).then((data) => {
+      db<any[]>("invoices", "select", { eq: { merchant_id: user.id }, order: { column: "created_at", ascending: false } }).then((data) => {
         if (data) setItems(data)
       })
     })
@@ -42,3 +42,4 @@ export default function MerchantInvoices() {
     </div>
   )
 }
+

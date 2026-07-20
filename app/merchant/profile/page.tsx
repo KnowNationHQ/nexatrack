@@ -17,7 +17,7 @@ export default function MerchantProfile() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      db("profiles", "select", { eq: { id: user.id }, single: true }).then((data) => {
+      db<any[]>("profiles", "select", { eq: { id: user.id }, single: true }).then((data) => {
         if (data) setProfile(data)
       })
     })
@@ -46,3 +46,4 @@ export default function MerchantProfile() {
     </div>
   )
 }
+

@@ -11,7 +11,7 @@ export default function InTransitPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
   useEffect(() => {
-    db("parcels", "select", { eq: { status: "in_transit" }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
+    db<any[]>("parcels", "select", { eq: { status: "in_transit" }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
       if (data) setItems(data)
     })
   }, [])
@@ -47,3 +47,4 @@ export default function InTransitPage() {
     </div>
   )
 }
+

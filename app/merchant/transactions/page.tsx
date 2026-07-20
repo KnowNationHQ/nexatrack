@@ -15,7 +15,7 @@ export default function MerchantTransactions() {
       if (!user) return
       db("wallets", "select", { columns: "id", eq: { merchant_id: user.id }, single: true }).then((wallet) => {
         if (!wallet) return
-        db("transactions", "select", { eq: { wallet_id: wallet.id }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
+        db<any[]>("transactions", "select", { eq: { wallet_id: wallet.id }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
           if (data) setItems(data)
         })
       })
@@ -46,3 +46,4 @@ export default function MerchantTransactions() {
     </div>
   )
 }
+

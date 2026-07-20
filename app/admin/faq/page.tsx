@@ -11,7 +11,7 @@ export default function FAQPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
   useEffect(() => {
-    db("faqs", "select", { order: { column: "sort_order", ascending: true } }).then((data) => {
+    db<any[]>("faqs", "select", { order: { column: "sort_order", ascending: true } }).then((data) => {
       if (data) setItems(data)
     })
   }, [])
@@ -48,3 +48,4 @@ export default function FAQPage() {
     </div>
   )
 }
+

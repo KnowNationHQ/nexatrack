@@ -21,7 +21,7 @@ export default function MerchantTickets() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      db("support_tickets", "select", { eq: { user_id: user.id }, order: { column: "created_at", ascending: false } }).then((data) => {
+      db<any[]>("support_tickets", "select", { eq: { user_id: user.id }, order: { column: "created_at", ascending: false } }).then((data) => {
         if (data) setTickets(data)
       })
     })
@@ -76,3 +76,4 @@ export default function MerchantTickets() {
     </div>
   )
 }
+

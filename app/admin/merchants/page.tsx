@@ -11,7 +11,7 @@ export default function MerchantsPage() {
   const [merchants, setMerchants] = useState<any[]>([])
   const [search, setSearch] = useState("")
   useEffect(() => {
-    db("profiles", "select", { eq: { role: "merchant" }, order: { column: "created_at", ascending: false } }).then((data) => {
+    db<any[]>("profiles", "select", { eq: { role: "merchant" }, order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setMerchants(data)
     })
   }, [])
@@ -70,3 +70,4 @@ export default function MerchantsPage() {
     </div>
   )
 }
+

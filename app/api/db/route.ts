@@ -19,9 +19,10 @@ export async function POST(req: Request) {
       if (isNull) for (const c of isNull) q = q.is(c, null)
       if (order) for (const { column, ascending } of (Array.isArray(order) ? order : [order])) q = q.order(column, { ascending })
       if (limit) q = q.limit(limit)
-      if (single) { const { data: d, error, count } = await q.single(); return NextResponse.json(error ? { error: error.message } : { data: d, count }) }
-      const { data: d, error, count } = await q
-      return NextResponse.json(error ? { error: error.message } : { data: d, count })
+      if (single) { const { data: d, error } = await q.single(); if (error) return NextResponse.json({ error: error.message }, { status: 400 }); return NextResponse.json(d) }
+      if (body.count && body.head) { const { count, error } = await q; return NextResponse.json(error ? { error: error.message } : { count }) }
+      const { data: d, error } = await q
+      return NextResponse.json(error ? { error: error.message } : d || [])
     }
 
     if (action === "insert") {

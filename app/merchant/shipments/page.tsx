@@ -16,7 +16,7 @@ export default function MerchantShipments() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      db("parcels", "select", { eq: { merchant_id: user.id }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
+      db<{ data: any[] }>("parcels", "select", { eq: { merchant_id: user.id }, order: { column: "created_at", ascending: false }, limit: 50 }).then(({ data }) => {
         if (data) setShipments(data)
       })
     })

@@ -12,7 +12,7 @@ export default function PendingShipmentsPage() {
   const [shipments, setShipments] = useState<any[]>([])
   const [search, setSearch] = useState("")
   useEffect(() => {
-    db("parcels", "select", { eq: { status: "pending" }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
+    db<any[]>("parcels", "select", { eq: { status: "pending" }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
       if (data) setShipments(data)
     })
   }, [])
@@ -51,3 +51,4 @@ export default function PendingShipmentsPage() {
     </div>
   )
 }
+

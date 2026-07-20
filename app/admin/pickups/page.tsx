@@ -11,7 +11,7 @@ export default function PickupsPage() {
   const [pickups, setPickups] = useState<any[]>([])
   const [search, setSearch] = useState("")
   useEffect(() => {
-    db("pickup_requests", "select", { order: { column: "created_at", ascending: false } }).then((data) => {
+    db<any[]>("pickup_requests", "select", { order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setPickups(data)
     })
   }, [])
@@ -62,3 +62,4 @@ export default function PickupsPage() {
     </div>
   )
 }
+
