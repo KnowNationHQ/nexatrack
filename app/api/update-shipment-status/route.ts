@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 
   const { error: eventError } = await supabase.from("tracking_events").insert({
     shipment_id: parcelId,
-    title: status.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()),
+    title: status.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase()),
     description: description || `Status updated to ${status.replace(/_/g, " ")}`,
     location: location || null,
     event_time: new Date().toISOString(),
