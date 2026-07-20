@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
 import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -53,30 +52,22 @@ export default function AdminShipmentDetail() {
   const [newLocation, setNewLocation] = useState("")
   const [updating, setUpdating] = useState(false)
   const router = useRouter()
-  const supabase = createClient()
   const { toast } = useToast()
 
   useEffect(() => {
-    supabase.from("parcels").select("*").eq("id", id).single().then(async ({ data }) => {
-      if (!data) return
-      setShipment(data)
-      setNewStatus(data.status)
+    fetch(`/api/parcels/${id}`).then(r => r.json()).then(async (data) => {
+      if (!data.parcel) return
+      setShipment(data.parcel)
+      setNewStatus(data.parcel.status)
+      if (data.serviceType) setServiceType(data.serviceType)
+      if (data.category) setCategory(data.category)
+      if (data.events) setEvents(data.events)
 
-      const [typeRes, catRes] = await Promise.all([
-        data.delivery_type_id ? supabase.from("delivery_types").select("name").eq("id", data.delivery_type_id).single() : Promise.resolve({ data: null }),
-        data.category_id ? supabase.from("delivery_categories").select("name").eq("id", data.category_id).single() : Promise.resolve({ data: null }),
-      ])
-      if (typeRes.data) setServiceType(typeRes.data.name)
-      if (catRes.data) setCategory(catRes.data.name)
-
-      const url = `https://nexatrackcourierservices.com/track?number=${data.tracking_number}`
+      const url = `https://nexatrackcourierservices.com/track?number=${data.parcel.tracking_number}`
       try {
         const dataUrl = await QRCode.toDataURL(url, { width: 180, margin: 2, color: { dark: "#ffffff", light: "#0a0715" } })
         setQrDataUrl(dataUrl)
       } catch {}
-    })
-    supabase.from("tracking_events").select("*").eq("shipment_id", id).order("event_time", { ascending: false }).then(({ data }) => {
-      if (data) setEvents(data)
     })
   }, [id])
 
@@ -110,10 +101,10 @@ export default function AdminShipmentDetail() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       toast({ title: "Status updated", description: `Changed to ${STATUS_LABELS[newStatus]}` })
-      const { data: updated } = await supabase.from("parcels").select("*").eq("id", id).single()
-      if (updated) setShipment(updated)
-      const { data: updatedEvents } = await supabase.from("tracking_events").select("*").eq("shipment_id", id).order("event_time", { ascending: false })
-      if (updatedEvents) setEvents(updatedEvents)
+      await new Promise(r => setTimeout(r, 200))
+      const refreshed = await fetch(`/api/parcels/${id}`).then(r => r.json())
+      if (refreshed.parcel) setShipment(refreshed.parcel)
+      if (refreshed.events) setEvents(refreshed.events)
       setNewLocation("")
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" })

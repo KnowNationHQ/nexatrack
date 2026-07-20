@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { createClient } from "@/lib/supabase-browser"
 import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -49,28 +48,20 @@ export default function MerchantShipmentDetail() {
   const [qrDataUrl, setQrDataUrl] = useState<string>("")
   const qrRef = useRef<HTMLCanvasElement>(null)
   const router = useRouter()
-  const supabase = createClient()
 
   useEffect(() => {
-    supabase.from("parcels").select("*").eq("id", id).single().then(async ({ data }) => {
-      if (!data) return
-      setShipment(data)
+    fetch(`/api/parcels/${id}`).then(r => r.json()).then(async (data) => {
+      if (!data.parcel) return
+      setShipment(data.parcel)
+      if (data.serviceType) setServiceType(data.serviceType)
+      if (data.category) setCategory(data.category)
+      if (data.events) setEvents(data.events)
 
-      const [typeRes, catRes] = await Promise.all([
-        data.delivery_type_id ? supabase.from("delivery_types").select("name").eq("id", data.delivery_type_id).single() : Promise.resolve({ data: null }),
-        data.category_id ? supabase.from("delivery_categories").select("name").eq("id", data.category_id).single() : Promise.resolve({ data: null }),
-      ])
-      if (typeRes.data) setServiceType(typeRes.data.name)
-      if (catRes.data) setCategory(catRes.data.name)
-
-      const url = `https://nexatrackcourierservices.com/track?number=${data.tracking_number}`
+      const url = `https://nexatrackcourierservices.com/track?number=${data.parcel.tracking_number}`
       try {
         const dataUrl = await QRCode.toDataURL(url, { width: 180, margin: 2, color: { dark: "#ffffff", light: "#0a0715" } })
         setQrDataUrl(dataUrl)
       } catch {}
-    })
-    supabase.from("tracking_events").select("*").eq("shipment_id", id).order("event_time", { ascending: false }).then(({ data }) => {
-      if (data) setEvents(data)
     })
   }, [id])
 
