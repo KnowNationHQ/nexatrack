@@ -9,15 +9,15 @@ CREATE TABLE IF NOT EXISTS form_submissions (
 
 ALTER TABLE form_submissions ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY anon_insert_form_submissions ON form_submissions
+CREATE POLICY IF NOT EXISTS anon_insert_form_submissions ON form_submissions
   FOR INSERT TO anon
   WITH CHECK (true);
 
-CREATE POLICY auth_select_form_submissions ON form_submissions
+CREATE POLICY IF NOT EXISTS auth_select_form_submissions ON form_submissions
   FOR SELECT TO authenticated
   USING (true);
 
-CREATE POLICY auth_update_form_submissions ON form_submissions
+CREATE POLICY IF NOT EXISTS auth_update_form_submissions ON form_submissions
   FOR UPDATE TO authenticated
   USING (true)
   WITH CHECK (true);

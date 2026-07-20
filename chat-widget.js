@@ -225,23 +225,17 @@
     unread = 0;
     badgeEl.textContent = '';
     btn.classList.remove('has-badge');
+    mc.innerHTML = '<div class="nxt-welcome"><h4>Welcome to Nexatrack!</h4><p>Ask us anything about our courier services. We\'re here to help!</p></div>';
     checkBlocked(function () {
       if (blocked) return;
       loadSb(function (s) {
         s.from('livechat_chats').select('*').eq('visitor_token', vid).order('created_at', { ascending: false }).then(function (r) {
-          if (r.error || !r.data || r.data.length === 0) {
-            mc.innerHTML = '<div class="nxt-welcome"><h4>Welcome to Nexatrack!</h4><p>Ask us anything about our courier services. We\'re here to help!</p></div>';
-            document.getElementById('nxt-chat-input-area').style.display = 'flex';
-            return;
-          }
+          if (r.error || !r.data || r.data.length === 0) return;
           var ac = r.data.filter(function (c) { return c.status === 'active'; });
           if (ac.length > 0) {
             cid = ac[0].id;
             localStorage.setItem(CK, cid);
             loadMessages(s, cid);
-            document.getElementById('nxt-chat-input-area').style.display = 'flex';
-          } else {
-            mc.innerHTML = '<div class="nxt-welcome"><h4>Welcome to Nexatrack!</h4><p>Ask us anything about our courier services. We\'re here to help!</p></div>';
             document.getElementById('nxt-chat-input-area').style.display = 'flex';
           }
         });
