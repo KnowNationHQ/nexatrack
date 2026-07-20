@@ -17,7 +17,7 @@ async function logAudit(staffEmail: string, act: string, tbl: string, recordId: 
   await supabase.from('audit_log').insert({ staff_email: staffEmail, action: act, table_name: tbl, record_id: recordId, details }).maybeSingle()
 }
 
-const CRUD_TABLES = ['customers','drivers','staff','recipients','pre_alerts','locker_packages','pickups','consolidations','settings','countries','states','cities']
+const CRUD_TABLES = ['customers','drivers','staff','recipients','pre_alerts','locker_packages','pickups','consolidations','settings','countries','states','cities','form_submissions']
 
 function tableFor(action: string): string | null {
   for (const t of CRUD_TABLES) {
@@ -255,6 +255,17 @@ Deno.serve(async (req: Request) => {
         await logAudit(staffEmail, 'delete', table, body.id, {})
         return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
       }
+    }
+
+    // ── Form submissions ──
+    if (action === 'submit-form') {
+      const body = await req.json()
+      const { data, error } = await supabase.from('form_submissions').insert({
+        type: body.type,
+        data: body.data
+      }).select().single()
+      if (error) throw error
+      return new Response(JSON.stringify(data), { status: 201, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
     // ── Dashboard stats ──
