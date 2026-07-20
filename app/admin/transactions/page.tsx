@@ -27,7 +27,8 @@ export default function TransactionsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <div className="overflow-x-auto">`n          <table className="min-w-[600px] w-full text-sm">
             <thead><tr className="border-b border-[#1a1725] text-left text-gray-400"><th className="pb-3 pr-4 font-medium">Type</th><th className="pb-3 pr-4 font-medium">Amount</th><th className="pb-3 pr-4 font-medium">Reference</th><th className="pb-3 pr-4 font-medium">Date</th></tr></thead>
             <tbody>
               {items.map((i) => (
@@ -39,10 +40,11 @@ export default function TransactionsPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table>`n        </div>`n        </div>
         </CardContent>
       </Card>
     </div>
   )
 }
+
 

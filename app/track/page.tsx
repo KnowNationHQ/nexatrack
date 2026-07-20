@@ -83,7 +83,7 @@ export default function TrackPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0715] p-4 md:p-8">
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto w-full max-w-2xl px-4">
         <div className="mb-8 flex items-center gap-3">
           <Package className="h-8 w-8 text-[#FF3E41]" />
           <div>
@@ -125,7 +125,7 @@ export default function TrackPage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <p className="text-sm text-gray-400">From</p>
                     <p className="text-white">{shipment.origin_city || "—"}</p>

@@ -125,7 +125,7 @@ export default function MerchantShipmentDetail() {
               </Badge>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-3">
                   <h3 className="flex items-center gap-2 text-sm font-medium text-gray-400"><User size={14} /> Sender</h3>
                   <p className="text-white">{shipment.sender_name}</p>

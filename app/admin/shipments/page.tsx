@@ -62,7 +62,8 @@ export default function ShipmentsPage() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+          <div className="overflow-x-auto">`n          <table className="min-w-[600px] w-full text-sm">
               <thead>
                 <tr className="border-b border-[#1a1725] text-left text-gray-400">
                   <th className="pb-3 pr-4 font-medium">Tracking #</th>
@@ -97,10 +98,11 @@ export default function ShipmentsPage() {
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </table>`n        </div>`n        </div>
           </div>
         </CardContent>
       </Card>
     </div>
   )
 }
+

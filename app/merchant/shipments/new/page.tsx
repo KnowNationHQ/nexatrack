@@ -65,17 +65,17 @@ export default function NewShipment() {
         <CardHeader><CardTitle className="text-white">Shipment Details</CardTitle></CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div><label className="mb-1 block text-sm text-gray-400">Sender Name</label><Input value={form.sender_name} onChange={set("sender_name")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
               <div><label className="mb-1 block text-sm text-gray-400">Sender Phone</label><Input value={form.sender_phone} onChange={set("sender_phone")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
             </div>
             <div><label className="mb-1 block text-sm text-gray-400">Sender Address</label><Input value={form.sender_address} onChange={set("sender_address")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div><label className="mb-1 block text-sm text-gray-400">Receiver Name</label><Input value={form.receiver_name} onChange={set("receiver_name")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
               <div><label className="mb-1 block text-sm text-gray-400">Receiver Phone</label><Input value={form.receiver_phone} onChange={set("receiver_phone")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
             </div>
             <div><label className="mb-1 block text-sm text-gray-400">Receiver Address</label><Input value={form.receiver_address} onChange={set("receiver_address")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div><label className="mb-1 block text-sm text-gray-400">Origin City</label><Input value={form.origin_city} onChange={set("origin_city")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
               <div><label className="mb-1 block text-sm text-gray-400">Destination City</label><Input value={form.destination_city} onChange={set("destination_city")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
             </div>

@@ -27,7 +27,8 @@ export default function InTransitPage() {
       <Card className="border-[#1a1725] bg-[#0a0715]">
         <CardHeader><div className="flex items-center gap-2"><Search size={16} className="text-gray-400" /><Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="border-[#1a1725] bg-[#1a1725] text-white" /></div></CardHeader>
         <CardContent>
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <div className="overflow-x-auto">`n          <table className="min-w-[600px] w-full text-sm">
             <thead><tr className="border-b border-[#1a1725] text-left text-gray-400"><th className="pb-3 pr-4 font-medium">Tracking #</th><th className="pb-3 pr-4 font-medium">Sender</th><th className="pb-3 pr-4 font-medium">Receiver</th><th className="pb-3 pr-4 font-medium">Status</th><th className="pb-3 pr-4 font-medium">Date</th></tr></thead>
             <tbody>
               {filtered.map((s) => (
@@ -41,10 +42,11 @@ export default function InTransitPage() {
               ))}
               {filtered.length === 0 && <tr><td colSpan={5} className="pt-4 text-center text-gray-500">No shipments in transit</td></tr>}
             </tbody>
-          </table>
+          </table>`n        </div>`n        </div>
         </CardContent>
       </Card>
     </div>
   )
 }
+
 

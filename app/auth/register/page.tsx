@@ -52,7 +52,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0715]">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md mx-auto px-4">
         <CardHeader>
           <CardTitle className="text-center text-2xl">
             Nexatrack <span className="text-[#FF3E41]">Register</span>

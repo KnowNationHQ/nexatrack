@@ -30,7 +30,8 @@ export default function PricingPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <div className="overflow-x-auto">`n          <table className="min-w-[600px] w-full text-sm">
             <thead><tr className="border-b border-[#1a1725] text-left text-gray-400"><th className="pb-3 pr-4 font-medium">Category</th><th className="pb-3 pr-4 font-medium">Weight</th><th className="pb-3 pr-4 font-medium">Same Day</th><th className="pb-3 pr-4 font-medium">Next Day</th><th className="pb-3 pr-4 font-medium">Sub City</th><th className="pb-3 pr-4 font-medium">Outside City</th></tr></thead>
             <tbody>
               {items.filter((i) => !search || i.delivery_categories?.name?.toLowerCase().includes(search.toLowerCase())).map((i) => (
@@ -44,9 +45,10 @@ export default function PricingPage() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table>`n        </div>`n        </div>
         </CardContent>
       </Card>
     </div>
   )
 }
+

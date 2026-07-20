@@ -24,7 +24,8 @@ export default function MerchantInvoices() {
       <h1 className="mb-6 text-2xl font-bold text-white">My Invoices</h1>
       <Card className="border-[#1a1725] bg-[#0a0715]">
         <CardContent className="pt-6">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <div className="overflow-x-auto">`n          <table className="min-w-[600px] w-full text-sm">
             <thead><tr className="border-b border-[#1a1725] text-left text-gray-400"><th className="pb-3 pr-4 font-medium">Invoice #</th><th className="pb-3 pr-4 font-medium">Total</th><th className="pb-3 pr-4 font-medium">Status</th><th className="pb-3 pr-4 font-medium">Date</th></tr></thead>
             <tbody>
               {items.map((i) => (
@@ -36,10 +37,11 @@ export default function MerchantInvoices() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table>`n        </div>`n        </div>
         </CardContent>
       </Card>
     </div>
   )
 }
+
 

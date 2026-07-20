@@ -40,7 +40,7 @@ export default function MerchantDashboard() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold text-white">Merchant Dashboard</h1>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => {
           const Icon = c.icon
           return (
