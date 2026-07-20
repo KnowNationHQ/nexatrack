@@ -204,7 +204,7 @@
                 <div class="col-lg-3 col-md-6">
                     <h4 class="text-light mb-4">Newsletter</h4>
                     <p>Stay informed about our latest services and promotions.</p>
-                    <form action="https://formspree.io/f/meoebapa" method="POST" class="position-relative mx-auto" style="max-width: 400px;">
+                    <form id="newsletter-form" class="position-relative mx-auto" style="max-width: 400px;">
                         <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="email" name="email" placeholder="Your email" required>
                         <button type="submit" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
                     </form>
@@ -239,7 +239,27 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 <script src="chat-widget.js?v=2"></script>
-
+<script>
+(function() {
+  var el = document.getElementById('newsletter-form');
+  if (!el) return;
+  el.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var fd = new FormData(this);
+    var data = { type: 'newsletter', data: {} };
+    fd.forEach(function(v, k) { data.data[k] = v; });
+    fetch('https://ujcokrzjvjdrcrdhcnjy.supabase.co/functions/v1/shipments-api?action=submit-form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function(r) { return r.json(); }).then(function() {
+      this.innerHTML = '<div class="alert alert-success">Thank you! We\'ll get back to you shortly.</div>';
+    }.bind(this)).catch(function() {
+      alert('Submission failed. Please call us at ' + (typeof NXT_PHONE !== 'undefined' ? NXT_PHONE : '+1 (506) 501-4402') + '.');
+    });
+  });
+})();
+</script>
 </body>
 
 </html>
