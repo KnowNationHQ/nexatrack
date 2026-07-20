@@ -1,15 +1,17 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
 import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import QRCode from "qrcode"
+import { useToast } from "@/components/hooks/use-toast"
 import {
   ArrowLeft, Package, MapPin, User, Phone, Map, Weight, CreditCard,
-  Clock, Share2, Copy, Check, QrCode, FileText, ChevronDown,
+  Clock, Share2, Copy, Check, QrCode, FileText,
 } from "lucide-react"
 
 const ALL_STATUSES = [
@@ -39,7 +41,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 const PROGRESS_STATUSES = ALL_STATUSES.filter(s => s !== "cancelled")
 
-export default function MerchantShipmentDetail() {
+export default function AdminShipmentDetail() {
   const { id } = useParams<{ id: string }>()
   const [shipment, setShipment] = useState<any>(null)
   const [events, setEvents] = useState<any[]>([])
@@ -47,14 +49,18 @@ export default function MerchantShipmentDetail() {
   const [category, setCategory] = useState<string>("")
   const [copied, setCopied] = useState(false)
   const [qrDataUrl, setQrDataUrl] = useState<string>("")
-  const qrRef = useRef<HTMLCanvasElement>(null)
+  const [newStatus, setNewStatus] = useState("")
+  const [newLocation, setNewLocation] = useState("")
+  const [updating, setUpdating] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+  const { toast } = useToast()
 
   useEffect(() => {
     supabase.from("parcels").select("*").eq("id", id).single().then(async ({ data }) => {
       if (!data) return
       setShipment(data)
+      setNewStatus(data.status)
 
       const [typeRes, catRes] = await Promise.all([
         data.delivery_type_id ? supabase.from("delivery_types").select("name").eq("id", data.delivery_type_id).single() : Promise.resolve({ data: null }),
@@ -77,9 +83,8 @@ export default function MerchantShipmentDetail() {
   const trackingUrl = shipment ? `https://nexatrackcourierservices.com/track?number=${shipment.tracking_number}` : ""
 
   const share = async () => {
-    const text = `Track your shipment ${shipment.tracking_number}: ${trackingUrl}`
     if (navigator.share) {
-      await navigator.share({ title: "Nexatrack Shipment", text, url: trackingUrl })
+      await navigator.share({ title: "Nexatrack Shipment", text: `Track ${shipment.tracking_number}: ${trackingUrl}`, url: trackingUrl })
     } else {
       await navigator.clipboard.writeText(trackingUrl)
       setCopied(true)
@@ -91,6 +96,29 @@ export default function MerchantShipmentDetail() {
     await navigator.clipboard.writeText(trackingUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const updateStatus = async () => {
+    if (!newStatus || newStatus === shipment.status) return
+    setUpdating(true)
+    try {
+      const res = await fetch("/api/update-shipment-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ parcelId: id, status: newStatus, location: newLocation || undefined }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      toast({ title: "Status updated", description: `Changed to ${STATUS_LABELS[newStatus]}` })
+      const { data: updated } = await supabase.from("parcels").select("*").eq("id", id).single()
+      if (updated) setShipment(updated)
+      const { data: updatedEvents } = await supabase.from("tracking_events").select("*").eq("shipment_id", id).order("event_time", { ascending: false })
+      if (updatedEvents) setEvents(updatedEvents)
+      setNewLocation("")
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" })
+    }
+    setUpdating(false)
   }
 
   if (!shipment) return <p className="text-gray-500">Loading...</p>
@@ -107,8 +135,8 @@ export default function MerchantShipmentDetail() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" onClick={() => router.push("/merchant/shipments")} className="text-gray-400 hover:text-white">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back
+        <Button variant="ghost" onClick={() => router.push("/admin/shipments")} className="text-gray-400 hover:text-white">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Shipments
         </Button>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={share} className="border-[#1a1725] text-gray-400 hover:text-white">
@@ -179,6 +207,34 @@ export default function MerchantShipmentDetail() {
                   </div>
                 </div>
               )}
+
+              <div className="space-y-3 rounded-lg border border-[#1a1725] p-4">
+                <h3 className="text-sm font-medium text-gray-400">Update Status</h3>
+                <div className="flex flex-wrap gap-2">
+                  <select
+                    value={newStatus}
+                    onChange={(e) => setNewStatus(e.target.value)}
+                    className="flex-1 rounded-md border border-[#1a1725] bg-[#1a1725] px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#FF3E41]"
+                  >
+                    {ALL_STATUSES.map(s => (
+                      <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+                    ))}
+                  </select>
+                  <Input
+                    placeholder="Location (optional)"
+                    value={newLocation}
+                    onChange={(e) => setNewLocation(e.target.value)}
+                    className="w-full border-[#1a1725] bg-[#1a1725] text-white md:w-48"
+                  />
+                </div>
+                <Button
+                  onClick={updateStatus}
+                  disabled={updating || newStatus === shipment.status}
+                  className="w-full bg-[#FF3E41] hover:bg-[#d92e31]"
+                >
+                  {updating ? "Updating..." : "Update Status"}
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -227,7 +283,7 @@ export default function MerchantShipmentDetail() {
               {qrDataUrl ? (
                 <img src={qrDataUrl} alt="QR Code" className="h-40 w-40 rounded-lg" />
               ) : (
-                <canvas ref={qrRef} className="h-40 w-40 rounded-lg" />
+                <div className="h-40 w-40 rounded-lg bg-[#1a1725]" />
               )}
               <p className="text-xs text-gray-500 text-center">Scan to track this shipment</p>
               <Button variant="outline" size="sm" onClick={copyLink} className="w-full border-[#1a1725] text-gray-400 hover:text-white">
@@ -241,7 +297,7 @@ export default function MerchantShipmentDetail() {
             <CardHeader><CardTitle className="flex items-center gap-2 text-white"><Package size={16} /> Progress</CardTitle></CardHeader>
             <CardContent>
               <div className="space-y-1">
-                {PROGRESS_STATUSES.map((s, i) => {
+                {PROGRESS_STATUSES.map((s) => {
                   const statusIdx = ALL_STATUSES.indexOf(s)
                   const isComplete = currentIdx >= statusIdx && shipment.status !== "cancelled"
                   const isCurrent = s === shipment.status

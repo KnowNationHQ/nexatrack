@@ -6,7 +6,31 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Search, Package } from "lucide-react"
+import Link from "next/link"
+import { Search, Package, MapPin, Share2, Copy, Check, ChevronRight, Shield, Truck } from "lucide-react"
+
+const ALL_STATUSES = [
+  "pending", "pickup_assign", "picked_up", "received_warehouse",
+  "delivery_man_assign", "in_transit", "out_for_delivery",
+  "partial_delivered", "delivered",
+]
+
+const STATUS_LABELS: Record<string, string> = {
+  pending: "Pending", pickup_assign: "Pickup Assigned", picked_up: "Picked Up",
+  received_warehouse: "At Warehouse", delivery_man_assign: "Driver Assigned",
+  in_transit: "In Transit", out_for_delivery: "Out for Delivery",
+  partial_delivered: "Partially Delivered", delivered: "Delivered",
+  cancelled: "Cancelled",
+}
+
+const statusColors: Record<string, string> = {
+  pending: "bg-yellow-900/50 text-yellow-400",
+  picked_up: "bg-purple-900/50 text-purple-400",
+  in_transit: "bg-blue-900/50 text-blue-400",
+  delivered: "bg-green-900/50 text-green-400",
+  returned: "bg-red-900/50 text-red-400",
+  cancelled: "bg-gray-900/50 text-gray-400",
+}
 
 export default function TrackPage() {
   const [tracking, setTracking] = useState("")
@@ -14,6 +38,7 @@ export default function TrackPage() {
   const [events, setEvents] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [copied, setCopied] = useState(false)
   const supabase = createClient()
 
   const handleTrack = async (e: React.FormEvent) => {
@@ -40,27 +65,39 @@ export default function TrackPage() {
     const { data: trackingEvents } = await supabase
       .from("tracking_events")
       .select("*")
-      .eq("parcel_id", parcel.id)
-      .order("created_at", { ascending: false })
+      .eq("shipment_id", parcel.id)
+      .order("event_time", { ascending: false })
     if (trackingEvents) setEvents(trackingEvents)
     setLoading(false)
   }
 
-  const statusColors: Record<string, string> = {
-    pending: "bg-yellow-900/50 text-yellow-400",
-    picked_up: "bg-purple-900/50 text-purple-400",
-    in_transit: "bg-blue-900/50 text-blue-400",
-    delivered: "bg-green-900/50 text-green-400",
-    returned: "bg-red-900/50 text-red-400",
-    cancelled: "bg-gray-900/50 text-gray-400",
+  const trackingUrl = shipment ? `https://nexatrackcourierservices.com/track?number=${shipment.tracking_number}` : ""
+
+  const copyLink = async () => {
+    await navigator.clipboard.writeText(trackingUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
+
+  const shareWhatsApp = () => {
+    window.open(`https://wa.me/?text=${encodeURIComponent(`Track my shipment ${shipment.tracking_number}: ${trackingUrl}`)}`, "_blank")
+  }
+
+  const shareSMS = () => {
+    window.open(`sms:?body=${encodeURIComponent(`Track my shipment ${shipment.tracking_number}: ${trackingUrl}`)}`, "_blank")
+  }
+
+  const currentIdx = shipment ? ALL_STATUSES.indexOf(shipment.status) : -1
 
   return (
     <div className="min-h-screen bg-[#0a0715] p-4 md:p-8">
       <div className="mx-auto max-w-2xl">
         <div className="mb-8 flex items-center gap-3">
           <Package className="h-8 w-8 text-[#FF3E41]" />
-          <h1 className="text-3xl font-bold text-white">Track Your Shipment</h1>
+          <div>
+            <h1 className="text-3xl font-bold text-white">Track Your Shipment</h1>
+            <p className="text-sm text-gray-500">Enter your tracking number to see real-time updates</p>
+          </div>
         </div>
 
         <Card className="mb-6 border-[#1a1725] bg-[#0a0715]">
@@ -85,41 +122,77 @@ export default function TrackPage() {
           <>
             <Card className="mb-4 border-[#1a1725] bg-[#0a0715]">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-white">Shipment Status</CardTitle>
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div>
+                    <CardTitle className="text-white">Shipment Status</CardTitle>
+                    <p className="font-mono text-xs text-gray-500">{shipment.tracking_number}</p>
+                  </div>
                   <Badge variant="outline" className={statusColors[shipment.status] || ""}>
-                    {shipment.status?.replace(/_/g, " ")}
+                    {STATUS_LABELS[shipment.status] || shipment.status?.replace(/_/g, " ")}
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <p className="text-sm text-gray-400">Tracking Number</p>
-                  <p className="font-mono text-white">{shipment.tracking_number}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">From</p>
-                  <p className="text-white">{shipment.origin_city || "—"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">To</p>
-                  <p className="text-white">{shipment.destination_city || "—"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-400">Weight</p>
-                  <p className="text-white">{shipment.weight} kg</p>
-                </div>
-                {shipment.receiver_name && (
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <p className="text-sm text-gray-400">Receiver</p>
-                    <p className="text-white">{shipment.receiver_name}</p>
+                    <p className="text-sm text-gray-400">From</p>
+                    <p className="text-white">{shipment.origin_city || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">To</p>
+                    <p className="text-white">{shipment.destination_city || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">Weight</p>
+                    <p className="text-white">{shipment.weight} kg</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">Status</p>
+                    <p className="text-white capitalize">{shipment.status?.replace(/_/g, " ")}</p>
+                  </div>
+                </div>
+
+                {shipment.status !== "cancelled" && (
+                  <div className="space-y-2">
+                    <p className="text-xs text-gray-500">Progress</p>
+                    <div className="flex items-center gap-1 overflow-x-auto pb-1">
+                      {ALL_STATUSES.map((s, i) => {
+                        const isComplete = currentIdx > i || (currentIdx === i && s === shipment.status)
+                        const isCurrent = s === shipment.status
+                        return (
+                          <div key={s} className="flex items-center gap-1">
+                            <div className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium whitespace-nowrap ${
+                              isCurrent ? "bg-[#FF3E41] text-white" : isComplete ? "bg-green-900/50 text-green-300" : "bg-[#1a1725] text-gray-600"
+                            }`}>
+                              {STATUS_LABELS[s]}
+                            </div>
+                            {i < ALL_STATUSES.length - 1 && (
+                              <ChevronRight size={12} className={`shrink-0 ${isComplete && i < ALL_STATUSES.length - 1 ? "text-green-500" : "text-[#1a1725]"}`} />
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div>
                 )}
+
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <Button variant="outline" size="sm" onClick={shareWhatsApp} className="border-[#1a1725] text-gray-400 hover:text-white">
+                    <Share2 size={14} className="mr-1" /> WhatsApp
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={shareSMS} className="border-[#1a1725] text-gray-400 hover:text-white">
+                    <Share2 size={14} className="mr-1" /> SMS
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={copyLink} className="border-[#1a1725] text-gray-400 hover:text-white">
+                    {copied ? <Check size={14} className="mr-1 text-green-400" /> : <Copy size={14} className="mr-1" />}
+                    {copied ? "Copied" : "Copy Link"}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
             {events.length > 0 && (
-              <Card className="border-[#1a1725] bg-[#0a0715]">
+              <Card className="mb-4 border-[#1a1725] bg-[#0a0715]">
                 <CardHeader><CardTitle className="text-white">Tracking History</CardTitle></CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -130,10 +203,10 @@ export default function TrackPage() {
                           {i < events.length - 1 && <div className="w-0.5 flex-1 bg-[#1a1725]" />}
                         </div>
                         <div className="pb-4">
-                          <p className="font-medium text-white capitalize">{e.status?.replace(/_/g, " ") || "Update"}</p>
-                          {e.location && <p className="text-sm text-gray-400">{e.location}</p>}
+                          <p className="font-medium text-white">{e.title}</p>
+                          {e.location && <p className="flex items-center gap-1 text-sm text-gray-400"><MapPin size={12} />{e.location}</p>}
                           {e.description && <p className="text-sm text-gray-400">{e.description}</p>}
-                          <p className="text-xs text-gray-500">{e.created_at ? new Date(e.created_at).toLocaleString() : ""}</p>
+                          <p className="text-xs text-gray-500">{e.event_time ? new Date(e.event_time).toLocaleString() : e.created_at ? new Date(e.created_at).toLocaleString() : ""}</p>
                         </div>
                       </div>
                     ))}
@@ -141,7 +214,30 @@ export default function TrackPage() {
                 </CardContent>
               </Card>
             )}
+
+            <div className="flex flex-wrap items-center justify-center gap-4 rounded-lg border border-[#1a1725] bg-[#0d0a18] p-4">
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <Truck size={16} className="text-[#FF3E41]" />
+                <span>1,000+ deliveries across Florida</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <Shield size={16} className="text-green-400" />
+                <span>Real-time tracking</span>
+              </div>
+              <Link href="/auth/register" className="text-sm text-[#FF3E41] hover:underline">
+                Ship with us →
+              </Link>
+            </div>
           </>
+        )}
+
+        {!shipment && !loading && tracking && (
+          <div className="flex flex-wrap items-center justify-center gap-4 rounded-lg border border-[#1a1725] bg-[#0d0a18] p-4">
+            <p className="text-sm text-gray-400">Need to send a package?</p>
+            <Link href="/auth/register" className="text-sm font-medium text-[#FF3E41] hover:underline">
+              Sign up free → Nexatrack
+            </Link>
+          </div>
         )}
       </div>
     </div>

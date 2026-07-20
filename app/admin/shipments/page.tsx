@@ -87,7 +87,7 @@ export default function ShipmentsPage() {
                   <tr><td colSpan={6} className="pt-4 text-center text-gray-500">No shipments found</td></tr>
                 )}
                 {filtered.map((s) => (
-                  <tr key={s.id} className="border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50">
+                  <tr key={s.id} className="cursor-pointer border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50" onClick={() => window.location.href = `/admin/shipments/${s.id}`}>
                     <td className="py-3 pr-4 font-mono text-xs">{s.tracking_number || "—"}</td>
                     <td className="py-3 pr-4">{s.sender_name || "—"}</td>
                     <td className="py-3 pr-4">{s.receiver_name || "—"}</td>
