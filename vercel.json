@@ -1,4 +1,7 @@
 {
+  "builds": [
+    { "src": "package.json", "use": "@vercel/next" }
+  ],
   "rewrites": [
     { "source": "/about", "destination": "/about.html" },
     { "source": "/contact", "destination": "/contact.html" },
