@@ -1,0 +1,107 @@
+"use client"
+
+import { useState } from "react"
+import { createClient } from "@/lib/supabase-browser"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+export default function RegisterPage() {
+  const [name, setname] = useState("")
+  const [email, setEmail] = useState("")
+  const [phone, setPhone] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const supabase = createClient()
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("")
+    setLoading(true)
+
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name, phone } },
+    })
+
+    if (signUpError) {
+      setError(signUpError.message)
+      setLoading(false)
+      return
+    }
+
+    if (data.user) {
+      await supabase.from("profiles").insert({
+        id: data.user.id,
+        email,
+        name,
+        phone,
+        role: "merchant",
+      })
+    }
+
+    router.push("/auth/login?registered=true")
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0715]">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-center text-2xl">
+            Nexatrack <span className="text-[#FF3E41]">Register</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleRegister} className="space-y-4">
+            <Input
+              placeholder="Business Name"
+              value={name}
+              onChange={(e) => setname(e.target.value)}
+              required
+            />
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <Input
+              type="tel"
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <Button
+              type="submit"
+              className="w-full bg-[#FF3E41] hover:bg-[#d92e31]"
+              disabled={loading}
+            >
+              {loading ? "Creating account..." : "Create Account"}
+            </Button>
+          </form>
+          <p className="text-center text-sm text-muted-foreground mt-4">
+            Already have an account?{" "}
+            <Link href="/auth/login" className="text-[#FF3E41] hover:underline">
+              Sign In
+            </Link>
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
