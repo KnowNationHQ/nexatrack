@@ -35,11 +35,11 @@ export default function RegisterPage() {
     }
 
     if (data.user) {
-      await supabase.rpc("register_user", {
-        p_id: data.user.id,
-        p_email: email,
-        p_full_name: full_name,
-        p_role: "merchant",
+      await supabase.from("profiles").insert({
+        id: data.user.id,
+        email,
+        name: full_name,
+        role: "merchant",
       })
     }
 
