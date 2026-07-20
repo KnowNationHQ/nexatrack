@@ -216,7 +216,7 @@
     fd.forEach(function(v, k) { data.data[k] = v; });
     fetch('https://ujcokrzjvjdrcrdhcnjy.supabase.co/functions/v1/shipments-api?action=submit-form', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + NXT_SB_KEY },
       body: JSON.stringify(data)
     }).then(function(r) { return r.json(); }).then(function() {
       this.innerHTML = '<div class="alert alert-success">Thank you! We\'ll get back to you shortly.</div>';

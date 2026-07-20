@@ -66,7 +66,7 @@
         var url = FN_URL + '?action=' + action;
         if (action === 'get') url += '&tracking=' + encodeURIComponent($('#trackingInput').val().trim().toUpperCase());
         fetch(url, {
-            headers: { 'apikey': SB_KEY }
+            headers: { 'Authorization': 'Bearer ' + SB_KEY }
         }).then(function (r) { r.json().then(function (d) { cb(d) }) });
     }
 
