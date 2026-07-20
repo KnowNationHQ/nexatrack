@@ -14,7 +14,7 @@ export default function DriverDashboard() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      db<{ data: any[] }>("parcels", "select", { eq: { driver_id: user.id }, order: { column: "created_at", ascending: false } }).then(({ data }) => {
+      db<any[]>("parcels", "select", { eq: { driver_id: user.id }, order: { column: "created_at", ascending: false } }).then((data) => {
         if (data) setShipments(data)
       })
     })

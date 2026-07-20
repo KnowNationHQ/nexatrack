@@ -12,7 +12,7 @@ export default function TicketsPage() {
   const [search, setSearch] = useState("")
 
   useEffect(() => {
-    db<{ data: any[] }>("support_tickets", "select", { columns: "*, profiles:user_id(full_name, email)", order: { column: "created_at", ascending: false } }).then(({ data }) => {
+    db<any[]>("support_tickets", "select", { columns: "*, profiles:user_id(full_name, email)", order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setItems(data)
     })
   }, [])
