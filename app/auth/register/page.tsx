@@ -35,11 +35,15 @@ export default function RegisterPage() {
     }
 
     if (data.user) {
-      await supabase.from("profiles").insert({
-        id: data.user.id,
-        email,
-        name: full_name,
-        role: "merchant",
+      await fetch("/api/create-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: data.user.id,
+          email: data.user.email || email,
+          name: full_name,
+          role: "merchant",
+        }),
       })
     }
 
