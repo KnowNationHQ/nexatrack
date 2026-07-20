@@ -42,7 +42,7 @@ export default function MerchantShipments() {
             <thead><tr className="border-b border-[#1a1725] text-left text-gray-400"><th className="pb-3 pr-4 font-medium">Tracking</th><th className="pb-3 pr-4 font-medium">Receiver</th><th className="pb-3 pr-4 font-medium">Destination</th><th className="pb-3 pr-4 font-medium">Status</th><th className="pb-3 pr-4 font-medium">Charge</th><th className="pb-3 pr-4 font-medium">Date</th></tr></thead>
             <tbody>
               {filtered.map((s) => (
-                <tr key={s.id} className="border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50">
+                <tr key={s.id} className="cursor-pointer border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50" onClick={() => window.location.href = `/merchant/shipments/${s.id}`}>
                   <td className="py-3 pr-4 font-mono text-xs">{s.tracking_number || "—"}</td>
                   <td className="py-3 pr-4">{s.receiver_name || "—"}</td>
                   <td className="py-3 pr-4 text-gray-400">{s.destination_city || "—"}</td>
