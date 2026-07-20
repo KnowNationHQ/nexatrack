@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,19 +21,13 @@ export default function ShipmentsPage() {
   const [shipments, setShipments] = useState<any[]>([])
   const [search, setSearch] = useState("")
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
-
   useEffect(() => {
     loadShipments()
   }, [])
 
   async function loadShipments() {
     setLoading(true)
-    const { data } = await supabase
-      .from("parcels")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(50)
+    const data = await db("parcels", "select", { order: { column: "created_at", ascending: false }, limit: 50 })
     if (data) setShipments(data)
     setLoading(false)
   }

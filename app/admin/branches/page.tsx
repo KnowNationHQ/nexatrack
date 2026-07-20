@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -11,10 +11,8 @@ import { Search, Plus } from "lucide-react"
 export default function BranchesPage() {
   const [branches, setBranches] = useState<any[]>([])
   const [search, setSearch] = useState("")
-  const supabase = createClient()
-
   useEffect(() => {
-    supabase.from("branches").select("*").order("created_at", { ascending: false }).then(({ data }) => {
+    db("branches", "select", { order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setBranches(data)
     })
   }, [])

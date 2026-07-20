@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -28,30 +29,31 @@ export default function NewShipment() {
 
     const tracking = "NXT-" + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase()
 
-    const { error } = await supabase.from("parcels").insert({
-      merchant_id: user.id,
-      tracking_number: tracking,
-      sender_name: form.sender_name,
-      sender_phone: form.sender_phone,
-      sender_address: form.sender_address,
-      receiver_name: form.receiver_name,
-      receiver_phone: form.receiver_phone,
-      receiver_address: form.receiver_address,
-      origin_city: form.origin_city,
-      destination_city: form.destination_city,
-      weight: Number(form.weight) || 0,
-      category_id: form.category_id || null,
-      delivery_type_id: form.delivery_type_id || null,
-      status: "pending",
-    })
-
-    setLoading(false)
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" })
-    } else {
+    try {
+      await db("parcels", "insert", {
+        data: {
+          merchant_id: user.id,
+          tracking_number: tracking,
+          sender_name: form.sender_name,
+          sender_phone: form.sender_phone,
+          sender_address: form.sender_address,
+          receiver_name: form.receiver_name,
+          receiver_phone: form.receiver_phone,
+          receiver_address: form.receiver_address,
+          origin_city: form.origin_city,
+          destination_city: form.destination_city,
+          weight: Number(form.weight) || 0,
+          category_id: form.category_id || null,
+          delivery_type_id: form.delivery_type_id || null,
+          status: "pending",
+        }
+      })
       toast({ title: "Shipment created", description: `Tracking: ${tracking}` })
       router.push("/merchant/shipments")
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" })
     }
+    setLoading(false)
   }
 
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => setForm((f) => ({ ...f, [field]: e.target.value }))

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -15,7 +16,7 @@ export default function MerchantShipments() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      supabase.from("parcels").select("*").eq("merchant_id", user.id).order("created_at", { ascending: false }).limit(50).then(({ data }) => {
+      db("parcels", "select", { eq: { merchant_id: user.id }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
         if (data) setShipments(data)
       })
     })

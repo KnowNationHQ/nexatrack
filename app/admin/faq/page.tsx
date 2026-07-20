@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -10,10 +10,8 @@ import { Search, Plus } from "lucide-react"
 export default function FAQPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
-  const supabase = createClient()
-
   useEffect(() => {
-    supabase.from("faqs").select("*").order("sort_order", { ascending: true }).then(({ data }) => {
+    db("faqs", "select", { order: { column: "sort_order", ascending: true } }).then((data) => {
       if (data) setItems(data)
     })
   }, [])

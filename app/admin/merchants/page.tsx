@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -10,15 +10,10 @@ import { Search } from "lucide-react"
 export default function MerchantsPage() {
   const [merchants, setMerchants] = useState<any[]>([])
   const [search, setSearch] = useState("")
-  const supabase = createClient()
-
   useEffect(() => {
-    supabase
-      .from("profiles")
-      .select("*")
-      .eq("role", "merchant")
-      .order("created_at", { ascending: false })
-      .then(({ data }) => { if (data) setMerchants(data) })
+    db("profiles", "select", { eq: { role: "merchant" }, order: { column: "created_at", ascending: false } }).then((data) => {
+      if (data) setMerchants(data)
+    })
   }, [])
 
   const filtered = merchants.filter((m) =>

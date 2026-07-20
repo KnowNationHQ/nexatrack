@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,10 +17,14 @@ export default function ShipmentDetail() {
   const { toast } = useToast()
 
   useEffect(() => {
-    supabase.from("parcels").select("*").eq("id", id).single().then(({ data }) => {
-      if (data) setShipment(data)
+    db("parcels", "select", { eq: { id }, single: true }).then((data) => {
+      if (data) { setShipment(data); checkAssigned(data) }
     })
   }, [id])
+
+  function checkAssigned(shipment: any) {
+    supabase.auth.getUser().then(({ data }) => setIsAssignedToMe(shipment.driver_id === data.user?.id))
+  }
 
   const updateStatus = async (status: string) => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -30,18 +35,19 @@ export default function ShipmentDetail() {
       updates.driver_id = user.id
     }
 
-    const { error } = await supabase.from("parcels").update(updates).eq("id", id)
-    if (error) { toast({ title: "Error", variant: "destructive" }) }
-    else {
+    try {
+      await db("parcels", "update", { data: updates, eq: { id } })
       toast({ title: `Status updated to ${status.replace(/_/g, " ")}` })
-      const { data } = await supabase.from("parcels").select("*").eq("id", id).single()
+      const data = await db("parcels", "select", { eq: { id }, single: true })
       if (data) setShipment(data)
+    } catch (e: any) {
+      toast({ title: "Error", variant: "destructive" })
     }
   }
 
-  if (!shipment) return <p className="text-gray-500">Loading...</p>
+  const [isAssignedToMe, setIsAssignedToMe] = useState(false)
 
-  const isAssignedToMe = shipment.driver_id === (async () => { const { data } = await supabase.auth.getUser(); return data.user?.id })()
+  if (!shipment) return <p className="text-gray-500">Loading...</p>
   const statusActions: Record<string, string[]> = {
     pending: ["picked_up"],
     picked_up: ["in_transit"],

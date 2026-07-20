@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function WalletPage() {
@@ -11,7 +12,7 @@ export default function WalletPage() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      supabase.from("wallets").select("*").eq("merchant_id", user.id).single().then(({ data }) => {
+      db("wallets", "select", { eq: { merchant_id: user.id }, single: true }).then((data) => {
         if (data) setWallet(data)
       })
     })

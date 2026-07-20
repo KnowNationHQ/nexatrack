@@ -1,17 +1,16 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 export default function AllJobsPage() {
   const [shipments, setShipments] = useState<any[]>([])
-  const supabase = createClient()
 
   useEffect(() => {
-    supabase.from("parcels").select("*").neq("status", "delivered").neq("status", "cancelled").order("created_at", { ascending: false }).then(({ data }) => {
+    db<{ data: any[] }>("parcels", "select", { neq: [{ col: "status", val: "delivered" }, { col: "status", val: "cancelled" }], order: { column: "created_at", ascending: false } }).then(({ data }) => {
       if (data) setShipments(data)
     })
   }, [])

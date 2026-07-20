@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
@@ -12,9 +13,9 @@ export default function MerchantTransactions() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      supabase.from("wallets").select("id").eq("merchant_id", user.id).single().then(({ data: wallet }) => {
+      db("wallets", "select", { columns: "id", eq: { merchant_id: user.id }, single: true }).then((wallet) => {
         if (!wallet) return
-        supabase.from("transactions").select("*").eq("wallet_id", wallet.id).order("created_at", { ascending: false }).limit(50).then(({ data }) => {
+        db("transactions", "select", { eq: { wallet_id: wallet.id }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
           if (data) setItems(data)
         })
       })

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -11,10 +11,8 @@ import { Search, Plus } from "lucide-react"
 export default function PendingShipmentsPage() {
   const [shipments, setShipments] = useState<any[]>([])
   const [search, setSearch] = useState("")
-  const supabase = createClient()
-
   useEffect(() => {
-    supabase.from("parcels").select("*").eq("status", "pending").order("created_at", { ascending: false }).limit(50).then(({ data }) => {
+    db("parcels", "select", { eq: { status: "pending" }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
       if (data) setShipments(data)
     })
   }, [])

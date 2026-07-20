@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -13,7 +14,7 @@ export default function DriverDashboard() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      supabase.from("parcels").select("*").eq("driver_id", user.id).order("created_at", { ascending: false }).then(({ data }) => {
+      db("parcels", "select", { eq: { driver_id: user.id }, order: { column: "created_at", ascending: false } }).then((data) => {
         if (data) setShipments(data)
       })
     })

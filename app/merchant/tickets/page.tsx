@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,7 +21,7 @@ export default function MerchantTickets() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      supabase.from("support_tickets").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).then(({ data }) => {
+      db("support_tickets", "select", { eq: { user_id: user.id }, order: { column: "created_at", ascending: false } }).then((data) => {
         if (data) setTickets(data)
       })
     })
@@ -31,15 +32,16 @@ export default function MerchantTickets() {
     setLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    const { error } = await supabase.from("support_tickets").insert({ user_id: user.id, subject, status: "open" })
-    setLoading(false)
-    if (error) { toast({ title: "Error", variant: "destructive" }) }
-    else {
+    try {
+      await db("support_tickets", "insert", { data: { user_id: user.id, subject, status: "open" } })
       toast({ title: "Ticket created" })
       setSubject(""); setMessage(""); setShowForm(false)
-      const { data } = await supabase.from("support_tickets").select("*").eq("user_id", user.id).order("created_at", { ascending: false })
+      const data = await db("support_tickets", "select", { eq: { user_id: user.id }, order: { column: "created_at", ascending: false } })
       if (data) setTickets(data)
+    } catch (e: any) {
+      toast({ title: "Error", variant: "destructive" })
     }
+    setLoading(false)
   }
 
   return (

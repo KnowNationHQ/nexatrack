@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
@@ -9,10 +9,8 @@ import { Search } from "lucide-react"
 export default function SubscribersPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
-  const supabase = createClient()
-
   useEffect(() => {
-    supabase.from("subscribers").select("*").order("created_at", { ascending: false }).then(({ data }) => {
+    db("subscribers", "select", { order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setItems(data)
     })
   }, [])

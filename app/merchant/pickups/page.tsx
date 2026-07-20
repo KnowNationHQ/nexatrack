@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,14 +21,17 @@ export default function PickupRequestPage() {
     setLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    const { error } = await supabase.from("pickup_requests").insert({
-      merchant_id: user.id, address: form.address, city: form.city,
-      preferred_date: form.preferred_date, preferred_time: form.preferred_time,
-      parcel_count: Number(form.parcel_count) || 1, notes: form.notes, status: "pending",
-    })
+    try {
+      await db("pickup_requests", "insert", {
+        data: { merchant_id: user.id, address: form.address, city: form.city,
+        preferred_date: form.preferred_date, preferred_time: form.preferred_time,
+        parcel_count: Number(form.parcel_count) || 1, notes: form.notes, status: "pending" }
+      })
+      toast({ title: "Pickup requested" }); router.push("/merchant")
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" })
+    }
     setLoading(false)
-    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }) }
-    else { toast({ title: "Pickup requested" }); router.push("/merchant") }
   }
 
   const set = (f: string) => (e: React.ChangeEvent<HTMLInputElement>) => setForm((p) => ({ ...p, [f]: e.target.value }))

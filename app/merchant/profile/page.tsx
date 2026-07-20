@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -16,7 +17,7 @@ export default function MerchantProfile() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      supabase.from("profiles").select("*").eq("id", user.id).single().then(({ data }) => {
+      db("profiles", "select", { eq: { id: user.id }, single: true }).then((data) => {
         if (data) setProfile(data)
       })
     })
@@ -26,7 +27,7 @@ export default function MerchantProfile() {
     setLoading(true)
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    await supabase.from("profiles").update({ full_name: profile.full_name }).eq("id", user.id)
+    await db("profiles", "update", { data: { full_name: profile.full_name }, eq: { id: user.id } })
     toast({ title: "Profile updated" })
     setLoading(false)
   }

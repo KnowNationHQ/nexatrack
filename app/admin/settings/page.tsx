@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,7 +10,6 @@ import { useToast } from "@/components/hooks/use-toast"
 export default function SettingsPage() {
   const [settings, setSettings] = useState<Record<string, Record<string, string>>>({})
   const [saving, setSaving] = useState(false)
-  const supabase = createClient()
   const { toast } = useToast()
 
   useEffect(() => {
@@ -18,7 +17,7 @@ export default function SettingsPage() {
   }, [])
 
   async function loadSettings() {
-    const { data } = await supabase.from("settings").select("*")
+    const data = await db("settings", "select")
     if (!data) return
     const grouped: Record<string, Record<string, string>> = {}
     data.forEach((s: any) => {
@@ -33,10 +32,7 @@ export default function SettingsPage() {
     setSaving(true)
     const entries = settings[category]
     for (const [name, value] of Object.entries(entries)) {
-      await supabase.from("settings").upsert(
-        { category, name, value: { value } },
-        { onConflict: "category,name" }
-      )
+      await db("settings", "upsert", { data: { category, name, value: { value } }, onConflict: "category,name" })
     }
     toast({ title: "Settings saved" })
     setSaving(false)

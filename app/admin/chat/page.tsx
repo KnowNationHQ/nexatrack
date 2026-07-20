@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react"
 import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -28,22 +29,14 @@ export default function ChatPage() {
   }, [messages])
 
   async function loadMessages() {
-    const { data } = await supabase
-      .from("livechat_messages")
-      .select("*")
-      .order("created_at", { ascending: true })
-      .limit(50)
+    const data = await db("livechat_messages", "select", { order: { column: "created_at", ascending: true }, limit: 50 })
     if (data) setMessages(data)
   }
 
   async function sendMessage() {
     if (!text.trim()) return
     const { data: { user } } = await supabase.auth.getUser()
-    await supabase.from("livechat_messages").insert({
-      sender_role: "admin",
-      sender_id: user?.id,
-      message: text,
-    })
+    await db("livechat_messages", "insert", { data: { sender_role: "admin", sender_id: user?.id, message: text } })
     setText("")
   }
 

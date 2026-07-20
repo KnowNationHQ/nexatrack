@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -10,10 +10,8 @@ import { Search } from "lucide-react"
 export default function PickupsPage() {
   const [pickups, setPickups] = useState<any[]>([])
   const [search, setSearch] = useState("")
-  const supabase = createClient()
-
   useEffect(() => {
-    supabase.from("pickup_requests").select("*").order("created_at", { ascending: false }).then(({ data }) => {
+    db("pickup_requests", "select", { order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setPickups(data)
     })
   }, [])

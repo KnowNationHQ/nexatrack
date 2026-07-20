@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Package, Truck, CheckCircle, DollarSign, Users, ClipboardList, AlertTriangle } from "lucide-react"
 
@@ -16,7 +16,6 @@ export default function AdminDashboard() {
     pendingPickups: 0,
     openTickets: 0,
   })
-  const supabase = createClient()
 
   useEffect(() => {
     async function loadStats() {
@@ -29,21 +28,18 @@ export default function AdminDashboard() {
         { count: pendingPickups },
         { count: openTickets },
       ] = await Promise.all([
-        supabase.from("parcels").select("*", { count: "exact", head: true }),
-        supabase.from("parcels").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("parcels").select("*", { count: "exact", head: true }).eq("status", "in_transit"),
-        supabase.from("parcels").select("*", { count: "exact", head: true }).eq("status", "delivered"),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "merchant"),
-        supabase.from("pickup_requests").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("support_tickets").select("*", { count: "exact", head: true }).neq("status", "closed"),
+        db("parcels", "select", { count: "exact", head: true }),
+        db("parcels", "select", { count: "exact", head: true, eq: { status: "pending" } }),
+        db("parcels", "select", { count: "exact", head: true, eq: { status: "in_transit" } }),
+        db("parcels", "select", { count: "exact", head: true, eq: { status: "delivered" } }),
+        db("profiles", "select", { count: "exact", head: true, eq: { role: "merchant" } }),
+        db("pickup_requests", "select", { count: "exact", head: true, eq: { status: "pending" } }),
+        db("support_tickets", "select", { count: "exact", head: true, neq: { status: "closed" } }),
       ])
 
-      const { data: revenueData } = await supabase
-        .from("transactions")
-        .select("amount")
-        .eq("type", "credit")
+      const { data: revenueData } = await db("transactions", "select", { columns: "amount", eq: { type: "credit" } })
 
-      const totalRevenue = (revenueData || []).reduce((sum, t) => sum + Number(t.amount), 0)
+      const totalRevenue = (revenueData || []).reduce((sum: number, t: any) => sum + Number(t.amount), 0)
 
       setStats({
         totalShipments: totalShipments || 0,

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
+import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -10,10 +10,9 @@ import { Search } from "lucide-react"
 export default function TicketsPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
-  const supabase = createClient()
 
   useEffect(() => {
-    supabase.from("support_tickets").select("*, profiles:user_id(full_name, email)").order("created_at", { ascending: false }).then(({ data }) => {
+    db<{ data: any[] }>("support_tickets", "select", { columns: "*, profiles:user_id(full_name, email)", order: { column: "created_at", ascending: false } }).then(({ data }) => {
       if (data) setItems(data)
     })
   }, [])
