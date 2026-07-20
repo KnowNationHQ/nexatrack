@@ -9,9 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function RegisterPage() {
-  const [name, setname] = useState("")
+  const [full_name, setFullName] = useState("")
   const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -26,7 +25,7 @@ export default function RegisterPage() {
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name, phone } },
+      options: { data: { full_name } },
     })
 
     if (signUpError) {
@@ -39,8 +38,7 @@ export default function RegisterPage() {
       await supabase.from("profiles").insert({
         id: data.user.id,
         email,
-        name,
-        phone,
+        full_name,
         role: "merchant",
       })
     }
@@ -60,8 +58,8 @@ export default function RegisterPage() {
           <form onSubmit={handleRegister} className="space-y-4">
             <Input
               placeholder="Business Name"
-              value={name}
-              onChange={(e) => setname(e.target.value)}
+              value={full_name}
+              onChange={(e) => setFullName(e.target.value)}
               required
             />
             <Input
@@ -69,13 +67,6 @@ export default function RegisterPage() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <Input
-              type="tel"
-              placeholder="Phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
               required
             />
             <Input

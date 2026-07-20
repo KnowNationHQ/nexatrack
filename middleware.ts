@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
     {
       cookies: {
         getAll: () => request.cookies.getAll(),
-          setAll: (cookies: { name: string; value: string }[]) => {
+        setAll: (cookies: { name: string; value: string }[]) => {
           cookies.forEach((c) => request.cookies.set(c.name, c.value))
         },
       },
@@ -23,15 +23,34 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname
 
-  const protectedPaths = ["/admin", "/merchant", "/driver"]
-  const isProtected = protectedPaths.some((p) => pathname.startsWith(p))
-
-  if (isProtected && !user) {
-    return NextResponse.redirect(new URL("/auth/login", request.url))
+  if (!user) {
+    if (pathname.startsWith("/admin") || pathname.startsWith("/merchant") || pathname.startsWith("/driver")) {
+      return NextResponse.redirect(new URL("/auth/login", request.url))
+    }
+    return supabaseResponse
   }
 
-  if (user && pathname.startsWith("/auth")) {
-    return NextResponse.redirect(new URL("/admin", request.url))
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single()
+
+  const role = profile?.role || "merchant"
+  const roleDashboards: Record<string, string> = {
+    admin: "/admin",
+    merchant: "/merchant",
+    driver: "/driver",
+  }
+  const dashboard = roleDashboards[role] || "/merchant"
+
+  if (pathname.startsWith("/auth")) {
+    return NextResponse.redirect(new URL(dashboard, request.url))
+  }
+
+  const allowedPrefix = `/${role}`
+  if (!pathname.startsWith(allowedPrefix)) {
+    return NextResponse.redirect(new URL(dashboard, request.url))
   }
 
   return supabaseResponse
