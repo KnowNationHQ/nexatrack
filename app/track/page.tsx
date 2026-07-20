@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { createClient } from "@/lib/supabase-browser"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -39,7 +38,6 @@ export default function TrackPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [copied, setCopied] = useState(false)
-  const supabase = createClient()
 
   const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,25 +47,19 @@ export default function TrackPage() {
     if (!tracking.trim()) return
 
     setLoading(true)
-    const { data: parcel } = await supabase
-      .from("parcels")
-      .select("*")
-      .ilike("tracking_number", tracking.trim())
-      .single()
-
-    if (!parcel) {
-      setError("No shipment found with that tracking number")
-      setLoading(false)
-      return
+    try {
+      const res = await fetch(`/api/track-shipment?number=${encodeURIComponent(tracking.trim())}`)
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || "No shipment found with that tracking number")
+        setLoading(false)
+        return
+      }
+      setShipment(data.parcel)
+      if (data.events) setEvents(data.events)
+    } catch {
+      setError("Something went wrong. Please try again.")
     }
-
-    setShipment(parcel)
-    const { data: trackingEvents } = await supabase
-      .from("tracking_events")
-      .select("*")
-      .eq("shipment_id", parcel.id)
-      .order("event_time", { ascending: false })
-    if (trackingEvents) setEvents(trackingEvents)
     setLoading(false)
   }
 
