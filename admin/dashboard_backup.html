@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexatrack — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#F8F2F0;color:#060315;height:100vh}
+input,button,select,textarea{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+
+/* ── HAMBURGER ── */
+#menu-btn{display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;border-radius:8px;transition:all .15s;flex-shrink:0;font-size:22px}
+#menu-btn:hover{color:#fff;background:rgba(255,255,255,.06)}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;-webkit-tap-highlight-color:transparent}
+#sidebar-overlay.open{display:block}
+#top-bar{display:none}
+@media(max-width:1023px){
+  #sidebar{position:fixed!important;top:0;left:0;bottom:0;width:260px;z-index:200;transform:translateX(-100%);transition:transform .25s cubic-bezier(.4,0,.2,1)}
+  #sidebar.open{transform:translateX(0)}
+  #top-bar{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#060315;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
+  #top-bar .brand{display:flex;align-items:center;gap:10px}
+  #top-bar .brand-icon{width:32px;height:32px;background:#FF3E41;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;flex-shrink:0}
+  #top-bar h2{font-size:16px;color:#fff;font-weight:700;letter-spacing:-.2px;white-space:nowrap}
+}
+@media(min-width:1024px){
+  #menu-btn,#top-bar{display:none!important}
+  #sidebar-overlay{display:none!important}
+}
+
+/* ── LOGIN ── */
+#login-screen{display:flex;align-items:center;justify-content:center;height:100vh;
+  background:#060315;position:relative;overflow:hidden}
+#login-screen::before{content:'';position:absolute;width:480px;height:480px;border-radius:50%;
+  background:rgba(255,62,65,.07);top:-120px;right:80px;filter:blur(80px)}
+#login-screen::after{content:'';position:absolute;width:320px;height:320px;border-radius:50%;
+  background:rgba(81,207,237,.04);bottom:-80px;left:120px;filter:blur(60px)}
+.login-card{background:#0e0a17;padding:48px 40px 36px;
+  border-radius:16px;width:380px;max-width:90vw;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 30px 60px rgba(0,0,0,.5);
+  position:relative;z-index:1;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.login-card .brand-wrap{text-align:center;margin-bottom:32px}
+.login-card .brand-accent{width:36px;height:4px;border-radius:2px;background:#FF3E41;margin:0 auto 14px}
+.login-card .brand-title{font-size:20px;font-weight:700;color:#fff;letter-spacing:-.3px;margin-bottom:6px}
+.login-card .brand-title span{color:#FF3E41}
+.login-card .brand-sub{font-size:13px;color:rgba(255,255,255,.35);font-weight:400}
+.input-row{margin-bottom:16px}
+.input-row label{font-size:12px;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px}
+.input-row input{width:100%;padding:12px 14px;border:1px solid rgba(255,255,255,.08);border-radius:10px;font-size:14px;
+  outline:none;transition:all .2s;background:rgba(255,255,255,.04);color:#fff;font-family:'Inter',sans-serif}
+.input-row input::placeholder{color:rgba(255,255,255,.2)}
+.input-row input:focus{border-color:rgba(255,62,65,.4);background:rgba(255,255,255,.06);box-shadow:0 0 0 3px rgba(255,62,65,.08)}
+.login-btn{width:100%;padding:13px;background:#FF3E41;color:#fff;
+  border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;letter-spacing:.2px;margin-top:4px}
+.login-btn:hover{background:#e03538}
+.login-btn:active{transform:scale(.98)}
+.login-btn:disabled{opacity:.3;cursor:not-allowed}
+.login-error{color:#FF3E41;font-size:12px;text-align:center;margin-top:12px;min-height:18px;font-weight:400}
+.login-footer{text-align:center;margin-top:18px;font-size:12px;color:rgba(255,255,255,.25)}
+
+/* ── APP LAYOUT ── */
+#app{display:none;height:100vh}
+#app.active{display:flex}
+
+#sidebar{width:240px;background:#060315;display:flex;flex-direction:column;flex-shrink:0}
+#sidebar-header{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
+#sidebar-header .brand{display:flex;align-items:center;gap:10px}
+#sidebar-header .brand-icon{width:32px;height:32px;background:#FF3E41;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff}
+#sidebar-header h2{font-size:16px;color:#fff;font-weight:700;letter-spacing:-.2px}
+#sidebar-nav{flex:1;padding:8px 10px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,.4);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:2px;text-decoration:none}
+.nav-item:hover{color:rgba(255,255,255,.7);background:rgba(255,255,255,.04)}
+.nav-item.active{color:#fff;background:rgba(255,62,65,.15)}
+.nav-item.active svg{color:#FF3E41}
+#sidebar-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.06)}
+.logout-link{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;color:rgba(255,255,255,.3);font-size:12px;cursor:pointer;transition:all .15s;text-decoration:none}
+.logout-link:hover{color:#FF3E41;background:rgba(255,62,65,.08)}
+
+/* ── MAIN ── */
+#main{flex:1;display:flex;flex-direction:column;background:#0e0a17;overflow:hidden}
+
+/* ── SHIPMENT LIST ── */
+#list-view{display:flex;flex-direction:column;height:100%}
+#list-view.hidden{display:none}
+.list-header{padding:20px 28px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.list-header h1{font-size:20px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.list-header .hdr-right{display:flex;gap:10px;align-items:center}
+.list-header .hdr-right input{padding:9px 14px;border:1px solid rgba(255,255,255,.08);border-radius:8px;font-size:13px;
+  outline:none;background:rgba(255,255,255,.04);color:#fff;width:220px;font-family:'Inter',sans-serif}
+.list-header .hdr-right input::placeholder{color:rgba(255,255,255,.2)}
+.list-header .hdr-right input:focus{border-color:rgba(255,62,65,.3)}
+.btn-primary-c{background:#FF3E41;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-primary-c:hover{background:#e03538}
+.btn-primary-c:active{transform:scale(.97)}
+
+#shipment-table-wrap{flex:1;overflow-y:auto;padding:0 28px 20px}
+#shipment-table{width:100%;border-collapse:collapse;font-size:13px}
+#shipment-table th{padding:12px 12px;text-align:left;font-weight:600;color:rgba(255,255,255,.35);font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,.06);position:sticky;top:0;background:#0e0a17;z-index:1}
+#shipment-table td{padding:12px;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04)}
+#shipment-table tr{cursor:pointer;transition:background .1s}
+#shipment-table tr:hover{background:rgba(255,255,255,.03)}
+.status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.2px}
+.s-pending{background:rgba(255,193,7,.15);color:#ffc107}
+.s-in_transit{background:rgba(13,110,253,.15);color:#0d6efd}
+.s-out_for_delivery{background:rgba(255,62,65,.15);color:#FF3E41}
+.s-delivered{background:rgba(25,135,84,.15);color:#198754}
+.s-exception{background:rgba(220,53,69,.15);color:#dc3545}
+.empty-state{text-align:center;padding:60px 20px;color:rgba(255,255,255,.2);font-size:14px}
+
+/* ── SHIPMENT DETAIL ── */
+#detail-view{display:none;flex-direction:column;height:100%}
+#detail-view.open{display:flex}
+.detail-header{padding:16px 28px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.detail-header .d-left{display:flex;align-items:center;gap:14px}
+.detail-header .d-left .back-btn{background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;padding:6px;border-radius:6px;display:flex;transition:all .15s}
+.detail-header .d-left .back-btn:hover{color:#fff;background:rgba(255,255,255,.06)}
+.detail-header .d-left .tracking-label{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.detail-header .d-right{display:flex;gap:8px}
+.btn-sm{padding:7px 14px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-outline{background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.08)}
+.btn-outline:hover{color:#fff;background:rgba(255,255,255,.1)}
+.btn-danger-sm{background:rgba(220,53,69,.12);color:#dc3545;border:1px solid rgba(220,53,69,.2)}
+.btn-danger-sm:hover{background:#dc3545;color:#fff}
+
+.detail-body{flex:1;overflow-y:auto;padding:24px 28px}
+.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.info-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 16px}
+.info-card .ic-label{font-size:11px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.info-card .ic-value{font-size:14px;color:#fff;font-weight:600}
+.info-card .ic-sub{font-size:12px;color:rgba(255,255,255,.35);margin-top:2px}
+
+.detail-two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:900px){.info-grid{grid-template-columns:repeat(2,1fr)}.detail-two-col{grid-template-columns:1fr}.detail-two-col>*{min-width:0}}
+
+/* ── MAP ── */
+.map-wrap{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;overflow:hidden}
+.map-wrap .mw-header{padding:12px 16px;font-size:13px;font-weight:600;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.06)}
+#tracking-map{height:280px}
+
+/* ── TIMELINE ── */
+.timeline-wrap{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;overflow:hidden}
+.tw-header{padding:12px 16px;font-size:13px;font-weight:600;color:rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center}
+.tw-body{padding:16px}
+.tl-list{list-style:none;padding:0;margin:0}
+.tl-item{position:relative;padding:0 0 20px 24px;border-left:2px solid rgba(255,255,255,.08)}
+.tl-item:last-child{border-left-color:transparent;padding-bottom:0}
+.tl-item::before{content:'';position:absolute;left:-7px;top:4px;width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15)}
+.tl-item.active::before{background:#FF3E41;border-color:#FF3E41;box-shadow:0 0 0 4px rgba(255,62,65,.15)}
+.tl-item .tl-title{font-size:13px;font-weight:600;color:#fff;margin-bottom:2px;padding-right:28px}
+.tl-item .tl-time{font-size:11px;color:rgba(255,255,255,.25);margin-bottom:2px}
+.tl-item .tl-place{font-size:12px;color:rgba(255,255,255,.4)}
+.tl-del-btn{position:absolute;top:0;right:0;background:none;border:none;color:rgba(220,53,69,.4);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:4px;transition:all .15s;line-height:1}
+.tl-del-btn:hover{color:#dc3545;background:rgba(220,53,69,.1)}
+/* ── ADD EVENT FORM ── */
+.event-form-wrap{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:16px;margin-top:16px}
+.event-form-wrap .ef-title{font-size:13px;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:14px}
+.event-form{display:flex;flex-direction:column;gap:12px}
+.event-form .ef-row{display:flex;flex-direction:column;gap:5px}
+.event-form .ef-row label{font-size:11px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px}
+.event-form .ef-row input,.event-form .ef-row textarea{padding:10px 13px;border:1px solid rgba(255,255,255,.08);border-radius:8px;font-size:13px;
+  outline:none;background:rgba(255,255,255,.04);color:#fff;font-family:'Inter',sans-serif;width:100%}
+.event-form .ef-row input::placeholder,.event-form .ef-row textarea::placeholder{color:rgba(255,255,255,.2)}
+.event-form .ef-row input:focus,.event-form .ef-row textarea:focus{border-color:rgba(255,62,65,.3)}
+.event-form .ef-row textarea{resize:vertical;min-height:42px}
+.event-form .ef-row-double{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.event-form .ef-row-double .ef-row{flex:1}
+.event-form .ef-btn{width:100%;padding:11px;background:#FF3E41;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+.event-form .ef-btn:hover{background:#e03538}
+.event-form .ef-btn:active{transform:scale(.97)}
+.event-form .ef-btn:disabled{opacity:.3;cursor:not-allowed}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#0e0a17;border:1px solid rgba(255,255,255,.08);border-radius:16px;width:520px;max-width:90vw;max-height:90vh;overflow-y:auto;padding:28px 32px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.modal h2{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px;margin-bottom:4px}
+.modal .m-sub{font-size:13px;color:rgba(255,255,255,.35);margin-bottom:24px}
+.modal .form-row{margin-bottom:14px}
+.modal .form-row label{font-size:12px;font-weight:500;color:rgba(255,255,255,.5);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.modal .form-row input,.modal .form-row select{padding:10px 12px;border:1px solid rgba(255,255,255,.08);border-radius:8px;font-size:13px;
+  outline:none;background:rgba(255,255,255,.04);color:#fff;width:100%;font-family:'Inter',sans-serif}
+.modal .form-row input:focus,.modal .form-row select:focus{border-color:rgba(255,62,65,.3)}
+.modal .form-row select option{background:#0e0a17;color:#fff}
+.modal .form-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.modal .modal-actions .btn-cancel{padding:10px 20px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.modal .modal-actions .btn-cancel:hover{color:#fff;background:rgba(255,255,255,.1)}
+.modal-lg{width:680px;max-width:94vw}
+.form-section{margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.form-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.fs-title{font-size:12px;font-weight:600;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+.form-three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.modal .form-row select{color:#fff;background:rgba(255,255,255,.04)}
+.modal .form-row select option{background:#0e0a17;color:#fff}
+.modal textarea{padding:10px 12px;border:1px solid rgba(255,255,255,.08);border-radius:8px;font-size:13px;outline:none;background:rgba(255,255,255,.04);color:#fff;width:100%;font-family:'Inter',sans-serif;resize:vertical;min-height:60px}
+.modal textarea:focus{border-color:rgba(255,62,65,.3)}
+@media(max-width:640px){.form-three{grid-template-columns:1fr 1fr}}
+@media(max-width:767px){
+.list-header{padding:12px 12px 8px}
+.list-header h1{font-size:17px}
+.list-header .hdr-right input{width:100%}
+.list-header .hdr-right{width:100%}
+#shipment-table-wrap{padding:0 12px 12px}
+#shipment-table,#shipment-table tbody,#shipment-table tr,#shipment-table td{display:block}
+#shipment-table thead{display:none}
+#shipment-table tr{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 14px 10px;margin-bottom:10px}
+#shipment-table tr:hover{background:rgba(255,255,255,.06)}
+#shipment-table td{padding:4px 0;border:none;display:flex;justify-content:space-between;align-items:center;font-size:13px}
+#shipment-table td::before{content:attr(data-label);font-size:11px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-right:12px;flex-shrink:0}
+#shipment-table td:first-child{padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:4px}
+#shipment-table td:first-child::before{display:none}
+.detail-header{padding:12px 12px}
+.detail-body{padding:12px}
+.info-grid{gap:8px;margin-bottom:16px}
+.info-card{padding:10px 12px}
+.tl-item{padding-bottom:16px;padding-left:18px}
+.tl-item::before{left:-7px;width:12px;height:12px}
+.tl-item .tl-title{font-size:14px}
+.tl-item .tl-time{font-size:12px}
+.tl-item .tl-place{font-size:13px}
+.tl-del-btn{font-size:18px;padding:4px 8px}
+.tw-body{padding:12px}
+.event-form-wrap{padding:12px;min-width:0}
+.event-form{gap:10px}
+.event-form .ef-row input,.event-form .ef-row textarea{padding:11px 14px;font-size:14px}
+.event-form .ef-row-double{grid-template-columns:1fr 1fr;gap:8px}
+.event-form .ef-btn{padding:12px;font-size:14px}
+}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="brand-wrap">
+      <div class="brand-accent"></div>
+      <div class="brand-title">Nexatrack <span>Admin</span></div>
+      <div class="brand-sub">Logistics dashboard</div>
+    </div>
+    <div class="input-row">
+      <label>Email</label>
+      <input type="email" id="login-email" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="input-row">
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password">
+    </div>
+    <button class="login-btn" id="login-btn">Sign In</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="sidebar-overlay"></div>
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <div class="brand"><div class="brand-icon">N</div><h2>Nexatrack</h2></div>
+    </div>
+    <div id="sidebar-nav">
+      <a class="nav-item" href="/admin/chat">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chat
+      </a>
+      <div class="nav-item active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 7 8 11.7z"/></svg>
+        Tracking
+      </div>
+    </div>
+    <div id="sidebar-footer">
+      <div class="logout-link" id="logout-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </div>
+    </div>
+  </div>
+
+  <div id="main">
+    <div id="top-bar">
+      <button id="menu-btn">☰</button>
+      <div class="brand"><div class="brand-icon">N</div><h2>Nexatrack</h2></div>
+    </div>
+    <!-- LIST VIEW -->
+    <div id="list-view">
+      <div class="list-header">
+        <h1>Shipments</h1>
+        <div class="hdr-right">
+          <input type="text" id="search-input" placeholder="Search tracking # or name...">
+          <button class="btn-primary-c" id="new-shipment-btn">+ New Shipment</button>
+        </div>
+      </div>
+      <div id="shipment-table-wrap">
+        <div class="empty-state" id="list-empty">Loading shipments...</div>
+        <table id="shipment-table" style="display:none">
+          <thead><tr>
+            <th>Tracking #</th><th>From → To</th><th>Status</th><th>Service</th><th>Weight</th><th>ETA</th>
+          </tr></thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DETAIL VIEW -->
+    <div id="detail-view">
+      <div class="detail-header">
+        <div class="d-left">
+          <button class="back-btn" id="back-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          </button>
+          <span class="tracking-label" id="detail-tracking">NXT-0000</span>
+        </div>
+        <div class="d-right">
+          <button class="btn-sm btn-outline" id="edit-shipment-btn">Edit</button>
+          <button class="btn-sm btn-danger-sm" id="delete-shipment-btn">Delete</button>
+        </div>
+      </div>
+      <div class="detail-body" id="detail-body">
+        <div class="info-grid">
+          <div class="info-card"><div class="ic-label">Tracking #</div><div class="ic-value" id="d-tracking" style="font-size:13px">—</div></div>
+          <div class="info-card"><div class="ic-label">Service</div><div class="ic-value" id="d-service">—</div></div>
+          <div class="info-card"><div class="ic-label">Status</div><div class="ic-value"><span class="status-badge" id="detail-status-badge"></span></div></div>
+          <div class="info-card"><div class="ic-label">Estimated Delivery</div><div class="ic-value" id="d-eta">—</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 16px">
+            <div style="font-size:11px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Shipper (From)</div>
+            <div style="font-size:13px;color:#fff;font-weight:600" id="d-shipper">—</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:2px" id="d-shipper-detail"></div>
+          </div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 16px">
+            <div style="font-size:11px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Receiver (To)</div>
+            <div style="font-size:13px;color:#fff;font-weight:600" id="d-receiver">—</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:2px" id="d-receiver-detail"></div>
+          </div>
+        </div>
+        <div class="info-grid">
+          <div class="info-card"><div class="ic-label">Weight</div><div class="ic-value" id="d-weight">—</div></div>
+          <div class="info-card"><div class="ic-label">Dimensions</div><div class="ic-value" id="d-dims">—</div></div>
+          <div class="info-card"><div class="ic-label">Package Count</div><div class="ic-value" id="d-pkg">—</div></div>
+          <div class="info-card"><div class="ic-label">Declared Value</div><div class="ic-value" id="d-value">—</div></div>
+        </div>
+        <div class="detail-two-col">
+          <div class="map-wrap">
+            <div class="mw-header">Current Location</div>
+            <div id="tracking-map"></div>
+          </div>
+          <div>
+            <div class="timeline-wrap">
+              <div class="tw-header"><span>Tracking Timeline</span></div>
+              <div class="tw-body">
+                <div class="tl-list" id="detail-timeline">
+                  <div style="color:rgba(255,255,255,.2);font-size:13px">No events yet</div>
+                </div>
+              </div>
+            </div>
+            <div class="event-form-wrap">
+              <div class="ef-title">Add Tracking Event</div>
+              <div class="event-form" id="event-form">
+                <div class="ef-row">
+                  <label for="ev-title">Event Title</label>
+                  <input type="text" id="ev-title" placeholder="e.g. Out for Delivery">
+                </div>
+                <div class="ef-row">
+                  <label for="ev-desc">Description</label>
+                  <textarea id="ev-desc" placeholder="Optional details about this event" rows="2"></textarea>
+                </div>
+                <div class="ef-row">
+                  <label for="ev-location">Location</label>
+                  <input type="text" id="ev-location" placeholder="e.g. Distribution Hub, Miami">
+                </div>
+                <div class="ef-row-double">
+                  <div class="ef-row">
+                    <label for="ev-lat">Latitude</label>
+                    <input type="text" id="ev-lat" placeholder="e.g. 25.7617">
+                  </div>
+                  <div class="ef-row">
+                    <label for="ev-lng">Longitude</label>
+                    <input type="text" id="ev-lng" placeholder="e.g. -80.1918">
+                  </div>
+                </div>
+                <button class="ef-btn" id="add-event-btn">Add Event</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE SHIPMENT MODAL -->
+<div class="modal-overlay" id="create-modal">
+  <div class="modal modal-lg">
+    <h2>New Shipment</h2>
+    <div class="m-sub">Enter full USA shipping details</div>
+
+    <div class="form-section">
+      <div class="fs-title">Tracking Info</div>
+      <div class="form-two">
+        <div class="form-row"><label>Tracking Number *</label><input type="text" id="m-tracking" placeholder="e.g. NXT-2024-004"></div>
+        <div class="form-row"><label>Service Type</label>
+          <select id="m-service"><option value="">Select service</option><option value="Standard">Standard</option><option value="Express">Express</option><option value="Overnight">Overnight</option><option value="Same Day">Same Day</option><option value="Freight">Freight</option></select>
+        </div>
+      </div>
+      <div class="form-two">
+        <div class="form-row"><label>Reference / PO #</label><input type="text" id="m-ref" placeholder="Optional reference number"></div>
+        <div class="form-row"><label>Package Count</label><input type="number" id="m-pkg-count" value="1" min="1"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="fs-title">Shipper (From)</div>
+      <div class="form-two">
+        <div class="form-row"><label>Name *</label><input type="text" id="m-s-name" placeholder="Full name"></div>
+        <div class="form-row"><label>Company</label><input type="text" id="m-s-company" placeholder="Company (optional)"></div>
+      </div>
+      <div class="form-two">
+        <div class="form-row"><label>Email</label><input type="email" id="m-s-email" placeholder="email@example.com"></div>
+        <div class="form-row"><label>Phone</label><input type="text" id="m-s-phone" placeholder="(555) 123-4567"></div>
+      </div>
+      <div class="form-row"><label>Street Address</label><input type="text" id="m-s-address" placeholder="123 Main St, Suite 100"></div>
+      <div class="form-three">
+        <div class="form-row"><label>City</label><input type="text" id="m-s-city" placeholder="Los Angeles"></div>
+        <div class="form-row"><label>State</label>
+          <select id="m-s-state"><option value="">—</option><option value="AL">AL</option><option value="AK">AK</option><option value="AZ">AZ</option><option value="AR">AR</option><option value="CA">CA</option><option value="CO">CO</option><option value="CT">CT</option><option value="DE">DE</option><option value="FL">FL</option><option value="GA">GA</option><option value="HI">HI</option><option value="ID">ID</option><option value="IL">IL</option><option value="IN">IN</option><option value="IA">IA</option><option value="KS">KS</option><option value="KY">KY</option><option value="LA">LA</option><option value="ME">ME</option><option value="MD">MD</option><option value="MA">MA</option><option value="MI">MI</option><option value="MN">MN</option><option value="MS">MS</option><option value="MO">MO</option><option value="MT">MT</option><option value="NE">NE</option><option value="NV">NV</option><option value="NH">NH</option><option value="NJ">NJ</option><option value="NM">NM</option><option value="NY">NY</option><option value="NC">NC</option><option value="ND">ND</option><option value="OH">OH</option><option value="OK">OK</option><option value="OR">OR</option><option value="PA">PA</option><option value="RI">RI</option><option value="SC">SC</option><option value="SD">SD</option><option value="TN">TN</option><option value="TX">TX</option><option value="UT">UT</option><option value="VT">VT</option><option value="VA">VA</option><option value="WA">WA</option><option value="WV">WV</option><option value="WI">WI</option><option value="WY">WY</option></select>
+        </div>
+        <div class="form-row"><label>ZIP</label><input type="text" id="m-s-zip" placeholder="90001"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="fs-title">Receiver (To)</div>
+      <div class="form-two">
+        <div class="form-row"><label>Name *</label><input type="text" id="m-r-name" placeholder="Full name"></div>
+        <div class="form-row"><label>Company</label><input type="text" id="m-r-company" placeholder="Company (optional)"></div>
+      </div>
+      <div class="form-two">
+        <div class="form-row"><label>Email</label><input type="email" id="m-r-email" placeholder="email@example.com"></div>
+        <div class="form-row"><label>Phone</label><input type="text" id="m-r-phone" placeholder="(555) 123-4567"></div>
+      </div>
+      <div class="form-row"><label>Street Address</label><input type="text" id="m-r-address" placeholder="456 Oak Ave, Apt 2"></div>
+      <div class="form-three">
+        <div class="form-row"><label>City</label><input type="text" id="m-r-city" placeholder="New York"></div>
+        <div class="form-row"><label>State</label>
+          <select id="m-r-state"><option value="">—</option><option value="AL">AL</option><option value="AK">AK</option><option value="AZ">AZ</option><option value="AR">AR</option><option value="CA">CA</option><option value="CO">CO</option><option value="CT">CT</option><option value="DE">DE</option><option value="FL">FL</option><option value="GA">GA</option><option value="HI">HI</option><option value="ID">ID</option><option value="IL">IL</option><option value="IN">IN</option><option value="IA">IA</option><option value="KS">KS</option><option value="KY">KY</option><option value="LA">LA</option><option value="ME">ME</option><option value="MD">MD</option><option value="MA">MA</option><option value="MI">MI</option><option value="MN">MN</option><option value="MS">MS</option><option value="MO">MO</option><option value="MT">MT</option><option value="NE">NE</option><option value="NV">NV</option><option value="NH">NH</option><option value="NJ">NJ</option><option value="NM">NM</option><option value="NY">NY</option><option value="NC">NC</option><option value="ND">ND</option><option value="OH">OH</option><option value="OK">OK</option><option value="OR">OR</option><option value="PA">PA</option><option value="RI">RI</option><option value="SC">SC</option><option value="SD">SD</option><option value="TN">TN</option><option value="TX">TX</option><option value="UT">UT</option><option value="VT">VT</option><option value="VA">VA</option><option value="WA">WA</option><option value="WV">WV</option><option value="WI">WI</option><option value="WY">WY</option></select>
+        </div>
+        <div class="form-row"><label>ZIP</label><input type="text" id="m-r-zip" placeholder="10001"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="fs-title">Package Details</div>
+      <div class="form-two">
+        <div class="form-row"><label>Weight</label><input type="number" id="m-weight" placeholder="0" step="0.1" min="0"></div>
+        <div class="form-row"><label>Unit</label>
+          <select id="m-weight-unit"><option value="lb">lb</option><option value="kg">kg</option></select>
+        </div>
+      </div>
+      <div class="form-three">
+        <div class="form-row"><label>Length (in)</label><input type="number" id="m-length" placeholder="0" step="0.1" min="0"></div>
+        <div class="form-row"><label>Width (in)</label><input type="number" id="m-width" placeholder="0" step="0.1" min="0"></div>
+        <div class="form-row"><label>Height (in)</label><input type="number" id="m-height" placeholder="0" step="0.1" min="0"></div>
+      </div>
+      <div class="form-two">
+        <div class="form-row"><label>Declared Value ($)</label><input type="number" id="m-value" placeholder="0.00" step="0.01" min="0"></div>
+        <div class="form-row"><label>Delivery Status</label>
+          <select id="m-status"><option value="pending">Pending</option><option value="in_transit">In Transit</option><option value="out_for_delivery">Out for Delivery</option><option value="delivered">Delivered</option><option value="exception">Exception</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="fs-title">Delivery Info</div>
+      <div class="form-two">
+        <div class="form-row"><label>Estimated Delivery</label><input type="date" id="m-eta"></div>
+        <div class="form-row"><label></label></div>
+      </div>
+      <div class="form-row"><label>Special Instructions</label><textarea id="m-instructions" placeholder="Delivery instructions, gate codes, etc." rows="3"></textarea></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" id="modal-cancel">Cancel</button>
+      <button class="btn-primary-c" id="modal-create">Create Shipment</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SHIPMENT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal modal-lg">
+    <h2>Edit Shipment</h2>
+    <div class="m-sub">Update shipment details</div>
+
+    <div class="form-section">
+      <div class="fs-title">Shipper Info</div>
+      <div class="form-three">
+        <div class="form-row"><label>Origin City</label><input type="text" id="e-origin" placeholder="City"></div>
+        <div class="form-row"><label>State</label>
+          <select id="e-s-state"><option value="">—</option><option value="AL">AL</option><option value="AK">AK</option><option value="AZ">AZ</option><option value="AR">AR</option><option value="CA">CA</option><option value="CO">CO</option><option value="CT">CT</option><option value="DE">DE</option><option value="FL">FL</option><option value="GA">GA</option><option value="HI">HI</option><option value="ID">ID</option><option value="IL">IL</option><option value="IN">IN</option><option value="IA">IA</option><option value="KS">KS</option><option value="KY">KY</option><option value="LA">LA</option><option value="ME">ME</option><option value="MD">MD</option><option value="MA">MA</option><option value="MI">MI</option><option value="MN">MN</option><option value="MS">MS</option><option value="MO">MO</option><option value="MT">MT</option><option value="NE">NE</option><option value="NV">NV</option><option value="NH">NH</option><option value="NJ">NJ</option><option value="NM">NM</option><option value="NY">NY</option><option value="NC">NC</option><option value="ND">ND</option><option value="OH">OH</option><option value="OK">OK</option><option value="OR">OR</option><option value="PA">PA</option><option value="RI">RI</option><option value="SC">SC</option><option value="SD">SD</option><option value="TN">TN</option><option value="TX">TX</option><option value="UT">UT</option><option value="VT">VT</option><option value="VA">VA</option><option value="WA">WA</option><option value="WV">WV</option><option value="WI">WI</option><option value="WY">WY</option></select>
+        </div>
+        <div class="form-row"><label>ZIP</label><input type="text" id="e-s-zip" placeholder="90001"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="fs-title">Receiver Info</div>
+      <div class="form-three">
+        <div class="form-row"><label>Destination City</label><input type="text" id="e-destination" placeholder="City"></div>
+        <div class="form-row"><label>State</label>
+          <select id="e-r-state"><option value="">—</option><option value="AL">AL</option><option value="AK">AK</option><option value="AZ">AZ</option><option value="AR">AR</option><option value="CA">CA</option><option value="CO">CO</option><option value="CT">CT</option><option value="DE">DE</option><option value="FL">FL</option><option value="GA">GA</option><option value="HI">HI</option><option value="ID">ID</option><option value="IL">IL</option><option value="IN">IN</option><option value="IA">IA</option><option value="KS">KS</option><option value="KY">KY</option><option value="LA">LA</option><option value="ME">ME</option><option value="MD">MD</option><option value="MA">MA</option><option value="MI">MI</option><option value="MN">MN</option><option value="MS">MS</option><option value="MO">MO</option><option value="MT">MT</option><option value="NE">NE</option><option value="NV">NV</option><option value="NH">NH</option><option value="NJ">NJ</option><option value="NM">NM</option><option value="NY">NY</option><option value="NC">NC</option><option value="ND">ND</option><option value="OH">OH</option><option value="OK">OK</option><option value="OR">OR</option><option value="PA">PA</option><option value="RI">RI</option><option value="SC">SC</option><option value="SD">SD</option><option value="TN">TN</option><option value="TX">TX</option><option value="UT">UT</option><option value="VT">VT</option><option value="VA">VA</option><option value="WA">WA</option><option value="WV">WV</option><option value="WI">WI</option><option value="WY">WY</option></select>
+        </div>
+        <div class="form-row"><label>ZIP</label><input type="text" id="e-r-zip" placeholder="10001"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="fs-title">Status & Location</div>
+      <div class="form-two">
+        <div class="form-row"><label>Status</label>
+          <select id="e-status"><option value="pending">Pending</option><option value="in_transit">In Transit</option><option value="out_for_delivery">Out for Delivery</option><option value="delivered">Delivered</option><option value="exception">Exception</option></select>
+        </div>
+        <div class="form-row"><label>Estimated Delivery</label><input type="date" id="e-eta"></div>
+      </div>
+      <div class="form-row"><label>Current Location</label><input type="text" id="e-location" placeholder="Address or description"></div>
+      <div class="form-row"><label>Notes (internal)</label><textarea id="e-notes" placeholder="Internal notes" rows="3"></textarea></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" id="edit-cancel">Cancel</button>
+      <button class="btn-primary-c" id="edit-save">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+var SUPABASE_URL='https://ujcokrzjvjdrcrdhcnjy.supabase.co';
+var ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqY29rcnpqdmpkcmNyZGhjbmp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQzNzA1MzksImV4cCI6MjA5OTk0NjUzOX0.SFgd7FP8lnkbIJ0CxoXXfD5-yo8XIyHGlOS_aK1J9-I';
+var FN_URL='https://esakjyxchvjwfeexfltf.supabase.co/functions/v1/shipments-api';
+var sb=supabase.createClient(SUPABASE_URL,ANON_KEY);
+var user=null,selectedId=null,shipments=[],map=null,marker=null,eventsSub=null,shipmentsSub=null,searchTimer=null;
+
+var LS=document.getElementById('login-screen'),APP=document.getElementById('app');
+var LE=document.getElementById('login-email'),LP=document.getElementById('login-password'),LB=document.getElementById('login-btn'),LERR=document.getElementById('login-error');
+var LO=document.getElementById('logout-btn'),LV=document.getElementById('list-view'),DV=document.getElementById('detail-view');
+var TB=document.getElementById('table-body'),LEmpty=document.getElementById('list-empty'),TBL=document.getElementById('shipment-table');
+var SI=document.getElementById('search-input'),NSB=document.getElementById('new-shipment-btn'),BB=document.getElementById('back-btn');
+var DT=document.getElementById('detail-tracking'),DSB=document.getElementById('detail-status-badge');
+var DSer=document.getElementById('d-service'),DE=document.getElementById('d-eta');
+var DSh=document.getElementById('d-shipper'),DShD=document.getElementById('d-shipper-detail');
+var DRc=document.getElementById('d-receiver'),DRcD=document.getElementById('d-receiver-detail');
+var DW=document.getElementById('d-weight'),DDims=document.getElementById('d-dims'),DPkg=document.getElementById('d-pkg'),DVal=document.getElementById('d-value');
+var ESB=document.getElementById('add-event-btn');
+var EVT=document.getElementById('ev-title'),EVD=document.getElementById('ev-desc'),EVL=document.getElementById('ev-location'),EVLA=document.getElementById('ev-lat'),EVLN=document.getElementById('ev-lng');
+var CM=document.getElementById('create-modal'),CC=document.getElementById('modal-cancel'),MCB=document.getElementById('modal-create');
+var EM=document.getElementById('edit-modal'),EC=document.getElementById('edit-cancel'),ES=document.getElementById('edit-save');
+var MT=document.getElementById('m-tracking'),MS=document.getElementById('m-status'),META=document.getElementById('m-eta');
+var MSer=document.getElementById('m-service'),MRef=document.getElementById('m-ref'),MPkg=document.getElementById('m-pkg-count');
+var MSN=document.getElementById('m-s-name'),MSCo=document.getElementById('m-s-company'),MSE=document.getElementById('m-s-email'),MSP=document.getElementById('m-s-phone'),MSA=document.getElementById('m-s-address'),MSC=document.getElementById('m-s-city'),MSS=document.getElementById('m-s-state'),MSZ=document.getElementById('m-s-zip');
+var MRN=document.getElementById('m-r-name'),MRCo=document.getElementById('m-r-company'),MRE=document.getElementById('m-r-email'),MRP=document.getElementById('m-r-phone'),MRA=document.getElementById('m-r-address'),MRC=document.getElementById('m-r-city'),MRS=document.getElementById('m-r-state'),MRZ=document.getElementById('m-r-zip');
+var MW=document.getElementById('m-weight'),MWU=document.getElementById('m-weight-unit'),ML=document.getElementById('m-length'),MWi=document.getElementById('m-width'),MH=document.getElementById('m-height'),MV=document.getElementById('m-value');
+var MInstr=document.getElementById('m-instructions');
+var EO=document.getElementById('e-origin'),ED=document.getElementById('e-destination'),ES_=document.getElementById('e-status'),EETA=document.getElementById('e-eta'),ELOC=document.getElementById('e-location'),ENOTES=document.getElementById('e-notes'),ESS=document.getElementById('e-s-state'),ERS=document.getElementById('e-r-state'),ESZ=document.getElementById('e-s-zip'),ERZ=document.getElementById('e-r-zip');
+
+var statusLabels={pending:'Pending',in_transit:'In Transit',out_for_delivery:'Out for Delivery',delivered:'Delivered',exception:'Exception'};
+var statusClasses={pending:'s-pending',in_transit:'s-in_transit',out_for_delivery:'s-out_for_delivery',delivered:'s-delivered',exception:'s-exception'};
+
+LB.addEventListener('click',function(){
+ var e=LE.value.trim(),p=LP.value.trim();if(!e||!p){LERR.textContent='Enter email and password.';return}
+ LB.textContent='Signing in...';LB.disabled=true;
+ sb.auth.signInWithPassword({email:e,password:p}).then(function(r){LB.textContent='Sign In';LB.disabled=false;
+  if(r.error){LERR.textContent=r.error.message;return}
+   user=r.data.user;fnToken=r.data.session.access_token;LS.style.display='none';APP.classList.add('active');loadShipments();subscribeShipments()
+ })
+});
+LP.addEventListener('keydown',function(e){if(e.key==='Enter')LB.click()});
+var MBtn=document.getElementById('menu-btn'),SOverlay=document.getElementById('sidebar-overlay'),SDrawer=document.getElementById('sidebar');
+if(MBtn){MBtn.addEventListener('click',function(){SDrawer.classList.toggle('open');SOverlay.classList.toggle('open')})}
+if(SOverlay){SOverlay.addEventListener('click',function(){SDrawer.classList.remove('open');SOverlay.classList.remove('open')})}
+LO.addEventListener('click',function(){
+ sb.auth.signOut().then(function(){user=null;APP.classList.remove('active');LS.style.display='flex';
+  if(shipmentsSub)sb.removeChannel(shipmentsSub);if(eventsSub)sb.removeChannel(eventsSub)})
+});
+
+var fnToken=null;
+function fn(action,body,cb){
+ var u='?action='+action;
+ if(body){
+  if(body.id)u+='&id='+body.id;
+  if(body.shipment_id)u+='&shipment_id='+body.shipment_id;
+ }
+ if(action==='list'&&SI.value.trim())u+='&search='+encodeURIComponent(SI.value.trim());
+ fetch(FN_URL+u,{method:body&&action!=='list'?'POST':'GET',
+  headers:{'Content-Type':'application/json','Authorization':'Bearer '+fnToken},
+  body:body&&action!=='list'?JSON.stringify(body):null
+ }).then(function(r){r.json().then(function(d){cb(d)})})
+}
+
+function loadShipments(){
+ fn('list',null,function(d){
+  shipments=d||[];renderList()
+ })
+}
+
+function renderList(){
+ if(!shipments.length){TBL.style.display='none';TB.style.display='';LEmpty.style.display='block';LEmpty.textContent='No shipments found';return}
+ TBL.style.display='';TB.style.display='';LEmpty.style.display='none';
+  TB.innerHTML=shipments.map(function(s){
+   var from=s.shipper_city&&s.shipper_state?s.shipper_city+', '+s.shipper_state:s.shipper_name||'—';
+   var to=s.receiver_city&&s.receiver_state?s.receiver_city+', '+s.receiver_state:s.receiver_name||'—';
+   var w=s.weight?s.weight+(s.weight_unit||'lb'):'—';
+   return '<tr data-id="'+s.id+'"><td data-label="Tracking #" style="font-weight:600;color:#fff">'+esc(s.tracking_number)+'</td>'+
+    '<td data-label="Route"><span style="color:rgba(255,255,255,.5)">'+esc(from)+'</span> → <span style="color:rgba(255,255,255,.7)">'+esc(to)+'</span></td>'+
+    '<td data-label="Status"><span class="status-badge '+(statusClasses[s.status]||'s-pending')+'">'+(statusLabels[s.status]||s.status)+'</span></td>'+
+    '<td data-label="Service">'+esc(s.service_type||'—')+'</td>'+
+    '<td data-label="Weight">'+w+'</td>'+
+    '<td data-label="ETA">'+(s.estimated_delivery?new Date(s.estimated_delivery).toLocaleDateString():'—')+'</td></tr>'
+  }).join('');
+ TB.querySelectorAll('tr').forEach(function(tr){tr.addEventListener('click',function(){selectShipment(tr.dataset.id)})})
+}
+
+SI.addEventListener('input',function(){clearTimeout(searchTimer);searchTimer=setTimeout(loadShipments,300)});
+
+function selectShipment(id){
+ selectedId=id;LV.classList.add('hidden');DV.classList.add('open');
+ var s=shipments.find(function(x){return x.id===id});if(!s)return;
+ DT.textContent=s.tracking_number;
+ DSB.textContent=statusLabels[s.status]||s.status;
+ DSB.className='status-badge '+(statusClasses[s.status]||'s-pending');
+ DSer.textContent=s.service_type||'—';
+ DE.textContent=s.estimated_delivery?new Date(s.estimated_delivery).toLocaleDateString():'—';
+ var sn=s.shipper_name||'—';
+ var sd='';
+ if(s.shipper_company)sd+=s.shipper_company+' · ';
+ if(s.shipper_city&&s.shipper_state)sd+=s.shipper_city+', '+s.shipper_state;
+ else if(s.shipper_city)sd+=s.shipper_city;
+ if(s.shipper_phone)sd+=' · '+s.shipper_phone;
+ DSh.textContent=sn;DShD.textContent=sd||'';
+ var rn=s.receiver_name||'—';
+ var rd='';
+ if(s.receiver_company)rd+=s.receiver_company+' · ';
+ if(s.receiver_city&&s.receiver_state)rd+=s.receiver_city+', '+s.receiver_state;
+ else if(s.receiver_city)rd+=s.receiver_city;
+ if(s.receiver_phone)rd+=' · '+s.receiver_phone;
+ DRc.textContent=rn;DRcD.textContent=rd||'';
+ DW.textContent=s.weight?s.weight+' '+(s.weight_unit||'lb'):'—';
+ var dims=[];
+ if(s.length)dims.push(s.length+'in');if(s.width)dims.push(s.width+'in');if(s.height)dims.push(s.height+'in');
+ DDims.textContent=dims.length?dims.join(' × '):'—';
+ DPkg.textContent=s.package_count||'—';
+ DVal.textContent=s.declared_value?'$'+parseFloat(s.declared_value).toFixed(2):'—';
+ if(eventsSub)sb.removeChannel(eventsSub);
+ loadEvents(s.id);
+ subscribeEvents(s.id);
+}
+
+function loadEvents(sid){
+ fn('events',{shipment_id:sid},function(d){
+  renderTimeline(d||[])
+ })
+}
+
+function renderTimeline(events){
+ var el=document.getElementById('detail-timeline');
+ if(!events||!events.length){el.innerHTML='<div style="color:rgba(255,255,255,.2);font-size:13px">No events yet</div>';return}
+ el.innerHTML=events.map(function(e){
+  var t=new Date(e.event_time);
+  var ts=t.toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'})+' '+t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  return '<div class="tl-item active"><button class="tl-del-btn" data-evid="'+e.id+'">&times;</button>'+
+   '<div class="tl-title">'+esc(e.title)+'</div>'+
+   '<div class="tl-time">'+ts+'</div>'+
+   (e.location?'<div class="tl-place">'+esc(e.location)+'</div>':'')+
+   '</div>'
+ }).join('');
+ el.querySelectorAll('.tl-del-btn').forEach(function(b){
+  b.addEventListener('click',function(){
+   if(confirm('Delete this tracking event?'))deleteEvent(this.dataset.evid)
+  })
+ })
+}
+
+function deleteEvent(eid){
+ if(!confirm('Delete this tracking event?'))return;
+ fn('delete-event',{id:eid},function(r){
+  if(!r.error)loadEvents(selectedId)
+ })
+}
+
+function subscribeEvents(sid){
+ eventsSub=sb.channel('tracking-events-'+sid)
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'tracking_events',filter:'shipment_id=eq.'+sid},function(){loadEvents(sid)})
+  .on('postgres_changes',{event:'DELETE',schema:'public',table:'tracking_events',filter:'shipment_id=eq.'+sid},function(){loadEvents(sid)})
+  .subscribe()
+}
+
+function subscribeShipments(){
+ shipmentsSub=sb.channel('tracking-shipments')
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'shipments'},function(){loadShipments()})
+  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'shipments'},function(){loadShipments()})
+  .on('postgres_changes',{event:'DELETE',schema:'public',table:'shipments'},function(){loadShipments()})
+  .subscribe()
+}
+
+BB.addEventListener('click',function(){
+ if(eventsSub)sb.removeChannel(eventsSub);selectedId=null;DV.classList.remove('open');LV.classList.remove('hidden')
+});
+
+NSB.addEventListener('click',function(){CM.classList.add('open')});
+CC.addEventListener('click',function(){CM.classList.remove('open')});
+CM.addEventListener('click',function(e){if(e.target===CM)CM.classList.remove('open')});
+
+MCB.addEventListener('click',function(){
+ var tn=MT.value.trim();if(!tn){alert('Tracking number is required');return}
+ MCB.textContent='Creating...';MCB.disabled=true;
+ fn('create-shipment',{
+  tracking_number:tn.toUpperCase(),status:MS.value,estimated_delivery:META.value||null,
+  service_type:MSer.value||null,reference_number:MRef.value.trim()||null,package_count:parseInt(MPkg.value)||1,
+  shipper_name:MSN.value.trim()||null,shipper_company:MSCo.value.trim()||null,
+  shipper_email:MSE.value.trim()||null,shipper_phone:MSP.value.trim()||null,
+  shipper_address:MSA.value.trim()||null,shipper_city:MSC.value.trim()||null,
+  shipper_state:MSS.value||null,shipper_zip:MSZ.value.trim()||null,
+  receiver_name:MRN.value.trim()||null,receiver_company:MRCo.value.trim()||null,
+  receiver_email:MRE.value.trim()||null,receiver_phone:MRP.value.trim()||null,
+  receiver_address:MRA.value.trim()||null,receiver_city:MRC.value.trim()||null,
+  receiver_state:MRS.value||null,receiver_zip:MRZ.value.trim()||null,
+  weight:MW.value?parseFloat(MW.value):null,weight_unit:MWU.value,
+  length:ML.value?parseFloat(ML.value):null,width:MWi.value?parseFloat(MWi.value):null,height:MH.value?parseFloat(MH.value):null,
+  declared_value:MV.value?parseFloat(MV.value):null,special_instructions:MInstr.value.trim()||null
+ },function(r){
+  MCB.textContent='Create Shipment';MCB.disabled=false;
+  if(r.error){alert(r.error.message);return}
+  CM.classList.remove('open');MT.value='';MRef.value='';MSN.value='';MSCo.value='';MSE.value='';MSP.value='';
+  MSA.value='';MSC.value='';MSS.value='';MSZ.value='';MRN.value='';MRCo.value='';MRE.value='';MRP.value='';
+  MRA.value='';MRC.value='';MRS.value='';MRZ.value='';MW.value='';ML.value='';MWi.value='';MH.value='';
+  MV.value='';MInstr.value=''
+ })
+});
+
+ESB.addEventListener('click',function(){
+ var t=EVT.value.trim();if(!t||!selectedId)return;
+ ESB.textContent='Adding...';ESB.disabled=true;
+ fn('create-event',{
+  shipment_id:selectedId,title:t,description:EVD.value.trim()||null,
+  location:EVL.value.trim()||null,lat:EVLA.value.trim()?parseFloat(EVLA.value.trim()):null,
+  lng:EVLN.value.trim()?parseFloat(EVLN.value.trim()):null
+  },function(r){
+   ESB.textContent='Add Event';ESB.disabled=false;
+   if(r.error){alert('Failed: '+r.error.message);return}
+   EVT.value='';EVD.value='';EVL.value='';EVLA.value='';EVLN.value='';
+   loadEvents(selectedId)
+  })
+});
+
+function loadEditModal(){
+ var s=shipments.find(function(x){return x.id===selectedId});if(!s)return;
+ EO.value=s.shipper_city||'';ED.value=s.receiver_city||'';
+ ESS.value=s.shipper_state||'';ERS.value=s.receiver_state||'';
+ ESZ.value=s.shipper_zip||'';ERZ.value=s.receiver_zip||'';
+ ES_.value=s.status;EETA.value=s.estimated_delivery||'';
+ ELOC.value=s.current_location||'';ENOTES.value=s.notes||'';
+ EM.classList.add('open')
+}
+
+document.getElementById('edit-shipment-btn').addEventListener('click',loadEditModal);
+EC.addEventListener('click',function(){EM.classList.remove('open')});
+EM.addEventListener('click',function(e){if(e.target===EM)EM.classList.remove('open')});
+ES.addEventListener('click',function(){
+ if(!selectedId)return;
+ fn('update-shipment',{
+  id:selectedId,
+  shipper_city:EO.value.trim()||null,receiver_city:ED.value.trim()||null,
+  shipper_state:ESS.value||null,receiver_state:ERS.value||null,
+  shipper_zip:ESZ.value.trim()||null,receiver_zip:ERZ.value.trim()||null,
+  status:ES_.value,estimated_delivery:EETA.value||null,
+  current_location:ELOC.value.trim()||null,notes:ENOTES.value.trim()||null
+ },function(r){
+  if(r.error)return;EM.classList.remove('open');
+  var s=shipments.find(function(x){return x.id===selectedId});
+  if(s){Object.assign(s,r||{});selectShipment(selectedId);loadShipments()}
+ })
+});
+
+document.getElementById('delete-shipment-btn').addEventListener('click',function(){
+ if(!confirm('Delete this shipment and all its tracking events?'))return;
+ fn('delete-shipment',{id:selectedId},function(r){
+  if(r.error)return;BB.click()
+ })
+});
+
+function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+
+sb.auth.getSession().then(function(r){
+ if(r.data.session){user=r.data.session.user;fnToken=r.data.session.access_token;LS.style.display='none';APP.classList.add('active');loadShipments();subscribeShipments()}
+});
+})();
+</script>
+</body>
+</html>
