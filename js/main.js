@@ -81,3 +81,18 @@
     
 })(jQuery);
 
+// ── Active nav state ──
+var path = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
+document.querySelectorAll('.navbar-nav .nav-item .nav-link').forEach(function(el) {
+  var href = el.getAttribute('href').replace(/\.html$/, '') || '/';
+  if (path === href) el.classList.add('active');
+});
+
+// ── Click-to-call on mobile ──
+if (window.innerWidth < 768) {
+  var phoneEl = document.querySelector('h4.m-0.pe-lg-5 i.fa-headphones');
+  if (phoneEl && phoneEl.parentElement) {
+    phoneEl.parentElement.outerHTML = '<a href="tel:+15065014402" style="color:inherit;text-decoration:none">' + phoneEl.parentElement.outerHTML + '</a>';
+  }
+}
+
