@@ -68,9 +68,14 @@ const menuGroups = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+
+  const toggleGroup = (label: string) => {
+    setOpenGroups((prev) => ({ ...prev, [label]: !prev[label] }))
+  }
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -99,33 +104,48 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-2 py-4">
-          {menuGroups.map((group) => (
-            <div key={group.label} className="mb-4">
-              {!collapsed && (
-                <p className="mb-1 px-3 text-xs font-semibold uppercase text-gray-500">{group.label}</p>
-              )}
-              {group.items.map((item) => {
-                const Icon = item.icon
-                const active = pathname === item.href
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-                      active
-                        ? "bg-[#FF3E41]/10 text-[#FF3E41]"
-                        : "text-gray-400 hover:bg-[#1a1725] hover:text-white"
-                    } ${collapsed ? "justify-center" : ""}`}
-                  >
-                    <Icon size={18} />
-                    {!collapsed && <span>{item.label}</span>}
-                  </Link>
-                )
-              })}
-            </div>
-          ))}
+        <nav className="flex-1 overflow-hidden px-2 py-4">
+          {menuGroups.map((group) => {
+            const isOpen = openGroups[group.label] !== false
+            const hasActive = group.items.some((i) => pathname === i.href)
+            return (
+              <div key={group.label} className="mb-1">
+                <button
+                  onClick={() => toggleGroup(group.label)}
+                  className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs font-semibold uppercase text-gray-500 hover:text-white lg:cursor-default lg:hover:text-gray-500"
+                >
+                  <span>{group.label}</span>
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform lg:hidden ${isOpen ? "rotate-0" : "-rotate-90"}`}
+                  />
+                </button>
+                {(!collapsed || isOpen) && (
+                  <div className={`${isOpen ? "block" : "hidden lg:block"}`}>
+                    {group.items.map((item) => {
+                      const Icon = item.icon
+                      const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href))
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setSidebarOpen(false)}
+                          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+                            active
+                              ? "bg-[#FF3E41]/10 text-[#FF3E41]"
+                              : "text-gray-400 hover:bg-[#1a1725] hover:text-white"
+                          } ${collapsed ? "justify-center" : ""}`}
+                        >
+                          <Icon size={18} />
+                          {!collapsed && <span>{item.label}</span>}
+                        </Link>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </nav>
 
         <div className="border-t border-[#1a1725] p-3">
