@@ -30,5 +30,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: walletError.message }, { status: 500 })
   }
 
+  await supabase.auth.admin.updateUserById(userId, { app_metadata: { role } })
+
   return NextResponse.json({ ok: true })
 }

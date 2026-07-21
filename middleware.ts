@@ -30,18 +30,7 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse
   }
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!
-  let role = "merchant"
-  try {
-    const res = await fetch(`${url}/rest/v1/profiles?select=role&id=eq.${user.id}&limit=1`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` },
-    })
-    if (res.ok) {
-      const rows = await res.json()
-      if (rows?.[0]?.role) role = rows[0].role
-    }
-  } catch {}
+  const role = user.app_metadata?.role || "merchant"
   const roleDashboards: Record<string, string> = {
     admin: "/admin",
     merchant: "/merchant",
