@@ -21,17 +21,26 @@ export async function POST(req: Request) {
 
   const supabase = createAdminClient()
 
+  let { data: parcel } = await supabase.from("parcels").select("id").eq("tracking_number", shipment_id).single()
+  if (!parcel) {
+    const r = await supabase.from("parcels").select("id").eq("id", shipment_id).single()
+    parcel = r.data
+  }
+  if (!parcel) {
+    return NextResponse.json({ error: "Shipment not found" }, { status: 404 })
+  }
+
   const { error: updateError } = await supabase
     .from("parcels")
     .update({ status, updated_at: new Date().toISOString() })
-    .eq("id", shipment_id)
+    .eq("id", parcel.id)
 
   if (updateError) {
     return NextResponse.json({ error: updateError.message }, { status: 400 })
   }
 
   const { error: eventError } = await supabase.from("tracking_events").insert({
-    shipment_id,
+    shipment_id: parcel.id,
     title: status.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase()),
     description: description || `Status updated to ${status.replace(/_/g, " ")}`,
     location: location || null,
