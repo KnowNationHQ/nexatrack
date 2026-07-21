@@ -52,7 +52,7 @@ export default function DriverDashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Driver Dashboard</h1>
+      <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Driver Portal</h1>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {statCards.map((s) => {

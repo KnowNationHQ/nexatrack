@@ -58,7 +58,7 @@ export default function AdminDashboard() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Dashboard</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Admin Portal</h1>
         <p className="mt-1 text-sm" style={{ color: 'var(--text-muted)' }}>Overview of your courier operations</p>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
