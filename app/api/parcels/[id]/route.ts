@@ -8,10 +8,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     .from("parcels")
     .select("*")
     .eq("tracking_number", params.id)
-    .single()
+    .maybeSingle()
 
   if (!parcel) {
-    const r = await supabase.from("parcels").select("*").eq("id", params.id).single()
+    const r = await supabase.from("parcels").select("*").eq("id", params.id).maybeSingle()
     parcel = r.data
   }
 

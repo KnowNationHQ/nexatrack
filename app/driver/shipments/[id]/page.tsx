@@ -51,6 +51,7 @@ export default function ShipmentDetail() {
   if (!shipment) return <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
   const statusActions: Record<string, string[]> = {
     pending: ["picked_up"],
+    delivery_man_assign: ["picked_up"],
     picked_up: ["in_transit"],
     in_transit: ["delivered"],
   }
