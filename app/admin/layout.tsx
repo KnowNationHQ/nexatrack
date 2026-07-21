@@ -17,6 +17,7 @@ const menuGroups = [
     { href: "/admin/shipments", label: "All Shipments", icon: Package },
     { href: "/admin/shipments/pending", label: "Pending", icon: PackageOpen },
     { href: "/admin/shipments/transit", label: "In Transit", icon: Truck },
+    { href: "/admin/dispatch", label: "Dispatch", icon: Truck },
     { href: "/admin/pickups", label: "Pickup Requests", icon: ClipboardList },
   ]},
   { label: "Management", items: [

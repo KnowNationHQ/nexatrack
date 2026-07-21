@@ -1,6 +1,9 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { Suspense, useEffect, useState } from "react"
+
+const MapView = dynamic(() => import("@/components/map"), { ssr: false, loading: () => <div className="h-[300px] w-full animate-pulse rounded-lg bg-gray-800" /> })
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -39,6 +42,7 @@ function TrackPageInner() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [copied, setCopied] = useState(false)
+  const [driverLoc, setDriverLoc] = useState<{latitude: number; longitude: number} | null>(null)
   const searchParams = useSearchParams()
 
   useEffect(() => {
@@ -58,6 +62,12 @@ function TrackPageInner() {
       if (!res.ok) { setError(data.error); setLoading(false); return }
       setShipment(data.parcel)
       if (data.events) setEvents(data.events)
+      if (data?.parcel?.id) {
+        fetch(`/api/driver-location?shipment_id=${data.parcel.id}`)
+          .then(r => r.json())
+          .then(loc => { if (loc?.latitude) setDriverLoc(loc) })
+          .catch(() => {})
+      }
     } catch { setError("Something went wrong.") }
     setLoading(false)
   }
@@ -187,6 +197,17 @@ function TrackPageInner() {
                 </div>
               </CardContent>
             </Card>
+
+            {driverLoc && (
+              <div className="mt-6">
+                <h2 className="mb-3 text-lg font-semibold text-white">Driver Location</h2>
+                <MapView
+                  center={[driverLoc.latitude, driverLoc.longitude]}
+                  zoom={15}
+                  markers={[{ lat: driverLoc.latitude, lng: driverLoc.longitude, label: "Driver" }]}
+                />
+              </div>
+            )}
 
             {events.length > 0 && (
               <Card className="mb-4 border-[#1a1725] bg-[#0a0715]">

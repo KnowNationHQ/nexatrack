@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/hooks/use-toast"
+import DriverLocationSender from "@/components/driver-location-sender"
 
 export default function ShipmentDetail() {
   const { id } = useParams<{ id: string }>()
@@ -70,6 +71,7 @@ export default function ShipmentDetail() {
           <div><p className="text-sm text-gray-400">From</p><p className="text-white">{shipment.origin_city}{shipment.sender_address ? ` - ${shipment.sender_address}` : ""}</p></div>
           <div><p className="text-sm text-gray-400">To</p><p className="text-white">{shipment.destination_city}{shipment.receiver_address ? ` - ${shipment.receiver_address}` : ""}</p></div>
           <div><p className="text-sm text-gray-400">Weight: {shipment.weight}kg</p></div>
+          {isAssignedToMe && <DriverLocationSender shipmentId={id} />}
 
           <div className="flex flex-wrap gap-2 pt-4">
             {statusActions[shipment.status]?.map((nextStatus) => (
