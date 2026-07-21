@@ -48,7 +48,7 @@ export default function ShipmentDetail() {
 
   const [isAssignedToMe, setIsAssignedToMe] = useState(false)
 
-  if (!shipment) return <p className="text-gray-500">Loading...</p>
+  if (!shipment) return <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
   const statusActions: Record<string, string[]> = {
     pending: ["picked_up"],
     picked_up: ["in_transit"],
@@ -57,20 +57,36 @@ export default function ShipmentDetail() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Shipment Detail</h1>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Shipment Detail</h1>
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardContent className="space-y-4 pt-6">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-lg text-white">{shipment.tracking_number}</span>
-            <Badge variant="outline" className="bg-blue-900/50 text-blue-400">{shipment.status?.replace(/_/g, " ")}</Badge>
+            <span className="font-mono text-lg" style={{ color: 'var(--text-primary)' }}>{shipment.tracking_number}</span>
+            <Badge variant="outline" className="text-blue-400 border-blue-900/50 bg-blue-900/20">{shipment.status?.replace(/_/g, " ")}</Badge>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
-            <div><p className="text-sm text-gray-400">Sender</p><p className="text-white">{shipment.sender_name}</p><p className="text-sm text-gray-400">{shipment.sender_phone}</p></div>
-            <div><p className="text-sm text-gray-400">Receiver</p><p className="text-white">{shipment.receiver_name}</p><p className="text-sm text-gray-400">{shipment.receiver_phone}</p></div>
+            <div>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Sender</p>
+              <p style={{ color: 'var(--text-primary)' }}>{shipment.sender_name}</p>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{shipment.sender_phone}</p>
+            </div>
+            <div>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Receiver</p>
+              <p style={{ color: 'var(--text-primary)' }}>{shipment.receiver_name}</p>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{shipment.receiver_phone}</p>
+            </div>
           </div>
-          <div><p className="text-sm text-gray-400">From</p><p className="text-white">{shipment.origin_city}{shipment.sender_address ? ` - ${shipment.sender_address}` : ""}</p></div>
-          <div><p className="text-sm text-gray-400">To</p><p className="text-white">{shipment.destination_city}{shipment.receiver_address ? ` - ${shipment.receiver_address}` : ""}</p></div>
-          <div><p className="text-sm text-gray-400">Weight: {shipment.weight}kg</p></div>
+          <div>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>From</p>
+            <p style={{ color: 'var(--text-primary)' }}>{shipment.origin_city}{shipment.sender_address ? ` - ${shipment.sender_address}` : ""}</p>
+          </div>
+          <div>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>To</p>
+            <p style={{ color: 'var(--text-primary)' }}>{shipment.destination_city}{shipment.receiver_address ? ` - ${shipment.receiver_address}` : ""}</p>
+          </div>
+          <div>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Weight: {shipment.weight}kg</p>
+          </div>
           {isAssignedToMe && <DriverLocationSender shipmentId={id} />}
 
           <div className="flex flex-wrap gap-2 pt-4">

@@ -24,9 +24,9 @@ export default function InTransitPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">In Transit</h1>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
-        <CardHeader><div className="flex items-center gap-2"><Search size={16} className="text-gray-400" /><Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="border-[#1a1725] bg-[#1a1725] text-white" /></div></CardHeader>
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>In Transit</h1>
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+        <CardHeader><div className="flex items-center gap-2"><Search size={16} style={{ color: 'var(--text-muted)' }} /><Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div></CardHeader>
         <CardContent>
           <MobileTable
             cols={[
@@ -34,7 +34,7 @@ export default function InTransitPage() {
               { label: "Sender", key: "sender_name" },
               { label: "Receiver", key: "receiver_name" },
               { label: "Status", key: "status", render: () => <Badge variant="outline" className="bg-blue-900/50 text-blue-400">in transit</Badge> },
-              { label: "Date", key: "created_at", render: (s) => <span className="text-gray-400">{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
+              { label: "Date", key: "created_at", render: (s) => <span style={{ color: 'var(--text-muted)' }}>{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
             ]}
             data={filtered}
           />

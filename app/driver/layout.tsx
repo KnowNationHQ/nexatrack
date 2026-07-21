@@ -39,7 +39,7 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
   ]
 
   return (
-    <div className="flex h-screen bg-sidebar">
+    <div className="flex h-screen" style={{ backgroundColor: 'var(--sidebar-bg)' }}>
       <style dangerouslySetInnerHTML={{__html: `
         :root,[data-theme=dark] {
           --sidebar-bg: #0a0715;
@@ -53,6 +53,11 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
           --main-bg: #0a0715;
           --main-border: #1a1725;
           --card-bg: #0a0715;
+          --card-hover: #12101e;
+          --card-border: #1a1725;
+          --text-primary: #ffffff;
+          --text-secondary: #d1d5db;
+          --text-muted: #9ca3af;
         }
         [data-theme=light] {
           --sidebar-bg: #ffffff;
@@ -66,7 +71,17 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
           --main-bg: #f9fafb;
           --main-border: #e5e7eb;
           --card-bg: #ffffff;
+          --card-hover: #f3f4f6;
+          --card-border: #e5e7eb;
+          --text-primary: #111827;
+          --text-secondary: #374151;
+          --text-muted: #6b7280;
         }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #FF3E41; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d92e31; }
+        * { scrollbar-width: thin; scrollbar-color: #FF3E41 transparent; }
         .sidebar-scroll::-webkit-scrollbar { width: 4px; }
         .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
         .sidebar-scroll::-webkit-scrollbar-thumb { background: #FF3E41; border-radius: 4px; }
@@ -94,7 +109,7 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
                   backgroundColor: active ? 'rgba(255,62,65,0.05)' : 'transparent',
                   color: active ? 'var(--sidebar-text-active)' : 'var(--sidebar-text)',
                 }}
-                onMouseEnter={(e) => { if (!active) { e.currentTarget.style.borderColor = 'rgba(255,62,65,0.3)'; e.currentTarget.style.backgroundColor = 'var(--sidebar-hover-bg)'; e.currentTarget.style.color = '#ffffff'; }}}
+                onMouseEnter={(e) => { if (!active) { e.currentTarget.style.borderColor = 'rgba(255,62,65,0.3)'; e.currentTarget.style.backgroundColor = 'var(--sidebar-hover-bg)'; e.currentTarget.style.color = 'var(--text-primary)'; }}}
                 onMouseLeave={(e) => { if (!active) { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--sidebar-text)'; }}}
               >
                 <Icon size={18} /><span>{item.label}</span>

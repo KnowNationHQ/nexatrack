@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     lat,
     lng,
     title: "Driver Location Update",
-    description: driver_id,
+    description: `Driver ${driver_id} location update at ${new Date().toISOString()}`,
     event_time: new Date().toISOString(),
   })
   if (error) return NextResponse.json({ error: error.message }, { status: 400 })

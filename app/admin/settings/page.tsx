@@ -62,12 +62,12 @@ export default function SettingsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="mt-1 text-sm text-gray-500">Manage application configuration</p>
+        <h1 style={{color:'var(--text-primary)'}} className="text-2xl font-bold">Settings</h1>
+        <p style={{color:'var(--text-muted)'}} className="mt-1 text-sm">Manage application configuration</p>
       </div>
 
       {entries.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 text-gray-500">
+        <div className="flex flex-col items-center justify-center py-16" style={{color:'var(--text-muted)'}}>
           <Settings size={40} className="mb-3 opacity-30" />
           <p className="text-sm">No settings found</p>
         </div>
@@ -79,34 +79,35 @@ export default function SettingsPage() {
           const Icon = meta.icon
           const fieldEntries = Object.entries(fields)
           return (
-            <Card key={category} className="overflow-hidden border-[#1a1725]/60 bg-gradient-to-b from-[#0a0715] to-[#0d0a1a] shadow-lg shadow-black/20">
-              <div className="flex items-center gap-3 border-b border-[#1a1725]/40 bg-gradient-to-r from-[#1a1725]/30 to-transparent px-5 py-4">
+            <Card key={category} style={{borderColor:'var(--card-border)',background:'linear-gradient(to bottom, var(--card-bg), #0d0a1a)'}} className="overflow-hidden shadow-lg shadow-black/20">
+              <div style={{borderColor:'var(--card-border)',background:'linear-gradient(to right, color-mix(in srgb, var(--input-bg) 30%, transparent), transparent)'}} className="flex items-center gap-3 border-b px-5 py-4">
                 <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${meta.color} shadow-lg`}>
-                  <Icon size={16} className="text-white" />
+                  <Icon size={16} style={{color:'var(--text-primary)'}} />
                 </div>
                 <div>
-                  <h2 className="text-sm font-semibold text-white capitalize">{category}</h2>
-                  <p className="text-xs text-gray-500">{fieldEntries.length} setting{fieldEntries.length !== 1 ? "s" : ""}</p>
+                  <h2 style={{color:'var(--text-primary)'}} className="text-sm font-semibold capitalize">{category}</h2>
+                  <p style={{color:'var(--text-muted)'}} className="text-xs">{fieldEntries.length} setting{fieldEntries.length !== 1 ? "s" : ""}</p>
                 </div>
               </div>
               <CardContent className="p-5">
                 <div className="space-y-4">
                   {fieldEntries.map(([name, value]) => (
                     <div key={name}>
-                      <label className="mb-1.5 block text-xs font-medium text-gray-400 uppercase tracking-wider">{name.replace(/_/g, " ")}</label>
+                      <label style={{color:'var(--text-muted)'}} className="mb-1.5 block text-xs font-medium uppercase tracking-wider">{name.replace(/_/g, " ")}</label>
                       <Input
                         value={value || ''}
                         onChange={(e) => update(category, name, e.target.value)}
-                        className="border-[#1a1725] bg-[#1a1725]/50 text-white placeholder:text-gray-600 focus:border-[#FF3E41]/50 focus:ring-1 focus:ring-[#FF3E41]/30 transition-all"
+                        style={{borderColor:'var(--card-border)',backgroundColor:'color-mix(in srgb, var(--input-bg) 50%, transparent)',color:'var(--text-primary)'}}
+                        className="transition-all"
                       />
                     </div>
                   ))}
                 </div>
-                <div className="mt-5 flex justify-end border-t border-[#1a1725]/30 pt-4">
+                <div style={{borderColor:'var(--card-border)'}} className="mt-5 flex justify-end border-t pt-4">
                   <Button
                     onClick={() => handleSave(category)}
                     disabled={saving === category}
-                    className="bg-gradient-to-r from-[#FF3E41] to-[#d92e31] px-6 text-sm font-medium text-white shadow-lg shadow-[#FF3E41]/20 hover:shadow-[#FF3E41]/30 transition-all disabled:opacity-50"
+                    className="bg-gradient-to-r from-[#FF3E41] to-[#d92e31] px-6 text-sm font-medium shadow-lg shadow-[#FF3E41]/20 hover:shadow-[#FF3E41]/30 transition-all disabled:opacity-50" style={{color:'var(--text-primary)'}}
                   >
                     {saving === category ? (
                       <span className="flex items-center gap-2"><span className="h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white" />Saving...</span>

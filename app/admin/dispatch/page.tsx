@@ -63,28 +63,28 @@ export default function DispatchPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Dispatch Board</h1>
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Dispatch Board</h1>
       <div className="space-y-6">
         {grouped.filter(g => g.items.length > 0).map(group => (
           <div key={group.status}>
             <div className="mb-3 flex items-center gap-2">
-              <h2 className="text-sm font-semibold text-gray-300">{group.label}</h2>
-              <Badge variant="outline" className="bg-gray-800 text-gray-400">{group.items.length}</Badge>
+              <h2 className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>{group.label}</h2>
+              <Badge variant="outline" className="bg-gray-800" style={{ color: 'var(--text-muted)' }}>{group.items.length}</Badge>
             </div>
             <div className="space-y-3">
               {group.items.map(shipment => (
                 <Card
                   key={shipment.id}
-                  className="cursor-pointer border-[#1a1725] bg-[#0a0715] p-4 transition-colors hover:border-gray-600"
+                  className="cursor-pointer p-4 transition-colors hover:border-gray-600" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}
                   onClick={() => setSelected(shipment)}
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-sm text-white">{shipment.tracking_number?.slice(0, 12)}</span>
+                      <span className="font-mono text-sm" style={{ color: 'var(--text-primary)' }}>{shipment.tracking_number?.slice(0, 12)}</span>
                       {shipment.driver_id && <Truck className="h-3 w-3 text-green-500" />}
                     </div>
-                    <p className="text-xs text-gray-400">{shipment.origin_city} → {shipment.destination_city}</p>
-                    <p className="text-xs text-gray-500">{shipment.weight ? `${shipment.weight}kg` : ""} · {shipment.receiver_name}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{shipment.origin_city} → {shipment.destination_city}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{shipment.weight ? `${shipment.weight}kg` : ""} · {shipment.receiver_name}</p>
                   </div>
                 </Card>
               ))}
@@ -92,28 +92,28 @@ export default function DispatchPage() {
           </div>
         ))}
         {grouped.every(g => g.items.length === 0) && (
-          <p className="py-12 text-center text-sm text-gray-600">No shipments to dispatch</p>
+          <p className="py-12 text-center text-sm" style={{ color: 'var(--text-muted)' }}>No shipments to dispatch</p>
         )}
       </div>
 
       <Sheet open={!!selected} onOpenChange={(o) => { if (!o) setSelected(null) }}>
-        <SheetContent side="right" className="w-[400px] border-l border-[#1a1725] bg-[#0a0715] text-white">
+        <SheetContent side="right" className="w-[400px] border-l" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)', color: 'var(--text-primary)' }}>
           <SheetHeader>
-            <SheetTitle className="text-white">Assign Driver</SheetTitle>
-            <SheetDescription className="text-gray-400">
+            <SheetTitle style={{ color: 'var(--text-primary)' }}>Assign Driver</SheetTitle>
+            <SheetDescription style={{ color: 'var(--text-muted)' }}>
               {selected?.tracking_number} — {selected?.origin_city} → {selected?.destination_city}
             </SheetDescription>
           </SheetHeader>
           <div className="mt-6 space-y-4">
             <div className="space-y-2">
-              <Label className="text-gray-300">Driver</Label>
+              <Label style={{ color: 'var(--text-secondary)' }}>Driver</Label>
               <Select onValueChange={assignDriver} disabled={assigning}>
-                <SelectTrigger className="border-[#1a1725] bg-[#0f0a1e] text-white">
+                <SelectTrigger style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }}>
                   <SelectValue placeholder="Select a driver" />
                 </SelectTrigger>
-                <SelectContent className="border-[#1a1725] bg-[#0f0a1e] text-white">
+                <SelectContent style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }}>
                   {drivers.map((d: any) => (
-                    <SelectItem key={d.id} value={d.id} className="text-white focus:bg-gray-800 focus:text-white">
+                    <SelectItem key={d.id} value={d.id} className="focus:bg-gray-800 focus:text-white" style={{ color: 'var(--text-primary)' }}>
                       {d.name || d.email || d.id?.slice(0, 8)}
                     </SelectItem>
                   ))}
@@ -121,7 +121,7 @@ export default function DispatchPage() {
               </Select>
             </div>
             {assigning && (
-              <div className="flex items-center gap-2 text-sm text-gray-400">
+              <div className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-muted)' }}>
                 <Loader2 className="h-4 w-4 animate-spin" /> Assigning...
               </div>
             )}

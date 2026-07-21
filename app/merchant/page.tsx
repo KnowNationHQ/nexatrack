@@ -39,17 +39,17 @@ export default function MerchantDashboard() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Merchant Dashboard</h1>
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Merchant Dashboard</h1>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => {
           const Icon = c.icon
           return (
-            <Card key={c.title} className="border-[#1a1725] bg-[#0a0715]">
+            <Card key={c.title} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-400">{c.title}</CardTitle>
+                <CardTitle className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>{c.title}</CardTitle>
                 <Icon className={`h-4 w-4 ${c.color}`} />
               </CardHeader>
-              <CardContent><div className="text-2xl font-bold text-white">{c.value}</div></CardContent>
+              <CardContent><div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{c.value}</div></CardContent>
             </Card>
           )
         })}

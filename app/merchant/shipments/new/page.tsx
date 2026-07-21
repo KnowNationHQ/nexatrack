@@ -60,26 +60,26 @@ export default function NewShipment() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">New Shipment</h1>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
-        <CardHeader><CardTitle className="text-white">Shipment Details</CardTitle></CardHeader>
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>New Shipment</h1>
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+        <CardHeader><CardTitle style={{ color: 'var(--text-primary)' }}>Shipment Details</CardTitle></CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
-              <div><label className="mb-1 block text-sm text-gray-400">Sender Name</label><Input value={form.sender_name} onChange={set("sender_name")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-              <div><label className="mb-1 block text-sm text-gray-400">Sender Phone</label><Input value={form.sender_phone} onChange={set("sender_phone")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Sender Name</label><Input value={form.sender_name} onChange={set("sender_name")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Sender Phone</label><Input value={form.sender_phone} onChange={set("sender_phone")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             </div>
-            <div><label className="mb-1 block text-sm text-gray-400">Sender Address</label><Input value={form.sender_address} onChange={set("sender_address")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+            <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Sender Address</label><Input value={form.sender_address} onChange={set("sender_address")} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <div><label className="mb-1 block text-sm text-gray-400">Receiver Name</label><Input value={form.receiver_name} onChange={set("receiver_name")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-              <div><label className="mb-1 block text-sm text-gray-400">Receiver Phone</label><Input value={form.receiver_phone} onChange={set("receiver_phone")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Receiver Name</label><Input value={form.receiver_name} onChange={set("receiver_name")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Receiver Phone</label><Input value={form.receiver_phone} onChange={set("receiver_phone")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             </div>
-            <div><label className="mb-1 block text-sm text-gray-400">Receiver Address</label><Input value={form.receiver_address} onChange={set("receiver_address")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+            <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Receiver Address</label><Input value={form.receiver_address} onChange={set("receiver_address")} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <div><label className="mb-1 block text-sm text-gray-400">Origin City</label><Input value={form.origin_city} onChange={set("origin_city")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-              <div><label className="mb-1 block text-sm text-gray-400">Destination City</label><Input value={form.destination_city} onChange={set("destination_city")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Origin City</label><Input value={form.origin_city} onChange={set("origin_city")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Destination City</label><Input value={form.destination_city} onChange={set("destination_city")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             </div>
-            <div><label className="mb-1 block text-sm text-gray-400">Weight (kg)</label><Input type="number" step="0.1" value={form.weight} onChange={set("weight")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+            <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Weight (kg)</label><Input type="number" step="0.1" value={form.weight} onChange={set("weight")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             <Button type="submit" disabled={loading} className="w-full bg-[#FF3E41] hover:bg-[#d92e31]">
               {loading ? "Creating..." : "Create Shipment"}
             </Button>

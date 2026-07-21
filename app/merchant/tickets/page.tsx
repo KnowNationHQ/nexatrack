@@ -47,33 +47,32 @@ export default function MerchantTickets() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Support Tickets</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Support Tickets</h1>
         <Button onClick={() => setShowForm(!showForm)} className="bg-[#FF3E41] hover:bg-[#d92e31]">New Ticket</Button>
       </div>
 
       {showForm && (
-        <Card className="mb-4 border-[#1a1725] bg-[#0a0715]">
-          <CardHeader><CardTitle className="text-white">New Ticket</CardTitle></CardHeader>
+        <Card className="mb-4" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+          <CardHeader><CardTitle style={{ color: 'var(--text-primary)' }}>New Ticket</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <Input placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} className="border-[#1a1725] bg-[#1a1725] text-white" />
-            <Input placeholder="Message (optional)" value={message} onChange={(e) => setMessage(e.target.value)} className="border-[#1a1725] bg-[#1a1725] text-white" />
+            <Input placeholder="Subject" value={subject} onChange={(e) => setSubject(e.target.value)} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} />
+            <Input placeholder="Message (optional)" value={message} onChange={(e) => setMessage(e.target.value)} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} />
             <Button onClick={submitTicket} disabled={loading} className="bg-[#FF3E41] hover:bg-[#d92e31]">{loading ? "Submitting..." : "Submit"}</Button>
           </CardContent>
         </Card>
       )}
 
-      <Card className="border-[#1a1725] bg-[#0a0715]">
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardContent className="pt-6">
           {tickets.map((t) => (
-            <div key={t.id} className="flex items-center justify-between border-b border-[#1a1725] py-3 text-white">
-              <div><p className="font-medium">{t.subject}</p><p className="text-xs text-gray-400">{new Date(t.created_at).toLocaleDateString()}</p></div>
+            <div key={t.id} className="flex items-center justify-between border-b py-3" style={{ borderBottomColor: 'var(--card-border)', color: 'var(--text-primary)' }}>
+              <div><p className="font-medium">{t.subject}</p><p className="text-xs" style={{ color: 'var(--text-muted)' }}>{new Date(t.created_at).toLocaleDateString()}</p></div>
               <Badge variant="outline" className={t.status === "open" ? "bg-green-900/50 text-green-400" : t.status === "in_progress" ? "bg-blue-900/50 text-blue-400" : "bg-gray-900/50 text-gray-400"}>{t.status}</Badge>
             </div>
           ))}
-          {tickets.length === 0 && <p className="py-4 text-center text-gray-500">No tickets yet</p>}
+          {tickets.length === 0 && <p className="py-4 text-center" style={{ color: 'var(--text-muted)' }}>No tickets yet</p>}
         </CardContent>
       </Card>
     </div>
   )
 }
-

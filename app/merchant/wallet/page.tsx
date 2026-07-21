@@ -20,15 +20,14 @@ export default function WalletPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Wallet</h1>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
-        <CardHeader><CardTitle className="text-white">Balance</CardTitle></CardHeader>
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Wallet</h1>
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+        <CardHeader><CardTitle style={{ color: 'var(--text-primary)' }}>Balance</CardTitle></CardHeader>
         <CardContent>
-          <div className="text-4xl font-bold text-white">${Number(wallet?.balance || 0).toFixed(2)}</div>
-          <p className="mt-2 text-sm text-gray-400">Available for shipments and withdrawals</p>
+          <div className="text-4xl font-bold" style={{ color: 'var(--text-primary)' }}>${Number(wallet?.balance || 0).toFixed(2)}</div>
+          <p className="mt-2 text-sm" style={{ color: 'var(--text-muted)' }}>Available for shipments and withdrawals</p>
         </CardContent>
       </Card>
     </div>
   )
 }
-

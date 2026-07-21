@@ -38,21 +38,21 @@ export default function PickupRequestPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Request Pickup</h1>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
-        <CardHeader><CardTitle className="text-white">Pickup Details</CardTitle></CardHeader>
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Request Pickup</h1>
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+        <CardHeader><CardTitle style={{ color: 'var(--text-primary)' }}>Pickup Details</CardTitle></CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div><label className="mb-1 block text-sm text-gray-400">Address</label><Input value={form.address} onChange={set("address")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+            <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Address</label><Input value={form.address} onChange={set("address")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             <div className="grid gap-4 md:grid-cols-2">
-              <div><label className="mb-1 block text-sm text-gray-400">City</label><Input value={form.city} onChange={set("city")} required className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-              <div><label className="mb-1 block text-sm text-gray-400">Parcel Count</label><Input type="number" value={form.parcel_count} onChange={set("parcel_count")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>City</label><Input value={form.city} onChange={set("city")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Parcel Count</label><Input type="number" value={form.parcel_count} onChange={set("parcel_count")} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
-              <div><label className="mb-1 block text-sm text-gray-400">Preferred Date</label><Input type="date" value={form.preferred_date} onChange={set("preferred_date")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-              <div><label className="mb-1 block text-sm text-gray-400">Preferred Time</label><Input type="time" value={form.preferred_time} onChange={set("preferred_time")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Preferred Date</label><Input type="date" value={form.preferred_date} onChange={set("preferred_date")} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Preferred Time</label><Input type="time" value={form.preferred_time} onChange={set("preferred_time")} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             </div>
-            <div><label className="mb-1 block text-sm text-gray-400">Notes</label><Input value={form.notes} onChange={set("notes")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+            <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Notes</label><Input value={form.notes} onChange={set("notes")} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             <Button type="submit" disabled={loading} className="w-full bg-[#FF3E41] hover:bg-[#d92e31]">{loading ? "Submitting..." : "Request Pickup"}</Button>
           </form>
         </CardContent>

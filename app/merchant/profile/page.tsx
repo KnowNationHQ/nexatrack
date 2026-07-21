@@ -34,16 +34,15 @@ export default function MerchantProfile() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Profile</h1>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
-        <CardHeader><CardTitle className="text-white">Account Details</CardTitle></CardHeader>
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Profile</h1>
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+        <CardHeader><CardTitle style={{ color: 'var(--text-primary)' }}>Account Details</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div><label className="mb-1 block text-sm text-gray-400">Business Name</label><Input value={profile.full_name || ""} onChange={(e) => setProfile((p: any) => ({ ...p, full_name: e.target.value }))} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-          <div><label className="mb-1 block text-sm text-gray-400">Email</label><Input value={profile.email || ""} disabled className="border-[#1a1725] bg-[#1a1725] text-gray-400" /></div>
+          <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Business Name</label><Input value={profile.full_name || ""} onChange={(e) => setProfile((p: any) => ({ ...p, full_name: e.target.value }))} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
+          <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Email</label><Input value={profile.email || ""} disabled style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-muted)' }} /></div>
           <Button onClick={handleSave} disabled={loading} className="bg-[#FF3E41] hover:bg-[#d92e31]">{loading ? "Saving..." : "Save Changes"}</Button>
         </CardContent>
       </Card>
     </div>
   )
 }
-

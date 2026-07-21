@@ -26,11 +26,11 @@ export default function PendingShipmentsPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Pending Shipments</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Pending Shipments</h1>
         <Button className="bg-[#FF3E41] hover:bg-[#d92e31]"><Plus size={16} className="mr-1" /> New</Button>
       </div>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
-        <CardHeader><div className="flex items-center gap-2"><Search size={16} className="text-gray-400" /><Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="border-[#1a1725] bg-[#1a1725] text-white" /></div></CardHeader>
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+        <CardHeader><div className="flex items-center gap-2"><Search size={16} style={{ color: 'var(--text-muted)' }} /><Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div></CardHeader>
         <CardContent>
           <MobileTable
             cols={[
@@ -38,7 +38,7 @@ export default function PendingShipmentsPage() {
               { label: "Sender", key: "sender_name" },
               { label: "Receiver", key: "receiver_name" },
               { label: "Status", key: "status", render: () => <Badge variant="outline" className="bg-yellow-900/50 text-yellow-400">pending</Badge> },
-              { label: "Date", key: "created_at", render: (s) => <span className="text-gray-400">{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
+              { label: "Date", key: "created_at", render: (s) => <span style={{ color: 'var(--text-muted)' }}>{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
             ]}
             data={filtered}
           />

@@ -16,28 +16,34 @@ export default function AllJobsPage() {
   }, [])
 
   const statusColors: Record<string, string> = {
-    pending: "bg-yellow-900/50 text-yellow-400", in_transit: "bg-blue-900/50 text-blue-400",
-    picked_up: "bg-purple-900/50 text-purple-400",
+    pending: "text-yellow-400 border-yellow-900/50 bg-yellow-900/20",
+    in_transit: "text-blue-400 border-blue-900/50 bg-blue-900/20",
+    picked_up: "text-purple-400 border-purple-900/50 bg-purple-900/20",
   }
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Available Jobs</h1>
-      {shipments.map((s) => (
-        <Link key={s.id} href={`/driver/shipments/${s.id}`}>
-          <Card className="mb-3 border-[#1a1725] bg-[#0a0715] hover:border-[#FF3E41]/50 cursor-pointer transition-colors">
-            <CardContent className="flex items-center justify-between pt-6">
-              <div>
-                <p className="font-mono text-xs text-gray-400">{s.tracking_number || "—"}</p>
-                <p className="font-medium text-white">{s.receiver_name}</p>
-                <p className="text-sm text-gray-400">{s.destination_city || s.receiver_address || ""}</p>
-              </div>
-              <Badge variant="outline" className={statusColors[s.status] || "bg-gray-900/50 text-gray-400"}>{s.status?.replace(/_/g, " ") || "available"}</Badge>
-            </CardContent>
-          </Card>
-        </Link>
-      ))}
-      {shipments.length === 0 && <p className="text-gray-500">No available jobs.</p>}
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Available Jobs</h1>
+      <div className="space-y-3">
+        {shipments.map((s) => (
+          <Link key={s.id} href={`/driver/shipments/${s.id}`}>
+            <Card className="border transition-all cursor-pointer"
+              style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+              <CardContent className="flex items-center justify-between pt-6">
+                <div>
+                  <p className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>{s.tracking_number || "—"}</p>
+                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{s.receiver_name}</p>
+                  <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{s.destination_city || s.receiver_address || ""}</p>
+                </div>
+                <Badge variant="outline" className={statusColors[s.status] || "text-gray-400 border-gray-700 bg-gray-900/20"}>
+                  {s.status?.replace(/_/g, " ") || "available"}
+                </Badge>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+        {shipments.length === 0 && <p style={{ color: 'var(--text-muted)' }}>No available jobs.</p>}
+      </div>
     </div>
   )
 }

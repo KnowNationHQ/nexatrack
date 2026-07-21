@@ -52,22 +52,22 @@ export default function CategoriesPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Categories</h1>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Categories</h1>
         <Button onClick={openAdd} className="bg-[#FF3E41] hover:bg-[#d92e31]"><Plus size={16} className="mr-1" /> Add</Button>
       </div>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Search size={16} className="text-gray-400" />
-            <Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="border-[#1a1725] bg-[#1a1725] text-white" />
+            <Search size={16} style={{ color: 'var(--text-muted)' }} />
+            <Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} />
           </div>
         </CardHeader>
         <CardContent>
           <MobileTable
             cols={[
               { label: "Name", key: "name" },
-              { label: "Description", key: "description", render: (i) => <span className="text-gray-400">{i.description || "—"}</span> },
-              { label: "Sort Order", key: "sort_order", render: (i) => <span className="text-gray-400">{i.sort_order || 0}</span> },
+              { label: "Description", key: "description", render: (i) => <span style={{ color: 'var(--text-muted)' }}>{i.description || "—"}</span> },
+              { label: "Sort Order", key: "sort_order", render: (i) => <span style={{ color: 'var(--text-muted)' }}>{i.sort_order || 0}</span> },
               { label: "Actions", key: "actions", render: (i) => <div className="flex gap-2"><button onClick={() => openEdit(i)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
             ]}
             data={filtered}
@@ -76,24 +76,24 @@ export default function CategoriesPage() {
       </Card>
 
       <Dialog open={dialog} onOpenChange={setDialog}>
-        <DialogContent className="border-[#1a1725] bg-[#0a0715] text-white">
+        <DialogContent style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)', color: 'var(--text-primary)' }}>
           <DialogHeader><DialogTitle>{editing ? "Edit Category" : "Add Category"}</DialogTitle></DialogHeader>
           <div className="space-y-4">
-            <div><label className="mb-1 block text-sm text-gray-400">Name</label><Input value={form.name} onChange={set("name")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+            <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Name</label><Input value={form.name} onChange={set("name")} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDialog(false)} className="text-gray-400">Cancel</Button>
+            <Button variant="ghost" onClick={() => setDialog(false)} style={{ color: 'var(--text-muted)' }}>Cancel</Button>
             <Button onClick={save} disabled={saving} className="bg-[#FF3E41] hover:bg-[#d92e31]">{saving ? "Saving..." : "Save"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       <Dialog open={!!deleteId} onOpenChange={(o) => { if (!o) setDeleteId(null) }}>
-        <DialogContent className="border-[#1a1725] bg-[#0a0715] text-white">
+        <DialogContent style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)', color: 'var(--text-primary)' }}>
           <DialogHeader><DialogTitle>Delete Category</DialogTitle></DialogHeader>
-          <p className="text-sm text-gray-400">Are you sure? This cannot be undone.</p>
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Are you sure? This cannot be undone.</p>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDeleteId(null)} className="text-gray-400">Cancel</Button>
+            <Button variant="ghost" onClick={() => setDeleteId(null)} style={{ color: 'var(--text-muted)' }}>Cancel</Button>
             <Button onClick={remove} className="bg-red-600 hover:bg-red-700">Delete</Button>
           </DialogFooter>
         </DialogContent>

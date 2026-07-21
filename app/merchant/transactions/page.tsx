@@ -24,15 +24,15 @@ export default function MerchantTransactions() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">My Transactions</h1>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
-        <CardHeader><h2 className="text-sm font-medium text-gray-400">Recent Transactions</h2></CardHeader>
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>My Transactions</h1>
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+        <CardHeader><h2 className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>Recent Transactions</h2></CardHeader>
         <CardContent>
           {items.map((i) => (
-            <div key={i.id} className="flex items-center justify-between border-b border-[#1a1725] py-3 text-white">
+            <div key={i.id} className="flex items-center justify-between border-b py-3" style={{ borderBottomColor: 'var(--card-border)', color: 'var(--text-primary)' }}>
               <div>
                 <p className="font-medium capitalize">{i.type}</p>
-                <p className="text-xs text-gray-400">{i.created_at ? new Date(i.created_at).toLocaleDateString() : ""}</p>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{i.created_at ? new Date(i.created_at).toLocaleDateString() : ""}</p>
               </div>
               <div className="text-right">
                 <p className={`font-semibold ${i.type === "credit" ? "text-green-400" : "text-red-400"}`}>
@@ -46,4 +46,3 @@ export default function MerchantTransactions() {
     </div>
   )
 }
-

@@ -97,24 +97,24 @@ function TrackPageInner() {
   const currentIdx = shipment ? ALL_STATUSES.indexOf(shipment.status) : -1
 
   return (
-    <div className="min-h-screen bg-[#0a0715] p-4 md:p-8">
+    <div className="min-h-screen p-4 md:p-8" style={{backgroundColor:'var(--card-bg)'}}>
       <div className="mx-auto w-full max-w-2xl px-4">
         <div className="mb-8 flex items-center gap-3">
           <Package className="h-8 w-8 text-[#FF3E41]" />
           <div>
-            <h1 className="text-3xl font-bold text-white">Track Your Shipment</h1>
-            <p className="text-sm text-gray-500">Enter your tracking number to see real-time updates</p>
+            <h1 className="text-3xl font-bold" style={{color:'var(--text-primary)'}}>Track Your Shipment</h1>
+            <p className="text-sm" style={{color:'var(--text-muted)'}}>Enter your tracking number to see real-time updates</p>
           </div>
         </div>
 
-        <Card className="mb-6 border-[#1a1725] bg-[#0a0715]">
+        <Card className="mb-6" style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
           <CardContent className="pt-6">
             <form onSubmit={handleTrack} className="flex gap-2">
               <Input
                 placeholder="Enter tracking number (e.g. NXT-...)"
                 value={tracking}
                 onChange={(e) => setTracking(e.target.value)}
-                className="border-[#1a1725] bg-[#1a1725] text-white"
+                style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}}
               />
               <Button type="submit" disabled={loading} className="bg-[#FF3E41] hover:bg-[#d92e31]">
                 <Search size={16} className="mr-1" /> Track
@@ -127,12 +127,12 @@ function TrackPageInner() {
 
         {shipment && (
           <>
-            <Card className="mb-4 border-[#1a1725] bg-[#0a0715]">
+            <Card className="mb-4" style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
               <CardHeader>
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
-                    <CardTitle className="text-white">Shipment Status</CardTitle>
-                    <p className="font-mono text-xs text-gray-500">{shipment.tracking_number}</p>
+                    <CardTitle className="" style={{color:'var(--text-primary)'}}>Shipment Status</CardTitle>
+                    <p className="font-mono text-xs" style={{color:'var(--text-muted)'}}>{shipment.tracking_number}</p>
                   </div>
                   <Badge variant="outline" className={statusColors[shipment.status] || ""}>
                     {STATUS_LABELS[shipment.status] || shipment.status?.replace(/_/g, " ")}
@@ -142,26 +142,26 @@ function TrackPageInner() {
               <CardContent className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <p className="text-sm text-gray-400">From</p>
-                    <p className="text-white">{shipment.origin_city || "—"}</p>
+                    <p className="text-sm" style={{color:'var(--text-muted)'}}>From</p>
+                    <p style={{color:'var(--text-primary)'}}>{shipment.origin_city || "—"}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400">To</p>
-                    <p className="text-white">{shipment.destination_city || "—"}</p>
+                    <p className="text-sm" style={{color:'var(--text-muted)'}}>To</p>
+                    <p style={{color:'var(--text-primary)'}}>{shipment.destination_city || "—"}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400">Weight</p>
-                    <p className="text-white">{shipment.weight} kg</p>
+                    <p className="text-sm" style={{color:'var(--text-muted)'}}>Weight</p>
+                    <p style={{color:'var(--text-primary)'}}>{shipment.weight} kg</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-400">Status</p>
-                    <p className="text-white capitalize">{shipment.status?.replace(/_/g, " ")}</p>
+                    <p className="text-sm" style={{color:'var(--text-muted)'}}>Status</p>
+                    <p className="capitalize" style={{color:'var(--text-primary)'}}>{shipment.status?.replace(/_/g, " ")}</p>
                   </div>
                 </div>
 
                 {shipment.status !== "cancelled" && (
                   <div className="space-y-2">
-                    <p className="text-xs text-gray-500">Progress</p>
+                    <p className="text-xs" style={{color:'var(--text-muted)'}}>Progress</p>
                     <div className="flex items-center gap-1 overflow-x-auto pb-1">
                       {ALL_STATUSES.map((s, i) => {
                         const isComplete = currentIdx > i || (currentIdx === i && s === shipment.status)
@@ -169,12 +169,12 @@ function TrackPageInner() {
                         return (
                           <div key={s} className="flex items-center gap-1">
                             <div className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium whitespace-nowrap ${
-                              isCurrent ? "bg-[#FF3E41] text-white" : isComplete ? "bg-green-900/50 text-green-300" : "bg-[#1a1725] text-gray-600"
-                            }`}>
+                              isCurrent ? "bg-[#FF3E41] text-white" : isComplete ? "bg-green-900/50 text-green-300" : ""
+                            }`} style={!isCurrent && !isComplete ? {backgroundColor:'var(--input-bg)',color:'var(--text-muted)'} : undefined}>
                               {STATUS_LABELS[s]}
                             </div>
                             {i < ALL_STATUSES.length - 1 && (
-                              <ChevronRight size={12} className={`shrink-0 ${isComplete && i < ALL_STATUSES.length - 1 ? "text-green-500" : "text-[#1a1725]"}`} />
+                              <ChevronRight size={12} className="shrink-0" style={{color: isComplete && i < ALL_STATUSES.length - 1 ? '#22c55e' : 'var(--card-border)'}} />
                             )}
                           </div>
                         )
@@ -184,13 +184,13 @@ function TrackPageInner() {
                 )}
 
                 <div className="flex flex-wrap gap-2 pt-2">
-                  <Button variant="outline" size="sm" onClick={shareWhatsApp} className="border-[#1a1725] text-gray-400 hover:text-white">
+                  <Button variant="outline" size="sm" onClick={shareWhatsApp} style={{borderColor:'var(--card-border)',color:'var(--text-muted)'}} onMouseEnter={(e)=>(e.currentTarget.style.color='white')} onMouseLeave={(e)=>(e.currentTarget.style.color='var(--text-muted)')}>
                     <Share2 size={14} className="mr-1" /> WhatsApp
                   </Button>
-                  <Button variant="outline" size="sm" onClick={shareSMS} className="border-[#1a1725] text-gray-400 hover:text-white">
+                  <Button variant="outline" size="sm" onClick={shareSMS} style={{borderColor:'var(--card-border)',color:'var(--text-muted)'}} onMouseEnter={(e)=>(e.currentTarget.style.color='white')} onMouseLeave={(e)=>(e.currentTarget.style.color='var(--text-muted)')}>
                     <Share2 size={14} className="mr-1" /> SMS
                   </Button>
-                  <Button variant="outline" size="sm" onClick={copyLink} className="border-[#1a1725] text-gray-400 hover:text-white">
+                  <Button variant="outline" size="sm" onClick={copyLink} style={{borderColor:'var(--card-border)',color:'var(--text-muted)'}} onMouseEnter={(e)=>(e.currentTarget.style.color='white')} onMouseLeave={(e)=>(e.currentTarget.style.color='var(--text-muted)')}>
                     {copied ? <Check size={14} className="mr-1 text-green-400" /> : <Copy size={14} className="mr-1" />}
                     {copied ? "Copied" : "Copy Link"}
                   </Button>
@@ -200,7 +200,7 @@ function TrackPageInner() {
 
             {driverLoc && (
               <div className="mt-6">
-                <h2 className="mb-3 text-lg font-semibold text-white">Driver Location</h2>
+                <h2 className="mb-3 text-lg font-semibold" style={{color:'var(--text-primary)'}}>Driver Location</h2>
                 <MapView
                   center={[driverLoc.latitude, driverLoc.longitude]}
                   zoom={15}
@@ -210,21 +210,21 @@ function TrackPageInner() {
             )}
 
             {events.length > 0 && (
-              <Card className="mb-4 border-[#1a1725] bg-[#0a0715]">
-                <CardHeader><CardTitle className="text-white">Tracking History</CardTitle></CardHeader>
+              <Card className="mb-4" style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
+                <CardHeader><CardTitle className="" style={{color:'var(--text-primary)'}}>Tracking History</CardTitle></CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {events.map((e, i) => (
                       <div key={e.id || i} className="flex gap-3">
                         <div className="flex flex-col items-center">
-                          <div className={`h-3 w-3 rounded-full ${i === 0 ? "bg-[#FF3E41]" : "bg-[#1a1725]"}`} />
-                          {i < events.length - 1 && <div className="w-0.5 flex-1 bg-[#1a1725]" />}
+                          <div className="h-3 w-3 rounded-full" style={{backgroundColor: i === 0 ? '#FF3E41' : 'var(--card-border)'}} />
+                          {i < events.length - 1 && <div className="w-0.5 flex-1" style={{backgroundColor:'var(--card-border)'}} />}
                         </div>
                         <div className="pb-4">
-                          <p className="font-medium text-white">{e.title}</p>
-                          {e.location && <p className="flex items-center gap-1 text-sm text-gray-400"><MapPin size={12} />{e.location}</p>}
-                          {e.description && <p className="text-sm text-gray-400">{e.description}</p>}
-                          <p className="text-xs text-gray-500">{e.event_time ? new Date(e.event_time).toLocaleString() : e.created_at ? new Date(e.created_at).toLocaleString() : ""}</p>
+                          <p className="font-medium" style={{color:'var(--text-primary)'}}>{e.title}</p>
+                          {e.location && <p className="flex items-center gap-1 text-sm" style={{color:'var(--text-muted)'}}><MapPin size={12} />{e.location}</p>}
+                          {e.description && <p className="text-sm" style={{color:'var(--text-muted)'}}>{e.description}</p>}
+                          <p className="text-xs" style={{color:'var(--text-muted)'}}>{e.event_time ? new Date(e.event_time).toLocaleString() : e.created_at ? new Date(e.created_at).toLocaleString() : ""}</p>
                         </div>
                       </div>
                     ))}
@@ -233,12 +233,12 @@ function TrackPageInner() {
               </Card>
             )}
 
-            <div className="flex flex-wrap items-center justify-center gap-4 rounded-lg border border-[#1a1725] bg-[#0d0a18] p-4">
-              <div className="flex items-center gap-2 text-sm text-gray-400">
+            <div className="flex flex-wrap items-center justify-center gap-4 rounded-lg border bg-[#0d0a18] p-4" style={{borderColor:'var(--card-border)'}}>
+              <div className="flex items-center gap-2 text-sm" style={{color:'var(--text-muted)'}}>
                 <Truck size={16} className="text-[#FF3E41]" />
                 <span>1,000+ deliveries across Florida</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-400">
+              <div className="flex items-center gap-2 text-sm" style={{color:'var(--text-muted)'}}>
                 <Shield size={16} className="text-green-400" />
                 <span>Real-time tracking</span>
               </div>
@@ -250,8 +250,8 @@ function TrackPageInner() {
         )}
 
         {!shipment && !loading && tracking && (
-          <div className="flex flex-wrap items-center justify-center gap-4 rounded-lg border border-[#1a1725] bg-[#0d0a18] p-4">
-            <p className="text-sm text-gray-400">Need to send a package?</p>
+          <div className="flex flex-wrap items-center justify-center gap-4 rounded-lg border bg-[#0d0a18] p-4" style={{borderColor:'var(--card-border)'}}>
+            <p className="text-sm" style={{color:'var(--text-muted)'}}>Need to send a package?</p>
             <Link href="/auth/register" className="text-sm font-medium text-[#FF3E41] hover:underline">
               Sign up free → Nexatrack
             </Link>

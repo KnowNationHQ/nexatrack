@@ -25,21 +25,21 @@ export default function TicketsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Support Tickets</h1>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
+      <h1 style={{color:'var(--text-primary)'}} className="mb-6 text-2xl font-bold">Support Tickets</h1>
+      <Card style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Search size={16} className="text-gray-400" />
-            <Input placeholder="Search tickets..." value={search} onChange={(e) => setSearch(e.target.value)} className="border-[#1a1725] bg-[#1a1725] text-white" />
+            <Search size={16} style={{color:'var(--text-muted)'}} />
+            <Input placeholder="Search tickets..." value={search} onChange={(e) => setSearch(e.target.value)} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} />
           </div>
         </CardHeader>
         <CardContent>
           <MobileTable
             cols={[
               { label: "Subject", key: "subject" },
-              { label: "User", key: "profiles", render: (i) => <span className="text-gray-400">{i.profiles?.full_name || i.profiles?.email || "—"}</span> },
+              { label: "User", key: "profiles", render: (i) => <span style={{color:'var(--text-muted)'}}>{i.profiles?.full_name || i.profiles?.email || "—"}</span> },
               { label: "Status", key: "status", render: (i) => <Badge variant="outline" className={i.status === "open" ? "bg-green-900/50 text-green-400" : i.status === "in_progress" ? "bg-blue-900/50 text-blue-400" : "bg-gray-900/50 text-gray-400"}>{i.status}</Badge> },
-              { label: "Date", key: "created_at", render: (i) => <span className="text-gray-400">{i.created_at ? new Date(i.created_at).toLocaleDateString() : "—"}</span> },
+              { label: "Date", key: "created_at", render: (i) => <span style={{color:'var(--text-muted)'}}>{i.created_at ? new Date(i.created_at).toLocaleDateString() : "—"}</span> },
             ]}
             data={filtered}
           />

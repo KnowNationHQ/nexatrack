@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Link from "next/link"
 import { db } from "@/lib/db-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -40,26 +41,28 @@ export default function ShipmentsPage() {
       s.receiver_name?.toLowerCase().includes(search.toLowerCase())
   )
 
-  if (loading) return <div className="text-center text-gray-500 py-8">Loading...</div>
+  if (loading) return <div className="text-center py-8" style={{ color: 'var(--text-muted)' }}>Loading...</div>
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Shipments</h1>
-        <Button className="bg-[#FF3E41] hover:bg-[#d92e31]">
-          <Plus size={16} className="mr-1" /> New Shipment
-        </Button>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Shipments</h1>
+        <Link href="/admin/shipments/new">
+          <Button className="bg-[#FF3E41] hover:bg-[#d92e31]">
+            <Plus size={16} className="mr-1" /> New Shipment
+          </Button>
+        </Link>
       </div>
 
-      <Card className="border-[#1a1725] bg-[#0a0715]">
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Search size={16} className="text-gray-400" />
+            <Search size={16} style={{ color: 'var(--text-muted)' }} />
             <Input
               placeholder="Search by tracking #, sender or receiver..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border-[#1a1725] bg-[#1a1725] text-white"
+              style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }}
             />
           </div>
         </CardHeader>
@@ -71,7 +74,7 @@ export default function ShipmentsPage() {
               { label: "Receiver", key: "receiver_name" },
               { label: "Status", key: "status", render: (s) => <Badge variant="outline" className={statusColors[s.status] || ""}>{s.status?.replace(/_/g, " ") || "pending"}</Badge> },
               { label: "Charge", key: "total_charge", render: (s) => `$${Number(s.total_charge || 0).toFixed(2)}` },
-              { label: "Date", key: "created_at", render: (s) => <span className="text-gray-400">{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
+              { label: "Date", key: "created_at", render: (s) => <span style={{ color: 'var(--text-muted)' }}>{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
             ]}
             data={filtered}
             onRowClick={(s) => window.location.href = `/admin/shipments/${s.id}`}

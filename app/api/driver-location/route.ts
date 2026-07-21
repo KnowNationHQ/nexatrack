@@ -15,8 +15,8 @@ export async function GET(req: Request) {
     .not("lat", "is", null)
     .order("event_time", { ascending: false })
     .limit(1)
-    .single()
-  if (error && error.code !== "PGRST116") {
+    .maybeSingle()
+  if (error) {
     return NextResponse.json({ error: error.message }, { status: 400 })
   }
   if (!data) return NextResponse.json(null)

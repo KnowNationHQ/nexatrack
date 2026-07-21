@@ -1,40 +1,13 @@
-# Task 4 Report: Replace Formspree with Own Form Submissions API
+# Task 4 Report — Driver Location Sender
 
-## Changes Made
+**Status:** DONE
 
-Replaced all Formspree forms (`https://formspree.io/f/meoebapa`) across 8 HTML pages with our own Supabase Edge Function endpoint.
+## Files Created
+- `components/driver-location-sender.tsx` — Client component wrapping `navigator.geolocation.watchPosition`. Sends lat/lng to `POST /api/update-location` on each position update. Displays a green pulsing dot + "GPS active" indicator. Cleans up the watch on unmount.
 
-### Forms replaced per page
+## Files Modified
+- `app/driver/shipments/[id]/page.tsx` — Added import and rendered `<DriverLocationSender>` after the weight line when `isAssignedToMe` is true.
 
-| Page | Forms |
-|------|-------|
-| index.html | `#quote-form` (quote section), `#newsletter-form` (footer) |
-| contact.html | `#contact-form` (contact page), `#newsletter-form` (footer) |
-| quote.html | `#quote-form` (quote page), `#newsletter-form` (footer) |
-| about.html | `#newsletter-form` (footer) |
-| service.html | `#newsletter-form` (footer) |
-| feature.html | `#newsletter-form` (footer) |
-| tracking.html | `#newsletter-form` (footer) |
-| chatbot.html | `#newsletter-form` (footer) |
-
-### What was done
-- Removed `action` and `method` from each `<form>`, added unique `id`
-- Added inline `<script>` before `</body>` with a self-executing function that:
-  - Intercepts form submit via `addEventListener`
-  - Serializes form data as `{ type, data: { key: value } }`
-  - POSTs JSON to the Edge Function endpoint
-  - Replaces the form with a success alert on 200, or shows error with phone fallback
-- Pages with multiple forms (index, contact, quote) handle both in one script block using an array loop
-- Pages with only the newsletter form handle it with a focused single-form script
-
-### API endpoint
-`POST https://ujcokrzjvjdrcrdhcnjy.supabase.co/functions/v1/shipments-api?action=submit-form`
-Content-Type: `application/json`
-
-### Error handling
-- Uses `NXT_PHONE` global (from `js/main.js`) if available, falls back to `'+1 (506) 501-4402'`
-- On success: form is replaced with an `alert-success` div
-- On failure: browser `alert()` with phone number
-
-### Verification
-- Grep for `formspree` across all HTML files: **0 matches**
+## Concerns
+- `navigator.geolocation.watchPosition` fires as often as the device provides updates (not strictly every 10s). The `maximumAge: 10000` + `timeout: 15000` options approximate a 10s cadence but actual frequency depends on the device. This matches the intent of "every 10 seconds" without adding a custom interval timer.
+- Requires HTTPS for geolocation in production (standard browser security).

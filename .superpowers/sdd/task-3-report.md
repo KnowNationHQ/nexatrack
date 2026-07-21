@@ -1,13 +1,32 @@
-# Task 3 Report: Form Submissions
+# Task 3 Report: Install Leaflet & Create MapView
 
-## Steps Completed
-1. **Migration applied** — `add_form_submissions_table` with RLS policies for anon insert / auth select+update
-2. **Migration saved** — `supabase/migrations/20260720_add_form_submissions.sql`
-3. **Edge function updated** — `submit-form` action added before `dashboard-stats`; `form_submissions` added to `CRUD_TABLES`
-4. **Function deployed** — `shipments-api` redeployed successfully
-5. **Committed** — SHA `448adba`
+## npm Install Output
 
-## Verification
-- `GET https://ujcokrzjvjdrcrdhcnjy.supabase.co/functions/v1/shipments-api?action=submit-form` returns 405 (expected — POST only)
-- `POST` with `{ type: "contact", data: { name: "Test" } }` should return 201
-- Admin CRUD via `list-form_submissions`, `get-form_submissions`, `update-form_submissions` available for authenticated users
+```
+> nexatrack@0.1.0 install
+> npm install leaflet
+
+added 1 package, and audited 503 packages in 36s
+
+> npm install -D @types/leaflet
+
+added 2 packages, and audited 505 packages in 9s
+```
+
+Packages installed:
+- `leaflet` (runtime)
+- `@types/leaflet` (dev)
+
+## Files Created
+
+- `components/map.tsx` — MapView component with:
+  - Leaflet map initialization (single-run via ref guard)
+  - OpenStreetMap tile layer
+  - Marker support with popups
+  - Dynamic center/zoom updates
+  - Default center: Polk County, FL (27.9942, -81.7603)
+
+## Issues
+
+- npm audit reports 6 vulnerabilities (2 moderate, 4 high) — pre-existing, unrelated to leaflet.
+- MapView is a Client Component (`"use client"`) — required for browser-only leaflet APIs.

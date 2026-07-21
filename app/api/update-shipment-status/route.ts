@@ -9,10 +9,10 @@ const VALID_STATUSES = [
 ]
 
 export async function POST(req: Request) {
-  const { parcelId, status, location, description } = await req.json()
+  const { shipment_id, status, location, description } = await req.json()
 
-  if (!parcelId || !status) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+  if (!shipment_id || !status) {
+    return NextResponse.json({ error: "Missing shipment_id or status" }, { status: 400 })
   }
 
   if (!VALID_STATUSES.includes(status)) {
@@ -24,14 +24,14 @@ export async function POST(req: Request) {
   const { error: updateError } = await supabase
     .from("parcels")
     .update({ status, updated_at: new Date().toISOString() })
-    .eq("id", parcelId)
+    .eq("id", shipment_id)
 
   if (updateError) {
-    return NextResponse.json({ error: updateError.message }, { status: 500 })
+    return NextResponse.json({ error: updateError.message }, { status: 400 })
   }
 
   const { error: eventError } = await supabase.from("tracking_events").insert({
-    shipment_id: parcelId,
+    shipment_id,
     title: status.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase()),
     description: description || `Status updated to ${status.replace(/_/g, " ")}`,
     location: location || null,
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   })
 
   if (eventError) {
-    return NextResponse.json({ error: eventError.message }, { status: 500 })
+    return NextResponse.json({ error: eventError.message }, { status: 400 })
   }
 
   return NextResponse.json({ ok: true })

@@ -60,6 +60,11 @@ export default function MerchantLayout({ children }: { children: React.ReactNode
           --main-bg: #0a0715;
           --main-border: #1a1725;
           --card-bg: #0a0715;
+          --card-border: #1a1725;
+          --text-primary: #ffffff;
+          --text-secondary: #d1d5db;
+          --text-muted: #9ca3af;
+          --input-bg: #1a1725;
         }
         [data-theme=light] {
           --sidebar-bg: #ffffff;
@@ -73,7 +78,17 @@ export default function MerchantLayout({ children }: { children: React.ReactNode
           --main-bg: #f9fafb;
           --main-border: #e5e7eb;
           --card-bg: #ffffff;
+          --card-border: #e5e7eb;
+          --text-primary: #111827;
+          --text-secondary: #374151;
+          --text-muted: #6b7280;
+          --input-bg: #f3f4f6;
         }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #FF3E41; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d92e31; }
+        * { scrollbar-width: thin; scrollbar-color: #FF3E41 transparent; }
         .sidebar-scroll::-webkit-scrollbar { width: 4px; }
         .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
         .sidebar-scroll::-webkit-scrollbar-thumb { background: #FF3E41; border-radius: 4px; }

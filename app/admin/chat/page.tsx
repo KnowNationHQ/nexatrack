@@ -42,16 +42,15 @@ export default function ChatPage() {
 
   return (
     <div className="flex h-[calc(100vh-5rem)] flex-col">
-      <h1 className="mb-4 text-2xl font-bold text-white">Live Chat</h1>
-      <Card className="flex flex-1 flex-col border-[#1a1725] bg-[#0a0715]">
-        <CardHeader><CardTitle className="text-white">Messages</CardTitle></CardHeader>
+      <h1 style={{color:'var(--text-primary)'}} className="mb-4 text-2xl font-bold">Live Chat</h1>
+      <Card style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}} className="flex flex-1 flex-col">
+        <CardHeader><CardTitle style={{color:'var(--text-primary)'}}>Messages</CardTitle></CardHeader>
         <CardContent className="flex flex-1 flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto space-y-2 mb-4">
             {messages.map((m, i) => (
               <div key={m.id || i} className={`flex ${m.sender_role === "admin" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[70%] rounded-lg px-3 py-2 text-sm ${
-                  m.sender_role === "admin" ? "bg-[#FF3E41] text-white" : "bg-[#1a1725] text-gray-200"
-                }`}>
+                <div className="max-w-[70%] rounded-lg px-3 py-2 text-sm"
+                  style={m.sender_role === "admin" ? {backgroundColor:'#FF3E41',color:'var(--text-primary)'} : {backgroundColor:'var(--input-bg)',color:'var(--text-muted)'}}>
                   <p>{m.message}</p>
                   <p className="mt-1 text-xs opacity-60">{m.created_at ? new Date(m.created_at).toLocaleTimeString() : ""}</p>
                 </div>
@@ -65,7 +64,7 @@ export default function ChatPage() {
               onChange={(e) => setText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               placeholder="Type a message..."
-              className="border-[#1a1725] bg-[#1a1725] text-white"
+              style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}}
             />
             <Button onClick={sendMessage} className="bg-[#FF3E41] hover:bg-[#d92e31]">
               <Send size={16} />

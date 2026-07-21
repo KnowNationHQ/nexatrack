@@ -21,22 +21,22 @@ export default function PickupsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">Pickup Requests</h1>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Pickup Requests</h1>
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Search size={16} className="text-gray-400" />
-            <Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="border-[#1a1725] bg-[#1a1725] text-white" />
+            <Search size={16} style={{ color: 'var(--text-muted)' }} />
+            <Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} />
           </div>
         </CardHeader>
         <CardContent>
           <MobileTable
             cols={[
               { label: "Address", key: "address", render: (p) => p.address || "—" },
-              { label: "City", key: "city", render: (p) => <span className="text-gray-400">{p.city || "—"}</span> },
+              { label: "City", key: "city", render: (p) => <span style={{ color: 'var(--text-muted)' }}>{p.city || "—"}</span> },
               { label: "Parcels", key: "parcel_count", render: (p) => p.parcel_count || 1 },
               { label: "Status", key: "status", render: (p) => <Badge variant="outline" className={p.status === "pending" ? "bg-yellow-900/50 text-yellow-400" : "bg-green-900/50 text-green-400"}>{p.status || "pending"}</Badge> },
-              { label: "Date", key: "created_at", render: (p) => <span className="text-gray-400">{p.created_at ? new Date(p.created_at).toLocaleDateString() : "—"}</span> },
+              { label: "Date", key: "created_at", render: (p) => <span style={{ color: 'var(--text-muted)' }}>{p.created_at ? new Date(p.created_at).toLocaleDateString() : "—"}</span> },
             ]}
             data={filtered}
           />

@@ -22,8 +22,8 @@ export default function MerchantInvoices() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-white">My Invoices</h1>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
+      <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>My Invoices</h1>
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardContent className="pt-6">
           <MobileTable
             cols={[

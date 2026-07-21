@@ -95,6 +95,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           --main-border: #1a1725;
           --card-bg: #0a0715;
           --card-border: #1a1725;
+          --card-hover: #12101e;
+          --text-primary: #ffffff;
+          --text-secondary: #d1d5db;
+          --text-muted: #9ca3af;
+          --input-bg: #1a1725;
+          --badge-bg: rgba(26,23,37,0.5);
         }
         [data-theme=light] {
           --sidebar-bg: #ffffff;
@@ -110,7 +116,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           --main-border: #e5e7eb;
           --card-bg: #ffffff;
           --card-border: #e5e7eb;
+          --card-hover: #f3f4f6;
+          --text-primary: #111827;
+          --text-secondary: #374151;
+          --text-muted: #6b7280;
+          --input-bg: #f3f4f6;
+          --badge-bg: rgba(243,244,246,0.5);
         }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #FF3E41; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d92e31; }
+        * { scrollbar-width: thin; scrollbar-color: #FF3E41 transparent; }
         .sidebar-scroll::-webkit-scrollbar { width: 4px; }
         .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
         .sidebar-scroll::-webkit-scrollbar-thumb { background: #FF3E41; border-radius: 4px; }

@@ -58,8 +58,8 @@ export default function AdminDashboard() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-500">Overview of your courier operations</p>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Dashboard</h1>
+        <p className="mt-1 text-sm" style={{ color: 'var(--text-muted)' }}>Overview of your courier operations</p>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
         {cardStyle.map((card, i) => {
@@ -67,17 +67,17 @@ export default function AdminDashboard() {
           const display = card.isCurrency ? `$${Number(val).toLocaleString()}` : val
           return (
             <Link key={card.label} href={card.href} className="block">
-            <Card className="group relative overflow-hidden border-[#1a1725]/60 bg-gradient-to-b from-[#0a0715] to-[#0d0a1a] shadow-lg shadow-black/20 transition-all duration-300 hover:border-[#FF3E41]/20 hover:shadow-[#FF3E41]/5 cursor-pointer">
+            <Card className="group relative overflow-hidden shadow-lg shadow-black/20 transition-all duration-300 hover:border-[#FF3E41]/20 hover:shadow-[#FF3E41]/5 cursor-pointer" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
               <div className="absolute right-0 top-0 h-20 w-20 translate-x-6 -translate-y-6 rounded-full opacity-5 transition-all group-hover:opacity-10"
                 style={{ background: `radial-gradient(circle, ${card.hex}33)` }} />
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <div className={`rounded-xl ${card.bg} p-2.5`}>{card.svg}</div>
-                  <ArrowUpRight size={14} className="text-gray-600 transition-all group-hover:text-[#FF3E41]" />
+                  <ArrowUpRight size={14} className="transition-all group-hover:text-[#FF3E41]" style={{ color: 'var(--text-muted)' }} />
                 </div>
                 <div className="mt-4">
-                  <div className="text-2xl font-bold tracking-tight text-white">{display}</div>
-                  <div className="mt-1 text-xs text-gray-500">{card.label}</div>
+                  <div className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>{display}</div>
+                  <div className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>{card.label}</div>
                 </div>
               </CardContent>
             </Card>

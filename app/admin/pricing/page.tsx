@@ -71,14 +71,14 @@ export default function PricingPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white">Pricing</h1>
+        <h1 style={{color:'var(--text-primary)'}} className="text-2xl font-bold">Pricing</h1>
         <Button onClick={openAdd} className="bg-[#FF3E41] hover:bg-[#d92e31]"><Plus size={16} className="mr-1" /> Add</Button>
       </div>
-      <Card className="border-[#1a1725] bg-[#0a0715]">
+      <Card style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <Search size={16} className="text-gray-400" />
-            <Input placeholder="Search by category..." value={search} onChange={(e) => setSearch(e.target.value)} className="border-[#1a1725] bg-[#1a1725] text-white" />
+            <Search size={16} style={{color:'var(--text-muted)'}} />
+            <Input placeholder="Search by category..." value={search} onChange={(e) => setSearch(e.target.value)} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} />
           </div>
         </CardHeader>
         <CardContent>
@@ -98,37 +98,37 @@ export default function PricingPage() {
       </Card>
 
       <Dialog open={dialog} onOpenChange={setDialog}>
-        <DialogContent className="border-[#1a1725] bg-[#0a0715] text-white">
+        <DialogContent style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)',color:'var(--text-primary)'}}>
           <DialogHeader><DialogTitle>{editing ? "Edit Pricing" : "Add Pricing"}</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="mb-1 block text-sm text-gray-400">Category</label>
-              <select value={form.category_id} onChange={set("category_id")} className="w-full rounded-md border border-[#1a1725] bg-[#1a1725] p-2 text-sm text-white">
+              <label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Category</label>
+              <select value={form.category_id} onChange={set("category_id")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} className="w-full rounded-md border p-2 text-sm">
                 <option value="">Select category</option>
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
-            <div><label className="mb-1 block text-sm text-gray-400">Weight (kg)</label><Input type="number" step="0.1" value={form.weight} onChange={set("weight")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+            <div><label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Weight (kg)</label><Input type="number" step="0.1" value={form.weight} onChange={set("weight")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} /></div>
             <div className="grid grid-cols-2 gap-3">
-              <div><label className="mb-1 block text-sm text-gray-400">Same Day ($)</label><Input type="number" step="0.01" value={form.same_day} onChange={set("same_day")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-              <div><label className="mb-1 block text-sm text-gray-400">Next Day ($)</label><Input type="number" step="0.01" value={form.next_day} onChange={set("next_day")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-              <div><label className="mb-1 block text-sm text-gray-400">Sub City ($)</label><Input type="number" step="0.01" value={form.sub_city} onChange={set("sub_city")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-              <div><label className="mb-1 block text-sm text-gray-400">Outside City ($)</label><Input type="number" step="0.01" value={form.outside_city} onChange={set("outside_city")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+              <div><label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Same Day ($)</label><Input type="number" step="0.01" value={form.same_day} onChange={set("same_day")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} /></div>
+              <div><label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Next Day ($)</label><Input type="number" step="0.01" value={form.next_day} onChange={set("next_day")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} /></div>
+              <div><label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Sub City ($)</label><Input type="number" step="0.01" value={form.sub_city} onChange={set("sub_city")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} /></div>
+              <div><label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Outside City ($)</label><Input type="number" step="0.01" value={form.outside_city} onChange={set("outside_city")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} /></div>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDialog(false)} className="text-gray-400">Cancel</Button>
+            <Button variant="ghost" onClick={() => setDialog(false)} style={{color:'var(--text-muted)'}}>Cancel</Button>
             <Button onClick={save} disabled={saving} className="bg-[#FF3E41] hover:bg-[#d92e31]">{saving ? "Saving..." : "Save"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       <Dialog open={!!deleteId} onOpenChange={(o) => { if (!o) setDeleteId(null) }}>
-        <DialogContent className="border-[#1a1725] bg-[#0a0715] text-white">
+        <DialogContent style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)',color:'var(--text-primary)'}}>
           <DialogHeader><DialogTitle>Delete Pricing</DialogTitle></DialogHeader>
-          <p className="text-sm text-gray-400">Are you sure? This cannot be undone.</p>
+          <p style={{color:'var(--text-muted)'}} className="text-sm">Are you sure? This cannot be undone.</p>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDeleteId(null)} className="text-gray-400">Cancel</Button>
+            <Button variant="ghost" onClick={() => setDeleteId(null)} style={{color:'var(--text-muted)'}}>Cancel</Button>
             <Button onClick={remove} className="bg-red-600 hover:bg-red-700">Delete</Button>
           </DialogFooter>
         </DialogContent>

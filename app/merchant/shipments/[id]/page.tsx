@@ -84,7 +84,7 @@ export default function MerchantShipmentDetail() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  if (!shipment) return <p className="text-gray-500">Loading...</p>
+  if (!shipment) return <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
 
   const currentIdx = ALL_STATUSES.indexOf(shipment.status)
   const chargeItems = [
@@ -98,14 +98,14 @@ export default function MerchantShipmentDetail() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" onClick={() => router.push("/merchant/shipments")} className="text-gray-400 hover:text-white">
+        <Button variant="ghost" onClick={() => router.push("/merchant/shipments")} style={{ color: 'var(--text-muted)' }} className="hover:text-white">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={share} className="border-[#1a1725] text-gray-400 hover:text-white">
+          <Button variant="outline" size="sm" onClick={share} style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }} className="hover:text-white">
             <Share2 size={14} className="mr-1" /> Share
           </Button>
-          <Button variant="outline" size="sm" onClick={copyLink} className="border-[#1a1725] text-gray-400 hover:text-white">
+          <Button variant="outline" size="sm" onClick={copyLink} style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }} className="hover:text-white">
             {copied ? <Check size={14} className="mr-1 text-green-400" /> : <Copy size={14} className="mr-1" />}
             {copied ? "Copied" : "Copy Link"}
           </Button>
@@ -114,11 +114,11 @@ export default function MerchantShipmentDetail() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <Card className="border-[#1a1725] bg-[#0a0715]">
+          <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="text-white">Shipment Details</CardTitle>
-                <p className="font-mono text-sm text-gray-400">{shipment.tracking_number}</p>
+                <CardTitle style={{ color: 'var(--text-primary)' }}>Shipment Details</CardTitle>
+                <p className="font-mono text-sm" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>
               </div>
               <Badge variant="outline" className={statusColors[shipment.status] || ""}>
                 {STATUS_LABELS[shipment.status] || shipment.status?.replace(/_/g, " ")}
@@ -127,34 +127,34 @@ export default function MerchantShipmentDetail() {
             <CardContent className="space-y-6">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-3">
-                  <h3 className="flex items-center gap-2 text-sm font-medium text-gray-400"><User size={14} /> Sender</h3>
-                  <p className="text-white">{shipment.sender_name}</p>
-                  {shipment.sender_phone && <p className="flex items-center gap-1 text-sm text-gray-400"><Phone size={12} />{shipment.sender_phone}</p>}
-                  {shipment.sender_address && <p className="flex items-start gap-1 text-sm text-gray-400"><MapPin size={12} className="mt-0.5" />{shipment.sender_address}</p>}
+                  <h3 className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--text-muted)' }}><User size={14} /> Sender</h3>
+                  <p style={{ color: 'var(--text-primary)' }}>{shipment.sender_name}</p>
+                  {shipment.sender_phone && <p className="flex items-center gap-1 text-sm" style={{ color: 'var(--text-muted)' }}><Phone size={12} />{shipment.sender_phone}</p>}
+                  {shipment.sender_address && <p className="flex items-start gap-1 text-sm" style={{ color: 'var(--text-muted)' }}><MapPin size={12} className="mt-0.5" />{shipment.sender_address}</p>}
                 </div>
                 <div className="space-y-3">
-                  <h3 className="flex items-center gap-2 text-sm font-medium text-gray-400"><User size={14} /> Receiver</h3>
-                  <p className="text-white">{shipment.receiver_name}</p>
-                  {shipment.receiver_phone && <p className="flex items-center gap-1 text-sm text-gray-400"><Phone size={12} />{shipment.receiver_phone}</p>}
-                  {shipment.receiver_address && <p className="flex items-start gap-1 text-sm text-gray-400"><MapPin size={12} className="mt-0.5" />{shipment.receiver_address}</p>}
+                  <h3 className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--text-muted)' }}><User size={14} /> Receiver</h3>
+                  <p style={{ color: 'var(--text-primary)' }}>{shipment.receiver_name}</p>
+                  {shipment.receiver_phone && <p className="flex items-center gap-1 text-sm" style={{ color: 'var(--text-muted)' }}><Phone size={12} />{shipment.receiver_phone}</p>}
+                  {shipment.receiver_address && <p className="flex items-start gap-1 text-sm" style={{ color: 'var(--text-muted)' }}><MapPin size={12} className="mt-0.5" />{shipment.receiver_address}</p>}
                 </div>
               </div>
 
               <div className="grid gap-4 md:grid-cols-4">
                 <div className="space-y-1">
-                  <p className="flex items-center gap-1 text-sm text-gray-400"><Map size={12} /> Route</p>
-                  <p className="text-white text-sm">{shipment.origin_city} → {shipment.destination_city}</p>
+                  <p className="flex items-center gap-1 text-sm" style={{ color: 'var(--text-muted)' }}><Map size={12} /> Route</p>
+                  <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{shipment.origin_city} → {shipment.destination_city}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="flex items-center gap-1 text-sm text-gray-400"><Weight size={12} /> Weight</p>
-                  <p className="text-white">{shipment.weight} kg</p>
+                  <p className="flex items-center gap-1 text-sm" style={{ color: 'var(--text-muted)' }}><Weight size={12} /> Weight</p>
+                  <p style={{ color: 'var(--text-primary)' }}>{shipment.weight} kg</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="flex items-center gap-1 text-sm text-gray-400"><Package size={12} /> Priority</p>
-                  <p className="text-white capitalize">{shipment.priority || "normal"}</p>
+                  <p className="flex items-center gap-1 text-sm" style={{ color: 'var(--text-muted)' }}><Package size={12} /> Priority</p>
+                  <p style={{ color: 'var(--text-primary)' }} className="capitalize">{shipment.priority || "normal"}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="flex items-center gap-1 text-sm text-gray-400"><CreditCard size={12} /> Payment</p>
+                  <p className="flex items-center gap-1 text-sm" style={{ color: 'var(--text-muted)' }}><CreditCard size={12} /> Payment</p>
                   <Badge variant="outline" className={shipment.payment_status === "paid" ? "bg-green-900/50 text-green-400" : "bg-yellow-900/50 text-yellow-400"}>
                     {shipment.payment_status}
                   </Badge>
@@ -163,7 +163,7 @@ export default function MerchantShipmentDetail() {
 
               {(serviceType || category) && (
                 <div className="space-y-1">
-                  <p className="text-sm text-gray-400">Service Type</p>
+                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Service Type</p>
                   <div className="flex flex-wrap gap-2">
                     {serviceType && <Badge variant="outline" className="border-blue-700 bg-blue-900/30 text-blue-300">{serviceType}</Badge>}
                     {category && <Badge variant="outline" className="border-emerald-700 bg-emerald-900/30 text-emerald-300">{category}</Badge>}
@@ -173,63 +173,63 @@ export default function MerchantShipmentDetail() {
             </CardContent>
           </Card>
 
-          <Card className="border-[#1a1725] bg-[#0a0715]">
-            <CardHeader><CardTitle className="flex items-center gap-2 text-white"><FileText size={16} /> Receipt</CardTitle></CardHeader>
+          <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+            <CardHeader><CardTitle className="flex items-center gap-2" style={{ color: 'var(--text-primary)' }}><FileText size={16} /> Receipt</CardTitle></CardHeader>
             <CardContent>
-              <div className="rounded-lg border border-dashed border-[#1a1725] bg-[#0d0a18] p-4 font-mono text-sm">
+              <div className="rounded-lg border border-dashed p-4 font-mono text-sm" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
                 <div className="mb-3 text-center">
-                  <p className="text-lg font-bold text-white">NEXATRACK</p>
-                  <p className="text-xs text-gray-500">Florida&apos;s Fastest Courier</p>
-                  <p className="mt-1 text-xs text-gray-500">{shipment.tracking_number}</p>
+                  <p className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>NEXATRACK</p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Florida&apos;s Fastest Courier</p>
+                  <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>
                 </div>
-                <div className="mb-3 border-t border-dashed border-[#1a1725]" />
+                <div className="mb-3 border-t border-dashed" style={{ borderColor: 'var(--card-border)' }} />
                 <div className="space-y-1">
-                  <div className="flex justify-between text-gray-400"><span>Date</span><span className="text-white">{new Date(shipment.created_at).toLocaleDateString()}</span></div>
-                  <div className="flex justify-between text-gray-400"><span>From</span><span className="text-white text-right max-w-[200px] truncate">{shipment.origin_city || "—"}</span></div>
-                  <div className="flex justify-between text-gray-400"><span>To</span><span className="text-white text-right max-w-[200px] truncate">{shipment.destination_city || "—"}</span></div>
-                  <div className="flex justify-between text-gray-400"><span>Weight</span><span className="text-white">{shipment.weight} kg</span></div>
-                  <div className="flex justify-between text-gray-400"><span>Receiver</span><span className="text-white text-right max-w-[200px] truncate">{shipment.receiver_name || "—"}</span></div>
+                  <div className="flex justify-between" style={{color:'var(--text-muted)'}}><span>Date</span><span style={{color:'var(--text-primary)'}}>{new Date(shipment.created_at).toLocaleDateString()}</span></div>
+                  <div className="flex justify-between" style={{color:'var(--text-muted)'}}><span>From</span><span className="text-right max-w-[200px] truncate" style={{color:'var(--text-primary)'}}>{shipment.origin_city || "—"}</span></div>
+                  <div className="flex justify-between" style={{color:'var(--text-muted)'}}><span>To</span><span className="text-right max-w-[200px] truncate" style={{color:'var(--text-primary)'}}>{shipment.destination_city || "—"}</span></div>
+                  <div className="flex justify-between" style={{color:'var(--text-muted)'}}><span>Weight</span><span style={{color:'var(--text-primary)'}}>{shipment.weight} kg</span></div>
+                  <div className="flex justify-between" style={{color:'var(--text-muted)'}}><span>Receiver</span><span className="text-right max-w-[200px] truncate" style={{color:'var(--text-primary)'}}>{shipment.receiver_name || "—"}</span></div>
                 </div>
-                <div className="my-3 border-t border-dashed border-[#1a1725]" />
+                <div className="my-3 border-t border-dashed" style={{ borderColor: 'var(--card-border)' }} />
                 <div className="space-y-1">
                   {chargeItems.filter(c => Number(c.value)).map(c => (
-                    <div key={c.label} className="flex justify-between text-gray-400">
+                    <div key={c.label} className="flex justify-between" style={{color:'var(--text-muted)'}}>
                       <span>{c.label}</span>
-                      <span className="text-white">${Number(c.value).toFixed(2)}</span>
+                      <span style={{ color: 'var(--text-primary)' }}>${Number(c.value).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-3 border-t border-dashed border-[#1a1725] pt-2">
+                <div className="mt-3 border-t border-dashed pt-2" style={{ borderColor: 'var(--card-border)' }}>
                   <div className="flex justify-between text-base font-bold">
-                    <span className="text-white">TOTAL</span>
+                    <span style={{ color: 'var(--text-primary)' }}>TOTAL</span>
                     <span className="text-[#FF3E41]">${Number(shipment.total_charge || 0).toFixed(2)}</span>
                   </div>
                 </div>
-                <div className="mt-3 text-center text-xs text-gray-500">Thank you for choosing Nexatrack</div>
+                <div className="mt-3 text-center text-xs" style={{ color: 'var(--text-muted)' }}>Thank you for choosing Nexatrack</div>
               </div>
             </CardContent>
           </Card>
         </div>
 
         <div className="space-y-6">
-          <Card className="border-[#1a1725] bg-[#0a0715]">
-            <CardHeader><CardTitle className="flex items-center gap-2 text-white"><QrCode size={16} /> Track Shipment</CardTitle></CardHeader>
+          <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+            <CardHeader><CardTitle className="flex items-center gap-2" style={{color:'var(--text-primary)'}}><QrCode size={16} /> Track Shipment</CardTitle></CardHeader>
             <CardContent className="flex flex-col items-center gap-3">
               {qrDataUrl ? (
                 <img src={qrDataUrl} alt="QR Code" className="h-40 w-40 rounded-lg" />
               ) : (
                 <canvas ref={qrRef} className="h-40 w-40 rounded-lg" />
               )}
-              <p className="text-xs text-gray-500 text-center">Scan to track this shipment</p>
-              <Button variant="outline" size="sm" onClick={copyLink} className="w-full border-[#1a1725] text-gray-400 hover:text-white">
+              <p className="text-xs text-center" style={{color:'var(--text-muted)'}}>Scan to track this shipment</p>
+              <Button variant="outline" size="sm" onClick={copyLink} style={{borderColor:'var(--card-border)',color:'var(--text-muted)'}} className="w-full hover:text-white">
                 {copied ? <Check size={14} className="mr-1 text-green-400" /> : <Copy size={14} className="mr-1" />}
                 {copied ? "Copied" : "Copy Tracking Link"}
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="border-[#1a1725] bg-[#0a0715]">
-            <CardHeader><CardTitle className="flex items-center gap-2 text-white"><Package size={16} /> Progress</CardTitle></CardHeader>
+          <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+            <CardHeader><CardTitle className="flex items-center gap-2" style={{color:'var(--text-primary)'}}><Package size={16} /> Progress</CardTitle></CardHeader>
             <CardContent>
               <div className="space-y-1">
                 {PROGRESS_STATUSES.map((s, i) => {
@@ -238,8 +238,8 @@ export default function MerchantShipmentDetail() {
                   const isCurrent = s === shipment.status
                   return (
                     <div key={s} className="flex items-center gap-2 py-0.5">
-                      <div className={`h-2 w-2 shrink-0 rounded-full ${shipment.status === "cancelled" ? "bg-gray-700" : isComplete ? "bg-green-500" : isCurrent ? "bg-[#FF3E41] animate-pulse" : "bg-[#1a1725]"}`} />
-                      <span className={`text-xs ${shipment.status === "cancelled" ? "text-gray-600" : isComplete ? "text-green-400" : isCurrent ? "text-white font-medium" : "text-gray-600"}`}>
+                      <div style={{backgroundColor: shipment.status === "cancelled" ? "#374151" : isComplete ? "#22c55e" : isCurrent ? "#FF3E41" : "var(--input-bg)"}} className={`h-2 w-2 shrink-0 rounded-full ${isCurrent ? "animate-pulse" : ""}`} />
+                      <span style={{color: shipment.status === "cancelled" ? "var(--text-muted)" : isComplete ? "#22c55e" : isCurrent ? "var(--text-primary)" : "var(--text-muted)"}} className={`text-xs ${isCurrent ? "font-medium" : ""}`}>
                         {STATUS_LABELS[s]}
                       </span>
                     </div>
@@ -251,22 +251,22 @@ export default function MerchantShipmentDetail() {
         </div>
       </div>
 
-      <Card className="border-[#1a1725] bg-[#0a0715]">
-        <CardHeader><CardTitle className="flex items-center gap-2 text-white"><Clock size={16} /> Tracking Timeline</CardTitle></CardHeader>
+      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+        <CardHeader><CardTitle className="flex items-center gap-2" style={{color:'var(--text-primary)'}}><Clock size={16} /> Tracking Timeline</CardTitle></CardHeader>
         <CardContent>
           {events.length === 0 ? (
-            <p className="text-sm text-gray-500">No tracking events yet.</p>
+            <p className="text-sm" style={{color:'var(--text-muted)'}}>No tracking events yet.</p>
           ) : (
             <div className="space-y-4">
               {events.map((e, i) => (
                 <div key={e.id} className="relative flex gap-4 pb-4">
-                  {i < events.length - 1 && <div className="absolute left-2 top-4 h-full w-px bg-[#1a1725]" />}
-                  <div className={`mt-1.5 h-4 w-4 shrink-0 rounded-full border-2 ${i === 0 ? "border-[#FF3E41] bg-[#FF3E41]/20" : "border-[#1a1725]"}`} />
+                  {i < events.length - 1 && <div className="absolute left-2 top-4 h-full w-px" style={{backgroundColor:'var(--card-border)'}} />}
+                  <div style={{borderColor: i === 0 ? "#FF3E41" : "var(--card-border)", backgroundColor: i === 0 ? "rgba(255,62,65,0.2)" : "transparent"}} className="mt-1.5 h-4 w-4 shrink-0 rounded-full border-2" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-white text-sm font-medium">{e.title}</p>
-                    {e.description && <p className="text-xs text-gray-400">{e.description}</p>}
-                    {e.location && <p className="flex items-center gap-1 text-xs text-gray-500"><MapPin size={10} />{e.location}</p>}
-                    <p className="text-xs text-gray-600">{new Date(e.event_time || e.created_at).toLocaleString()}</p>
+                    <p className="text-sm font-medium" style={{color:'var(--text-primary)'}}>{e.title}</p>
+                    {e.description && <p className="text-xs" style={{color:'var(--text-muted)'}}>{e.description}</p>}
+                    {e.location && <p className="flex items-center gap-1 text-xs" style={{color:'var(--text-muted)'}}><MapPin size={10} />{e.location}</p>}
+                    <p className="text-xs" style={{color:'var(--text-muted)'}}>{new Date(e.event_time || e.created_at).toLocaleString()}</p>
                   </div>
                 </div>
               ))}
