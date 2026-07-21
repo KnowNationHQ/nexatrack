@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { Search, Package, MapPin, Share2, Copy, Check, ChevronRight, Shield, Truck } from "lucide-react"
 
 const ALL_STATUSES = [
@@ -38,29 +39,33 @@ export default function TrackPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [copied, setCopied] = useState(false)
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const num = searchParams.get("number")
+    if (num) {
+      setTracking(num)
+      doTrack(num)
+    }
+  }, [])
+
+  async function doTrack(num: string) {
+    setLoading(true)
+    setError("")
+    try {
+      const res = await fetch(`/api/track-shipment?number=${encodeURIComponent(num)}`)
+      const data = await res.json()
+      if (!res.ok) { setError(data.error); setLoading(false); return }
+      setShipment(data.parcel)
+      if (data.events) setEvents(data.events)
+    } catch { setError("Something went wrong.") }
+    setLoading(false)
+  }
 
   const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
-    setShipment(null)
-    setEvents([])
     if (!tracking.trim()) return
-
-    setLoading(true)
-    try {
-      const res = await fetch(`/api/track-shipment?number=${encodeURIComponent(tracking.trim())}`)
-      const data = await res.json()
-      if (!res.ok) {
-        setError(data.error || "No shipment found with that tracking number")
-        setLoading(false)
-        return
-      }
-      setShipment(data.parcel)
-      if (data.events) setEvents(data.events)
-    } catch {
-      setError("Something went wrong. Please try again.")
-    }
-    setLoading(false)
+    doTrack(tracking.trim())
   }
 
   const trackingUrl = shipment ? `https://nexatrackcourierservices.com/track?number=${shipment.tracking_number}` : ""
