@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -32,7 +32,7 @@ const statusColors: Record<string, string> = {
   cancelled: "bg-gray-900/50 text-gray-400",
 }
 
-export default function TrackPage() {
+function TrackPageInner() {
   const [tracking, setTracking] = useState("")
   const [shipment, setShipment] = useState<any>(null)
   const [events, setEvents] = useState<any[]>([])
@@ -239,4 +239,8 @@ export default function TrackPage() {
       </div>
     </div>
   )
+}
+
+export default function TrackPage() {
+  return <Suspense><TrackPageInner /></Suspense>
 }
