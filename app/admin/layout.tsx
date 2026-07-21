@@ -1,15 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase-browser"
-import { Button } from "@/components/ui/button"
 import {
   LayoutDashboard, Package, Users, Truck, MapPin, Tag, PackageOpen, 
   Box, DollarSign, ClipboardList, Wallet, Receipt, FileText,
-  HelpCircle, Mail, Settings, LogOut, Menu, X, ChevronDown, ChevronRight,
-  Ticket, MessageSquare
+  HelpCircle, Mail, Settings, LogOut, Menu, X, ChevronDown,
+  Ticket, MessageSquare, Sun, Moon
 } from "lucide-react"
 
 const menuGroups = [
@@ -69,9 +68,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
+  const [isDark, setIsDark] = useState(true)
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+
+  useEffect(() => {
+    const stored = localStorage.getItem("nexatrack_theme")
+    const dark = stored ? stored === "dark" : true
+    setIsDark(dark)
+    document.documentElement.classList.toggle("dark", dark)
+  }, [])
+
+  const toggleTheme = () => {
+    const next = !isDark
+    setIsDark(next)
+    localStorage.setItem("nexatrack_theme", next ? "dark" : "light")
+    document.documentElement.classList.toggle("dark", next)
+  }
 
   const toggleGroup = (label: string) => {
     setOpenGroups((prev) => ({ ...prev, [label]: !prev[label] }))
@@ -148,7 +162,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
 
-        <div className="border-t border-[#1a1725] p-3">
+        <div className="border-t border-[#1a1725] p-3 space-y-1">
+          <button
+            onClick={toggleTheme}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 hover:bg-[#1a1725] hover:text-white"
+          >
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+            {!collapsed && <span>{isDark ? "Light" : "Dark"}</span>}
+          </button>
           <button
             onClick={handleLogout}
             className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 hover:bg-[#1a1725] hover:text-white"
@@ -168,17 +189,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <button onClick={() => setSidebarOpen(true)} className="text-gray-400 lg:hidden">
             <Menu size={20} />
           </button>
-          <div className="flex items-center gap-3">
-            <Button
-              onClick={handleLogout}
-              variant="ghost"
-              size="sm"
-              className="text-gray-400 hover:text-white"
-            >
-              <LogOut size={16} className="mr-1" />
-              Logout
-            </Button>
-          </div>
+          <div />
         </header>
         <main className="flex-1 overflow-y-auto bg-[#0a0715] p-4 md:p-6">{children}</main>
       </div>

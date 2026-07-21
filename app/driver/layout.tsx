@@ -1,16 +1,31 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase-browser"
-import { Package, LogOut, Menu, X, MapPin } from "lucide-react"
+import { Package, LogOut, Menu, X, MapPin, Sun, Moon } from "lucide-react"
 
 export default function DriverLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isDark, setIsDark] = useState(true)
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+
+  useEffect(() => {
+    const stored = localStorage.getItem("nexatrack_theme")
+    const dark = stored ? stored === "dark" : true
+    setIsDark(dark)
+    document.documentElement.classList.toggle("dark", dark)
+  }, [])
+
+  const toggleTheme = () => {
+    const next = !isDark
+    setIsDark(next)
+    localStorage.setItem("nexatrack_theme", next ? "dark" : "light")
+    document.documentElement.classList.toggle("dark", next)
+  }
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -47,7 +62,10 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
             )
           })}
         </nav>
-        <div className="border-t border-[#1a1725] p-3">
+        <div className="border-t border-[#1a1725] p-3 space-y-1">
+          <button onClick={toggleTheme} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 hover:bg-[#1a1725] hover:text-white">
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}<span>{isDark ? "Light" : "Dark"}</span>
+          </button>
           <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 hover:bg-[#1a1725] hover:text-white">
             <LogOut size={18} /><span>Logout</span>
           </button>
