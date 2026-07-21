@@ -10,13 +10,13 @@ import { Badge } from "@/components/ui/badge"
 import { MobileTable } from "@/components/mobile-table"
 import { Plus, Search } from "lucide-react"
 
-const statusColors: Record<string, string> = {
-  pending: "bg-yellow-900/50 text-yellow-400 border-yellow-700",
-  in_transit: "bg-blue-900/50 text-blue-400 border-blue-700",
-  delivered: "bg-green-900/50 text-green-400 border-green-700",
-  returned: "bg-red-900/50 text-red-400 border-red-700",
-  cancelled: "bg-gray-900/50 text-gray-400 border-gray-700",
-  picked_up: "bg-purple-900/50 text-purple-400 border-purple-700",
+const statusStyles: Record<string, React.CSSProperties> = {
+  pending: { backgroundColor: 'var(--badge-warning-bg)', color: 'var(--badge-warning-text)', borderColor: 'transparent' },
+  in_transit: { backgroundColor: 'var(--badge-info-bg)', color: 'var(--badge-info-text)', borderColor: 'transparent' },
+  delivered: { backgroundColor: 'var(--badge-success-bg)', color: 'var(--badge-success-text)', borderColor: 'transparent' },
+  returned: { backgroundColor: 'var(--badge-error-bg)', color: 'var(--badge-error-text)', borderColor: 'transparent' },
+  cancelled: { backgroundColor: 'var(--badge-neutral-bg)', color: 'var(--badge-neutral-text)', borderColor: 'transparent' },
+  picked_up: { backgroundColor: 'var(--badge-purple-bg)', color: 'var(--badge-purple-text)', borderColor: 'transparent' },
 }
 
 export default function ShipmentsPage() {
@@ -72,7 +72,7 @@ export default function ShipmentsPage() {
               { label: "Tracking #", key: "tracking_number", render: (s) => <span className="font-mono text-xs">{s.tracking_number || "—"}</span> },
               { label: "Sender", key: "sender_name" },
               { label: "Receiver", key: "receiver_name" },
-              { label: "Status", key: "status", render: (s) => <Badge variant="outline" className={statusColors[s.status] || ""}>{s.status?.replace(/_/g, " ") || "pending"}</Badge> },
+              { label: "Status", key: "status", render: (s) => <Badge variant="outline" style={statusStyles[s.status]}>{s.status?.replace(/_/g, " ") || "pending"}</Badge> },
               { label: "Charge", key: "total_charge", render: (s) => `$${Number(s.total_charge || 0).toFixed(2)}` },
               { label: "Date", key: "created_at", render: (s) => <span style={{ color: 'var(--text-muted)' }}>{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
             ]}

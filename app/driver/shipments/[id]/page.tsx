@@ -62,7 +62,7 @@ export default function ShipmentDetail() {
         <CardContent className="space-y-4 pt-6">
           <div className="flex items-center justify-between">
             <span className="font-mono text-lg" style={{ color: 'var(--text-primary)' }}>{shipment.tracking_number}</span>
-            <Badge variant="outline" className="text-blue-400 border-blue-900/50 bg-blue-900/20">{shipment.status?.replace(/_/g, " ")}</Badge>
+            <Badge variant="outline" style={{color:'var(--badge-info-text)',borderColor:'var(--badge-info-bg)',backgroundColor:'var(--badge-info-bg)'}}>{shipment.status?.replace(/_/g, " ")}</Badge>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             <div>

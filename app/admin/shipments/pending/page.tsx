@@ -37,7 +37,7 @@ export default function PendingShipmentsPage() {
               { label: "Tracking #", key: "tracking_number", render: (s) => <span className="font-mono text-xs">{s.tracking_number || "—"}</span> },
               { label: "Sender", key: "sender_name" },
               { label: "Receiver", key: "receiver_name" },
-              { label: "Status", key: "status", render: () => <Badge variant="outline" className="bg-yellow-900/50 text-yellow-400">pending</Badge> },
+              { label: "Status", key: "status", render: () => <Badge variant="outline" style={{backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'}}>pending</Badge> },
               { label: "Date", key: "created_at", render: (s) => <span style={{ color: 'var(--text-muted)' }}>{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
             ]}
             data={filtered}

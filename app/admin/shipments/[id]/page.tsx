@@ -21,13 +21,19 @@ const ALL_STATUSES = [
   "return_received_by_merchant", "cancelled",
 ]
 
-const statusColors: Record<string, string> = {
-  pending: "text-yellow-400 border-yellow-900/50", pickup_assign: "text-orange-400 border-orange-900/50",
-  picked_up: "text-purple-400 border-purple-900/50", received_warehouse: "text-indigo-400 border-indigo-900/50",
-  delivery_man_assign: "text-cyan-400 border-cyan-900/50", in_transit: "text-blue-400 border-blue-900/50",
-  out_for_delivery: "text-sky-400 border-sky-900/50", partial_delivered: "text-amber-400 border-amber-900/50",
-  delivered: "text-green-400 border-green-900/50", return_assign_to_merchant: "text-rose-400 border-rose-900/50",
-  return_received_by_merchant: "text-pink-400 border-pink-900/50", cancelled: "text-gray-400 border-gray-700",
+const statusStyles: Record<string, React.CSSProperties> = {
+  pending: {color:'var(--badge-warning-text)',borderColor:'var(--badge-warning-bg)',backgroundColor:'var(--badge-warning-bg)'},
+  pickup_assign: {color:'var(--badge-orange-text)',borderColor:'var(--badge-orange-bg)',backgroundColor:'var(--badge-orange-bg)'},
+  picked_up: {color:'var(--badge-purple-text)',borderColor:'var(--badge-purple-bg)',backgroundColor:'var(--badge-purple-bg)'},
+  received_warehouse: {color:'var(--badge-indigo-text)',borderColor:'var(--badge-indigo-bg)',backgroundColor:'var(--badge-indigo-bg)'},
+  delivery_man_assign: {color:'var(--badge-info-text)',borderColor:'var(--badge-info-bg)',backgroundColor:'var(--badge-info-bg)'},
+  in_transit: {color:'var(--badge-info-text)',borderColor:'var(--badge-info-bg)',backgroundColor:'var(--badge-info-bg)'},
+  out_for_delivery: {color:'var(--badge-info-text)',borderColor:'var(--badge-info-bg)',backgroundColor:'var(--badge-info-bg)'},
+  partial_delivered: {color:'var(--badge-warning-text)',borderColor:'var(--badge-warning-bg)',backgroundColor:'var(--badge-warning-bg)'},
+  delivered: {color:'var(--badge-success-text)',borderColor:'var(--badge-success-bg)',backgroundColor:'var(--badge-success-bg)'},
+  return_assign_to_merchant: {color:'var(--badge-error-text)',borderColor:'var(--badge-error-bg)',backgroundColor:'var(--badge-error-bg)'},
+  return_received_by_merchant: {color:'var(--badge-purple-text)',borderColor:'var(--badge-purple-bg)',backgroundColor:'var(--badge-purple-bg)'},
+  cancelled: {color:'var(--badge-neutral-text)',borderColor:'var(--badge-neutral-bg)',backgroundColor:'var(--badge-neutral-bg)'},
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -161,7 +167,7 @@ export default function AdminShipmentDetail() {
                 <CardTitle style={{ color: 'var(--text-primary)' }}>Shipment Details</CardTitle>
                 <p className="font-mono text-sm" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>
               </div>
-              <Badge variant="outline" className={statusColors[shipment.status] || ""}>
+              <Badge variant="outline" style={statusStyles[shipment.status]}>
                 {STATUS_LABELS[shipment.status] || shipment.status?.replace(/_/g, " ")}
               </Badge>
             </CardHeader>
@@ -196,7 +202,7 @@ export default function AdminShipmentDetail() {
                 </div>
                 <div className="space-y-1">
                   <p className="flex items-center gap-1 text-sm" style={{ color: 'var(--text-muted)' }}><CreditCard size={12} /> Payment</p>
-                  <Badge variant="outline" className={shipment.payment_status === "paid" ? "text-green-400 border-green-900/50" : "text-yellow-400 border-yellow-900/50"}>
+                  <Badge variant="outline" style={shipment.payment_status === "paid" ? {color:'var(--badge-success-text)',borderColor:'var(--badge-success-bg)',backgroundColor:'var(--badge-success-bg)'} : {color:'var(--badge-warning-text)',borderColor:'var(--badge-warning-bg)',backgroundColor:'var(--badge-warning-bg)'}}>
                     {shipment.payment_status}
                   </Badge>
                 </div>
@@ -206,8 +212,8 @@ export default function AdminShipmentDetail() {
                 <div className="space-y-1">
                   <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Service Type</p>
                   <div className="flex flex-wrap gap-2">
-                    {serviceType && <Badge variant="outline" className="border-blue-700 bg-blue-900/30 text-blue-300">{serviceType}</Badge>}
-                    {category && <Badge variant="outline" className="border-emerald-700 bg-emerald-900/30 text-emerald-300">{category}</Badge>}
+                    {serviceType && <Badge variant="outline" style={{backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'}}>{serviceType}</Badge>}
+                    {category && <Badge variant="outline" style={{backgroundColor:'var(--badge-green-bg)',color:'var(--badge-green-text)'}}>{category}</Badge>}
                   </div>
                 </div>
               )}

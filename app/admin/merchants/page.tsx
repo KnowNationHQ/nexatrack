@@ -139,7 +139,7 @@ export default function MerchantsPage() {
             cols={[
               { label: "Name", key: "full_name", render: (m) => m.full_name || "—" },
               { label: "Email", key: "email", render: (m) => <span style={{ color: 'var(--text-muted)' }}>{m.email}</span> },
-              { label: "Status", key: "banned", render: (m) => <Badge variant="outline" className={m.banned ? "bg-red-900/50 text-red-400" : "bg-green-900/50 text-green-400"}>{m.banned ? "Banned" : "Active"}</Badge> },
+              { label: "Status", key: "banned", render: (m) => <Badge variant="outline" style={m.banned ? {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'} : {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'}}>{m.banned ? "Banned" : "Active"}</Badge> },
               { label: "Joined", key: "created_at", render: (m) => <span style={{ color: 'var(--text-muted)' }}>{m.created_at ? new Date(m.created_at).toLocaleDateString() : "—"}</span> },
               { label: "", key: "actions", render: (m) => (
                 <button onClick={(e) => { e.stopPropagation(); setDeleteId(m.id) }}

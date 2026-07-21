@@ -15,10 +15,10 @@ export default function AllJobsPage() {
     })
   }, [])
 
-  const statusColors: Record<string, string> = {
-    pending: "text-yellow-400 border-yellow-900/50 bg-yellow-900/20",
-    in_transit: "text-blue-400 border-blue-900/50 bg-blue-900/20",
-    picked_up: "text-purple-400 border-purple-900/50 bg-purple-900/20",
+  const statusColors: Record<string, {color:string;borderColor:string;backgroundColor:string}> = {
+    pending: {color:'var(--badge-warning-text)',borderColor:'var(--badge-warning-bg)',backgroundColor:'var(--badge-warning-bg)'},
+    in_transit: {color:'var(--badge-info-text)',borderColor:'var(--badge-info-bg)',backgroundColor:'var(--badge-info-bg)'},
+    picked_up: {color:'var(--badge-purple-text)',borderColor:'var(--badge-purple-bg)',backgroundColor:'var(--badge-purple-bg)'},
   }
 
   return (
@@ -35,7 +35,7 @@ export default function AllJobsPage() {
                   <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{s.receiver_name}</p>
                   <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{s.destination_city || s.receiver_address || ""}</p>
                 </div>
-                <Badge variant="outline" className={statusColors[s.status] || "text-gray-400 border-gray-700 bg-gray-900/20"}>
+                <Badge variant="outline" style={statusColors[s.status] || {color:'var(--badge-neutral-text)',borderColor:'var(--badge-neutral-bg)',backgroundColor:'var(--badge-neutral-bg)'}}>
                   {s.status?.replace(/_/g, " ") || "available"}
                 </Badge>
               </CardContent>

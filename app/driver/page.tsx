@@ -28,13 +28,13 @@ export default function DriverDashboard() {
     return d && d.toDateString() === new Date().toDateString()
   })
 
-  const statusColors: Record<string, string> = {
-    delivery_man_assign: "text-orange-400 border-orange-900/50 bg-orange-900/20",
-    out_for_delivery:    "text-blue-400 border-blue-900/50 bg-blue-900/20",
-    in_transit:          "text-indigo-400 border-indigo-900/50 bg-indigo-900/20",
-    picked_up:           "text-purple-400 border-purple-900/50 bg-purple-900/20",
-    delivered:           "text-green-400 border-green-900/50 bg-green-900/20",
-    pending:             "text-yellow-400 border-yellow-900/50 bg-yellow-900/20",
+  const statusColors: Record<string, {color:string;borderColor:string;backgroundColor:string}> = {
+    delivery_man_assign: {color:'var(--badge-orange-text)',borderColor:'var(--badge-orange-bg)',backgroundColor:'var(--badge-orange-bg)'},
+    out_for_delivery:    {color:'var(--badge-info-text)',borderColor:'var(--badge-info-bg)',backgroundColor:'var(--badge-info-bg)'},
+    in_transit:          {color:'var(--badge-indigo-text)',borderColor:'var(--badge-indigo-bg)',backgroundColor:'var(--badge-indigo-bg)'},
+    picked_up:           {color:'var(--badge-purple-text)',borderColor:'var(--badge-purple-bg)',backgroundColor:'var(--badge-purple-bg)'},
+    delivered:           {color:'var(--badge-success-text)',borderColor:'var(--badge-success-bg)',backgroundColor:'var(--badge-success-bg)'},
+    pending:             {color:'var(--badge-warning-text)',borderColor:'var(--badge-warning-bg)',backgroundColor:'var(--badge-warning-bg)'},
   }
 
   const dotColors: Record<string, string> = {
@@ -106,7 +106,7 @@ export default function DriverDashboard() {
                 </div>
                 <div className="mt-4 flex items-center justify-between pt-3" style={{ borderTop: '1px solid var(--card-border)' }}>
                   <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{s.weight ? `${s.weight} kg` : "—"}</span>
-                  <Badge variant="outline" className={`text-[11px] px-2 py-0 ${statusColors[s.status] || "text-gray-400 border-gray-700 bg-gray-900/20"}`}>
+                  <Badge variant="outline" className="text-[11px] px-2 py-0" style={statusColors[s.status] || {color:'var(--badge-neutral-text)',borderColor:'var(--badge-neutral-bg)',backgroundColor:'var(--badge-neutral-bg)'}}>
                     {s.status?.replace(/_/g, " ") || "available"}
                   </Badge>
                 </div>

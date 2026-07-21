@@ -38,7 +38,7 @@ export default function TicketsPage() {
             cols={[
               { label: "Subject", key: "subject" },
               { label: "User", key: "profiles", render: (i) => <span style={{color:'var(--text-muted)'}}>{i.profiles?.full_name || i.profiles?.email || "—"}</span> },
-              { label: "Status", key: "status", render: (i) => <Badge variant="outline" className={i.status === "open" ? "bg-green-900/50 text-green-400" : i.status === "in_progress" ? "bg-blue-900/50 text-blue-400" : "bg-gray-900/50 text-gray-400"}>{i.status}</Badge> },
+              { label: "Status", key: "status", render: (i) => <Badge variant="outline" style={i.status === "open" ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : i.status === "in_progress" ? {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'} : {backgroundColor:'var(--badge-neutral-bg)',color:'var(--badge-neutral-text)'}}>{i.status}</Badge> },
               { label: "Date", key: "created_at", render: (i) => <span style={{color:'var(--text-muted)'}}>{i.created_at ? new Date(i.created_at).toLocaleDateString() : "—"}</span> },
             ]}
             data={filtered}

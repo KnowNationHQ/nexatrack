@@ -67,7 +67,7 @@ export default function MerchantTickets() {
           {tickets.map((t) => (
             <div key={t.id} className="flex items-center justify-between border-b py-3" style={{ borderBottomColor: 'var(--card-border)', color: 'var(--text-primary)' }}>
               <div><p className="font-medium">{t.subject}</p><p className="text-xs" style={{ color: 'var(--text-muted)' }}>{new Date(t.created_at).toLocaleDateString()}</p></div>
-              <Badge variant="outline" className={t.status === "open" ? "bg-green-900/50 text-green-400" : t.status === "in_progress" ? "bg-blue-900/50 text-blue-400" : "bg-gray-900/50 text-gray-400"}>{t.status}</Badge>
+              <Badge variant="outline" style={t.status === "open" ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : t.status === "in_progress" ? {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'} : {backgroundColor:'var(--badge-neutral-bg)',color:'var(--badge-neutral-text)'}}>{t.status}</Badge>
             </div>
           ))}
           {tickets.length === 0 && <p className="py-4 text-center" style={{ color: 'var(--text-muted)' }}>No tickets yet</p>}

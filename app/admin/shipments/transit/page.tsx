@@ -33,7 +33,7 @@ export default function InTransitPage() {
               { label: "Tracking #", key: "tracking_number", render: (s) => <span className="font-mono text-xs">{s.tracking_number || "—"}</span> },
               { label: "Sender", key: "sender_name" },
               { label: "Receiver", key: "receiver_name" },
-              { label: "Status", key: "status", render: () => <Badge variant="outline" className="bg-blue-900/50 text-blue-400">in transit</Badge> },
+              { label: "Status", key: "status", render: () => <Badge variant="outline" style={{backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'}}>in transit</Badge> },
               { label: "Date", key: "created_at", render: (s) => <span style={{ color: 'var(--text-muted)' }}>{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
             ]}
             data={filtered}

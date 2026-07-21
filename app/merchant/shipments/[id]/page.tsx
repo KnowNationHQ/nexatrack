@@ -18,13 +18,19 @@ const ALL_STATUSES = [
   "return_received_by_merchant", "cancelled",
 ]
 
-const statusColors: Record<string, string> = {
-  pending: "bg-yellow-900/50 text-yellow-400", pickup_assign: "bg-orange-900/50 text-orange-400",
-  picked_up: "bg-purple-900/50 text-purple-400", received_warehouse: "bg-indigo-900/50 text-indigo-400",
-  delivery_man_assign: "bg-cyan-900/50 text-cyan-400", in_transit: "bg-blue-900/50 text-blue-400",
-  out_for_delivery: "bg-sky-900/50 text-sky-400", partial_delivered: "bg-amber-900/50 text-amber-400",
-  delivered: "bg-green-900/50 text-green-400", return_assign_to_merchant: "bg-rose-900/50 text-rose-400",
-  return_received_by_merchant: "bg-pink-900/50 text-pink-400", cancelled: "bg-gray-900/50 text-gray-400",
+const statusColors: Record<string, {backgroundColor:string;color:string}> = {
+  pending: {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'},
+  pickup_assign: {backgroundColor:'var(--badge-orange-bg)',color:'var(--badge-orange-text)'},
+  picked_up: {backgroundColor:'var(--badge-purple-bg)',color:'var(--badge-purple-text)'},
+  received_warehouse: {backgroundColor:'var(--badge-indigo-bg)',color:'var(--badge-indigo-text)'},
+  delivery_man_assign: {backgroundColor:'var(--badge-cyan-bg)',color:'var(--badge-cyan-text)'},
+  in_transit: {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'},
+  out_for_delivery: {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'},
+  partial_delivered: {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'},
+  delivered: {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'},
+  return_assign_to_merchant: {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'},
+  return_received_by_merchant: {backgroundColor:'var(--badge-purple-bg)',color:'var(--badge-purple-text)'},
+  cancelled: {backgroundColor:'var(--badge-neutral-bg)',color:'var(--badge-neutral-text)'},
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -120,7 +126,7 @@ export default function MerchantShipmentDetail() {
                 <CardTitle style={{ color: 'var(--text-primary)' }}>Shipment Details</CardTitle>
                 <p className="font-mono text-sm" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>
               </div>
-              <Badge variant="outline" className={statusColors[shipment.status] || ""}>
+              <Badge variant="outline" style={statusColors[shipment.status]}>
                 {STATUS_LABELS[shipment.status] || shipment.status?.replace(/_/g, " ")}
               </Badge>
             </CardHeader>
@@ -155,7 +161,7 @@ export default function MerchantShipmentDetail() {
                 </div>
                 <div className="space-y-1">
                   <p className="flex items-center gap-1 text-sm" style={{ color: 'var(--text-muted)' }}><CreditCard size={12} /> Payment</p>
-                  <Badge variant="outline" className={shipment.payment_status === "paid" ? "bg-green-900/50 text-green-400" : "bg-yellow-900/50 text-yellow-400"}>
+                  <Badge variant="outline" style={shipment.payment_status === "paid" ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'}}>
                     {shipment.payment_status}
                   </Badge>
                 </div>

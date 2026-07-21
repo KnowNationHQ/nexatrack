@@ -26,13 +26,13 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: "Cancelled",
 }
 
-const statusColors: Record<string, string> = {
-  pending: "bg-yellow-900/50 text-yellow-400",
-  picked_up: "bg-purple-900/50 text-purple-400",
-  in_transit: "bg-blue-900/50 text-blue-400",
-  delivered: "bg-green-900/50 text-green-400",
-  returned: "bg-red-900/50 text-red-400",
-  cancelled: "bg-gray-900/50 text-gray-400",
+const statusColors: Record<string, {backgroundColor:string;color:string}> = {
+  pending: {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'},
+  picked_up: {backgroundColor:'var(--badge-purple-bg)',color:'var(--badge-purple-text)'},
+  in_transit: {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'},
+  delivered: {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'},
+  returned: {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'},
+  cancelled: {backgroundColor:'var(--badge-neutral-bg)',color:'var(--badge-neutral-text)'},
 }
 
 function TrackPageInner() {
@@ -134,7 +134,7 @@ function TrackPageInner() {
                     <CardTitle className="" style={{color:'var(--text-primary)'}}>Shipment Status</CardTitle>
                     <p className="font-mono text-xs" style={{color:'var(--text-muted)'}}>{shipment.tracking_number}</p>
                   </div>
-                  <Badge variant="outline" className={statusColors[shipment.status] || ""}>
+                  <Badge variant="outline" style={statusColors[shipment.status]}>
                     {STATUS_LABELS[shipment.status] || shipment.status?.replace(/_/g, " ")}
                   </Badge>
                 </div>
@@ -169,8 +169,8 @@ function TrackPageInner() {
                         return (
                           <div key={s} className="flex items-center gap-1">
                             <div className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium whitespace-nowrap ${
-                              isCurrent ? "bg-[#FF3E41] text-white" : isComplete ? "bg-green-900/50 text-green-300" : ""
-                            }`} style={!isCurrent && !isComplete ? {backgroundColor:'var(--input-bg)',color:'var(--text-muted)'} : undefined}>
+                              isCurrent ? "bg-[#FF3E41] text-white" : ""
+                            }`} style={isCurrent ? undefined : isComplete ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : {backgroundColor:'var(--input-bg)',color:'var(--text-muted)'}}>
                               {STATUS_LABELS[s]}
                             </div>
                             {i < ALL_STATUSES.length - 1 && (

@@ -147,7 +147,7 @@ export default function DriversPage() {
               { label: "Email", key: "email", render: (d) => <span style={{ color: 'var(--text-muted)' }}>{d.email}</span> },
               { label: "Phone", key: "phone", render: (d) => <span style={{ color: 'var(--text-muted)' }}>{d.phone || "—"}</span> },
               { label: "Location", key: "location", render: (d) => <span style={{ color: 'var(--text-muted)' }}>{d.location || "—"}</span> },
-              { label: "Status", key: "status", render: (d) => <Badge variant="outline" className={(d.status === "active" ? "bg-green-900/50 text-green-400" : "bg-red-900/50 text-red-400")}>{d.status === "active" ? "Active" : "Inactive"}</Badge> },
+              { label: "Status", key: "status", render: (d) => <Badge variant="outline" style={d.status === "active" ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'}}>{d.status === "active" ? "Active" : "Inactive"}</Badge> },
               { label: "Joined", key: "created_at", render: (d) => <span style={{ color: 'var(--text-muted)' }}>{d.created_at ? new Date(d.created_at).toLocaleDateString() : "—"}</span> },
               { label: "", key: "actions", render: (d) => (
                 <button onClick={(e) => { e.stopPropagation(); setDeleteId(d.id) }}
