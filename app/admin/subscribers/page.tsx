@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
 
-const blank = { email: "", name: "" }
+const blank = { email: "" }
 
 export default function SubscribersPage() {
   const [items, setItems] = useState<any[]>([])
@@ -24,7 +24,7 @@ export default function SubscribersPage() {
   useEffect(() => { load() }, [])
 
   const openAdd = () => { setEditing(null); setForm(blank); setDialog(true) }
-  const openEdit = (b: any) => { setEditing(b); setForm({ email: b.email, name: b.name || "" }); setDialog(true) }
+  const openEdit = (b: any) => { setEditing(b); setForm({ email: b.email }); setDialog(true) }
 
   const save = async () => {
     setSaving(true)
@@ -66,7 +66,6 @@ export default function SubscribersPage() {
           <MobileTable
             cols={[
               { label: "Email", key: "email" },
-              { label: "Name", key: "name", render: (i) => <span className="text-gray-400">{i.name || "—"}</span> },
               { label: "Subscribed", key: "created_at", render: (i) => <span className="text-gray-400">{i.created_at ? new Date(i.created_at).toLocaleDateString() : "—"}</span> },
               { label: "Actions", key: "actions", render: (i) => <div className="flex gap-2"><button onClick={() => openEdit(i)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
             ]}
@@ -80,7 +79,6 @@ export default function SubscribersPage() {
           <DialogHeader><DialogTitle>{editing ? "Edit Subscriber" : "Add Subscriber"}</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div><label className="mb-1 block text-sm text-gray-400">Email</label><Input type="email" value={form.email} onChange={set("email")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div><label className="mb-1 block text-sm text-gray-400">Name</label><Input value={form.name} onChange={set("name")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setDialog(false)} className="text-gray-400">Cancel</Button>

@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
 
-const blank = { delivery_category_id: "", origin_city: "", destination_city: "", base_price: 0, price_per_kg: 0 }
+const blank = { category_id: "", weight: 0, same_day: 0, next_day: 0, sub_city: 0, outside_city: 0 }
 
 export default function PricingPage() {
   const [items, setItems] = useState<any[]>([])
@@ -28,11 +28,20 @@ export default function PricingPage() {
   useEffect(() => { load() }, [])
 
   const openAdd = () => { setEditing(null); setForm(blank); setDialog(true) }
-  const openEdit = (b: any) => { setEditing(b); setForm({ delivery_category_id: b.delivery_category_id || "", origin_city: b.origin_city || "", destination_city: b.destination_city || "", base_price: b.base_price || 0, price_per_kg: b.price_per_kg || 0 }); setDialog(true) }
+  const openEdit = (b: any) => {
+    setEditing(b)
+    setForm({
+      category_id: b.category_id || "",
+      weight: Number(b.weight || 0), same_day: Number(b.same_day || 0),
+      next_day: Number(b.next_day || 0), sub_city: Number(b.sub_city || 0),
+      outside_city: Number(b.outside_city || 0),
+    })
+    setDialog(true)
+  }
 
   const save = async () => {
     setSaving(true)
-    const data = { ...form, delivery_category_id: form.delivery_category_id ? Number(form.delivery_category_id) : null }
+    const data = { ...form, category_id: form.category_id || null }
     if (editing) {
       await db("delivery_charges", "update", { data, eq: { id: editing.id } })
     } else {
@@ -50,12 +59,13 @@ export default function PricingPage() {
     load()
   }
 
-  const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((f) => ({ ...f, [field]: e.target.type === "number" ? Number(e.target.value) : e.target.value }))
+  const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const val = e.target.type === "number" ? Number(e.target.value) : e.target.value
+    setForm((f) => ({ ...f, [field]: val }))
+  }
 
   const filtered = items.filter((i) =>
-    !search || i.delivery_categories?.name?.toLowerCase().includes(search.toLowerCase()) ||
-    i.origin_city?.toLowerCase().includes(search.toLowerCase()) ||
-    i.destination_city?.toLowerCase().includes(search.toLowerCase())
+    !search || i.delivery_categories?.name?.toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -68,17 +78,18 @@ export default function PricingPage() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <Search size={16} className="text-gray-400" />
-            <Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="border-[#1a1725] bg-[#1a1725] text-white" />
+            <Input placeholder="Search by category..." value={search} onChange={(e) => setSearch(e.target.value)} className="border-[#1a1725] bg-[#1a1725] text-white" />
           </div>
         </CardHeader>
         <CardContent>
           <MobileTable
             cols={[
               { label: "Category", key: "delivery_categories", render: (i) => i.delivery_categories?.name || "—" },
-              { label: "Origin", key: "origin_city", render: (i) => <span className="text-gray-400">{i.origin_city || "—"}</span> },
-              { label: "Destination", key: "destination_city", render: (i) => <span className="text-gray-400">{i.destination_city || "—"}</span> },
-              { label: "Base Price", key: "base_price", render: (i) => `$${Number(i.base_price || 0).toFixed(2)}` },
-              { label: "Price/kg", key: "price_per_kg", render: (i) => `$${Number(i.price_per_kg || 0).toFixed(2)}` },
+              { label: "Weight (kg)", key: "weight", render: (i) => Number(i.weight || 0) },
+              { label: "Same Day", key: "same_day", render: (i) => `$${Number(i.same_day || 0).toFixed(2)}` },
+              { label: "Next Day", key: "next_day", render: (i) => `$${Number(i.next_day || 0).toFixed(2)}` },
+              { label: "Sub City", key: "sub_city", render: (i) => `$${Number(i.sub_city || 0).toFixed(2)}` },
+              { label: "Outside", key: "outside_city", render: (i) => `$${Number(i.outside_city || 0).toFixed(2)}` },
               { label: "Actions", key: "actions", render: (i) => <div className="flex gap-2"><button onClick={() => openEdit(i)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
             ]}
             data={filtered}
@@ -92,15 +103,18 @@ export default function PricingPage() {
           <div className="space-y-4">
             <div>
               <label className="mb-1 block text-sm text-gray-400">Category</label>
-              <select value={form.delivery_category_id} onChange={set("delivery_category_id")} className="w-full rounded-md border border-[#1a1725] bg-[#1a1725] p-2 text-sm text-white">
+              <select value={form.category_id} onChange={set("category_id")} className="w-full rounded-md border border-[#1a1725] bg-[#1a1725] p-2 text-sm text-white">
                 <option value="">Select category</option>
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
-            <div><label className="mb-1 block text-sm text-gray-400">Origin City</label><Input value={form.origin_city} onChange={set("origin_city")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div><label className="mb-1 block text-sm text-gray-400">Destination City</label><Input value={form.destination_city} onChange={set("destination_city")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div><label className="mb-1 block text-sm text-gray-400">Base Price</label><Input type="number" step="0.01" value={form.base_price} onChange={set("base_price")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div><label className="mb-1 block text-sm text-gray-400">Price per kg</label><Input type="number" step="0.01" value={form.price_per_kg} onChange={set("price_per_kg")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+            <div><label className="mb-1 block text-sm text-gray-400">Weight (kg)</label><Input type="number" step="0.1" value={form.weight} onChange={set("weight")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><label className="mb-1 block text-sm text-gray-400">Same Day ($)</label><Input type="number" step="0.01" value={form.same_day} onChange={set("same_day")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+              <div><label className="mb-1 block text-sm text-gray-400">Next Day ($)</label><Input type="number" step="0.01" value={form.next_day} onChange={set("next_day")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+              <div><label className="mb-1 block text-sm text-gray-400">Sub City ($)</label><Input type="number" step="0.01" value={form.sub_city} onChange={set("sub_city")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+              <div><label className="mb-1 block text-sm text-gray-400">Outside City ($)</label><Input type="number" step="0.01" value={form.outside_city} onChange={set("outside_city")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setDialog(false)} className="text-gray-400">Cancel</Button>

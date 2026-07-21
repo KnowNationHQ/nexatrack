@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
 
-const blank = { name: "", price: 0, description: "" }
+const blank = { name: "", amount: 0 }
 
 export default function PackagingPage() {
   const [items, setItems] = useState<any[]>([])
@@ -24,7 +24,7 @@ export default function PackagingPage() {
   useEffect(() => { load() }, [])
 
   const openAdd = () => { setEditing(null); setForm(blank); setDialog(true) }
-  const openEdit = (b: any) => { setEditing(b); setForm({ name: b.name, price: b.price || 0, description: b.description || "" }); setDialog(true) }
+  const openEdit = (b: any) => { setEditing(b); setForm({ name: b.name, amount: b.amount || 0 }); setDialog(true) }
 
   const save = async () => {
     setSaving(true)
@@ -66,8 +66,7 @@ export default function PackagingPage() {
           <MobileTable
             cols={[
               { label: "Name", key: "name" },
-              { label: "Price", key: "price", render: (i) => `$${Number(i.price || 0).toFixed(2)}` },
-              { label: "Description", key: "description", render: (i) => <span className="text-gray-400">{i.description || "—"}</span> },
+              { label: "Amount", key: "amount", render: (i) => `$${Number(i.amount || 0).toFixed(2)}` },
               { label: "Actions", key: "actions", render: (i) => <div className="flex gap-2"><button onClick={() => openEdit(i)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
             ]}
             data={filtered}
@@ -80,8 +79,7 @@ export default function PackagingPage() {
           <DialogHeader><DialogTitle>{editing ? "Edit Packaging Option" : "Add Packaging Option"}</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div><label className="mb-1 block text-sm text-gray-400">Name</label><Input value={form.name} onChange={set("name")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div><label className="mb-1 block text-sm text-gray-400">Price</label><Input type="number" step="0.01" value={form.price} onChange={set("price")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div><label className="mb-1 block text-sm text-gray-400">Description</label><Input value={form.description} onChange={set("description")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
+            <div><label className="mb-1 block text-sm text-gray-400">Amount</label><Input type="number" step="0.01" value={form.amount} onChange={set("amount")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setDialog(false)} className="text-gray-400">Cancel</Button>

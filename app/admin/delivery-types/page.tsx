@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
 
-const blank = { name: "", description: "", base_price: 0, price_per_kg: 0 }
+const blank = { name: "" }
 
 export default function DeliveryTypesPage() {
   const [items, setItems] = useState<any[]>([])
@@ -24,7 +24,7 @@ export default function DeliveryTypesPage() {
   useEffect(() => { load() }, [])
 
   const openAdd = () => { setEditing(null); setForm(blank); setDialog(true) }
-  const openEdit = (b: any) => { setEditing(b); setForm({ name: b.name, description: b.description || "", base_price: b.base_price || 0, price_per_kg: b.price_per_kg || 0 }); setDialog(true) }
+  const openEdit = (b: any) => { setEditing(b); setForm({ name: b.name }); setDialog(true) }
 
   const save = async () => {
     setSaving(true)
@@ -66,9 +66,6 @@ export default function DeliveryTypesPage() {
           <MobileTable
             cols={[
               { label: "Name", key: "name" },
-              { label: "Description", key: "description", render: (i) => <span className="text-gray-400">{i.description || "—"}</span> },
-              { label: "Base Price", key: "base_price", render: (i) => `$${Number(i.base_price || 0).toFixed(2)}` },
-              { label: "Price/kg", key: "price_per_kg", render: (i) => `$${Number(i.price_per_kg || 0).toFixed(2)}` },
               { label: "Actions", key: "actions", render: (i) => <div className="flex gap-2"><button onClick={() => openEdit(i)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
             ]}
             data={filtered}
@@ -81,9 +78,6 @@ export default function DeliveryTypesPage() {
           <DialogHeader><DialogTitle>{editing ? "Edit Delivery Type" : "Add Delivery Type"}</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div><label className="mb-1 block text-sm text-gray-400">Name</label><Input value={form.name} onChange={set("name")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div><label className="mb-1 block text-sm text-gray-400">Description</label><Input value={form.description} onChange={set("description")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div><label className="mb-1 block text-sm text-gray-400">Base Price</label><Input type="number" step="0.01" value={form.base_price} onChange={set("base_price")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div><label className="mb-1 block text-sm text-gray-400">Price per kg</label><Input type="number" step="0.01" value={form.price_per_kg} onChange={set("price_per_kg")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setDialog(false)} className="text-gray-400">Cancel</Button>
