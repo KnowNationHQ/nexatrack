@@ -88,7 +88,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside
         className={`${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed inset-y-0 left-0 z-50 w-64 transform border-r border-[#1a1725] bg-[#0a0715] transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${
+        } fixed inset-y-0 left-0 z-50 flex h-full w-64 transform flex-col border-r border-[#1a1725] bg-[#0a0715] transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${
           collapsed ? "lg:w-16" : "lg:w-64"
         }`}
       >
@@ -104,7 +104,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </button>
         </div>
 
-        <nav className="flex-1 overflow-hidden px-2 py-4">
+        <nav className="flex-1 overflow-y-auto px-2 py-4">
           {menuGroups.map((group) => {
             const isOpen = openGroups[group.label] !== false
             const hasActive = group.items.some((i) => pathname === i.href)

@@ -32,7 +32,7 @@ export default function MerchantLayout({ children }: { children: React.ReactNode
 
   return (
     <div className="flex h-screen bg-[#0a0715]">
-      <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} fixed inset-y-0 left-0 z-50 w-64 transform border-r border-[#1a1725] bg-[#0a0715] transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0`}>
+      <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} fixed inset-y-0 left-0 z-50 flex h-full w-64 transform flex-col border-r border-[#1a1725] bg-[#0a0715] transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0`}>
         <div className="flex h-14 items-center justify-between border-b border-[#1a1725] px-4">
           <Link href="/merchant" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded bg-[#FF3E41] text-sm font-bold text-white">N</div>
