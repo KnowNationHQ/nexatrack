@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
 
 const blank = { name: "", city: "", phone: "", address: "", status: "active" }
@@ -66,39 +67,16 @@ export default function BranchesPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="min-w-[600px] w-full text-sm">
-              <thead>
-                <tr className="border-b border-[#1a1725] text-left text-gray-400">
-                  <th className="pb-3 pr-4 font-medium">Name</th>
-                  <th className="pb-3 pr-4 font-medium">City</th>
-                  <th className="pb-3 pr-4 font-medium">Phone</th>
-                  <th className="pb-3 pr-4 font-medium">Status</th>
-                  <th className="pb-3 pr-4 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((b) => (
-                  <tr key={b.id} className="border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50">
-                    <td className="py-3 pr-4">{b.name}</td>
-                    <td className="py-3 pr-4 text-gray-400">{b.city || "—"}</td>
-                    <td className="py-3 pr-4 text-gray-400">{b.phone || "—"}</td>
-                    <td className="py-3 pr-4">
-                      <Badge variant="outline" className={b.status === "active" ? "bg-green-900/50 text-green-400" : "bg-yellow-900/50 text-yellow-400"}>
-                        {b.status || "active"}
-                      </Badge>
-                    </td>
-                    <td className="py-3 pr-4">
-                      <div className="flex gap-2">
-                        <button onClick={() => openEdit(b)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button>
-                        <button onClick={() => setDeleteId(b.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <MobileTable
+            cols={[
+              { label: "Name", key: "name" },
+              { label: "City", key: "city", render: (b) => <span className="text-gray-400">{b.city || "—"}</span> },
+              { label: "Phone", key: "phone", render: (b) => <span className="text-gray-400">{b.phone || "—"}</span> },
+              { label: "Status", key: "status", render: (b) => <Badge variant="outline" className={b.status === "active" ? "bg-green-900/50 text-green-400" : "bg-yellow-900/50 text-yellow-400"}>{b.status || "active"}</Badge> },
+              { label: "Actions", key: "actions", render: (b) => <div className="flex gap-2"><button onClick={() => openEdit(b)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(b.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
+            ]}
+            data={filtered}
+          />
         </CardContent>
       </Card>
 

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { MobileTable } from "@/components/mobile-table"
 import { Plus, Search } from "lucide-react"
 
 const statusColors: Record<string, string> = {
@@ -39,6 +40,8 @@ export default function ShipmentsPage() {
       s.receiver_name?.toLowerCase().includes(search.toLowerCase())
   )
 
+  if (loading) return <div className="text-center text-gray-500 py-8">Loading...</div>
+
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
@@ -61,48 +64,20 @@ export default function ShipmentsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <div className="overflow-x-auto">
-          <div className="overflow-x-auto">`n          <table className="min-w-[600px] w-full text-sm">
-              <thead>
-                <tr className="border-b border-[#1a1725] text-left text-gray-400">
-                  <th className="pb-3 pr-4 font-medium">Tracking #</th>
-                  <th className="pb-3 pr-4 font-medium">Sender</th>
-                  <th className="pb-3 pr-4 font-medium">Receiver</th>
-                  <th className="pb-3 pr-4 font-medium">Status</th>
-                  <th className="pb-3 pr-4 font-medium">Charge</th>
-                  <th className="pb-3 pr-4 font-medium">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading && (
-                  <tr><td colSpan={6} className="pt-4 text-center text-gray-500">Loading...</td></tr>
-                )}
-                {!loading && filtered.length === 0 && (
-                  <tr><td colSpan={6} className="pt-4 text-center text-gray-500">No shipments found</td></tr>
-                )}
-                {filtered.map((s) => (
-                  <tr key={s.id} className="cursor-pointer border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50" onClick={() => window.location.href = `/admin/shipments/${s.id}`}>
-                    <td className="py-3 pr-4 font-mono text-xs">{s.tracking_number || "—"}</td>
-                    <td className="py-3 pr-4">{s.sender_name || "—"}</td>
-                    <td className="py-3 pr-4">{s.receiver_name || "—"}</td>
-                    <td className="py-3 pr-4">
-                      <Badge variant="outline" className={statusColors[s.status] || ""}>
-                        {s.status?.replace(/_/g, " ") || "pending"}
-                      </Badge>
-                    </td>
-                    <td className="py-3 pr-4">${Number(s.total_charge || 0).toFixed(2)}</td>
-                    <td className="py-3 pr-4 text-gray-400">
-                      {s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>`n        </div>`n        </div>
-          </div>
+          <MobileTable
+            cols={[
+              { label: "Tracking #", key: "tracking_number", render: (s) => <span className="font-mono text-xs">{s.tracking_number || "—"}</span> },
+              { label: "Sender", key: "sender_name" },
+              { label: "Receiver", key: "receiver_name" },
+              { label: "Status", key: "status", render: (s) => <Badge variant="outline" className={statusColors[s.status] || ""}>{s.status?.replace(/_/g, " ") || "pending"}</Badge> },
+              { label: "Charge", key: "total_charge", render: (s) => `$${Number(s.total_charge || 0).toFixed(2)}` },
+              { label: "Date", key: "created_at", render: (s) => <span className="text-gray-400">{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
+            ]}
+            data={filtered}
+            onRowClick={(s) => window.location.href = `/admin/shipments/${s.id}`}
+          />
         </CardContent>
       </Card>
     </div>
   )
 }
-

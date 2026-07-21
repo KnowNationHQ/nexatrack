@@ -5,6 +5,7 @@ import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { MobileTable } from "@/components/mobile-table"
 import { Search } from "lucide-react"
 
 export default function MerchantsPage() {
@@ -37,35 +38,15 @@ export default function MerchantsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <div className="overflow-x-auto">
-          <div className="overflow-x-auto">`n          <table className="min-w-[600px] w-full text-sm">
-              <thead>
-                <tr className="border-b border-[#1a1725] text-left text-gray-400">
-                  <th className="pb-3 pr-4 font-medium">Name</th>
-                  <th className="pb-3 pr-4 font-medium">Email</th>
-                  <th className="pb-3 pr-4 font-medium">Status</th>
-                  <th className="pb-3 pr-4 font-medium">Joined</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((m) => (
-                  <tr key={m.id} className="border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50">
-                    <td className="py-3 pr-4">{m.full_name || "—"}</td>
-                    <td className="py-3 pr-4 text-gray-400">{m.email}</td>
-                    <td className="py-3 pr-4">
-                      <Badge variant="outline" className={m.banned ? "bg-red-900/50 text-red-400" : "bg-green-900/50 text-green-400"}>
-                        {m.banned ? "Banned" : "Active"}
-                      </Badge>
-                    </td>
-                    <td className="py-3 pr-4 text-gray-400">
-                      {m.created_at ? new Date(m.created_at).toLocaleDateString() : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>`n        </div>`n        </div>
-          </div>
+          <MobileTable
+            cols={[
+              { label: "Name", key: "full_name", render: (m) => m.full_name || "—" },
+              { label: "Email", key: "email", render: (m) => <span className="text-gray-400">{m.email}</span> },
+              { label: "Status", key: "banned", render: (m) => <Badge variant="outline" className={m.banned ? "bg-red-900/50 text-red-400" : "bg-green-900/50 text-green-400"}>{m.banned ? "Banned" : "Active"}</Badge> },
+              { label: "Joined", key: "created_at", render: (m) => <span className="text-gray-400">{m.created_at ? new Date(m.created_at).toLocaleDateString() : "—"}</span> },
+            ]}
+            data={filtered}
+          />
         </CardContent>
       </Card>
     </div>

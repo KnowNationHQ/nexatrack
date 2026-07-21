@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
 
 const blank = { question: "", answer: "", sort_order: 0 }
@@ -62,33 +63,15 @@ export default function FAQPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="min-w-[600px] w-full text-sm">
-              <thead>
-                <tr className="border-b border-[#1a1725] text-left text-gray-400">
-                  <th className="pb-3 pr-4 font-medium">Question</th>
-                  <th className="pb-3 pr-4 font-medium">Answer</th>
-                  <th className="pb-3 pr-4 font-medium">Sort Order</th>
-                  <th className="pb-3 pr-4 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((i) => (
-                  <tr key={i.id} className="border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50">
-                    <td className="py-3 pr-4">{i.question}</td>
-                    <td className="py-3 pr-4 text-gray-400 max-w-xs truncate">{i.answer || "—"}</td>
-                    <td className="py-3 pr-4 text-gray-400">{i.sort_order || 0}</td>
-                    <td className="py-3 pr-4">
-                      <div className="flex gap-2">
-                        <button onClick={() => openEdit(i)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button>
-                        <button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <MobileTable
+            cols={[
+              { label: "Question", key: "question" },
+              { label: "Answer", key: "answer", render: (i) => <span className="text-gray-400 max-w-xs truncate block">{i.answer || "—"}</span> },
+              { label: "Sort Order", key: "sort_order", render: (i) => <span className="text-gray-400">{i.sort_order || 0}</span> },
+              { label: "Actions", key: "actions", render: (i) => <div className="flex gap-2"><button onClick={() => openEdit(i)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
+            ]}
+            data={filtered}
+          />
         </CardContent>
       </Card>
 

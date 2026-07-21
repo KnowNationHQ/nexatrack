@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase-browser"
 import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { MobileTable } from "@/components/mobile-table"
 
 export default function MerchantInvoices() {
   const [items, setItems] = useState<any[]>([])
@@ -24,24 +25,17 @@ export default function MerchantInvoices() {
       <h1 className="mb-6 text-2xl font-bold text-white">My Invoices</h1>
       <Card className="border-[#1a1725] bg-[#0a0715]">
         <CardContent className="pt-6">
-          <div className="overflow-x-auto">
-          <div className="overflow-x-auto">`n          <table className="min-w-[600px] w-full text-sm">
-            <thead><tr className="border-b border-[#1a1725] text-left text-gray-400"><th className="pb-3 pr-4 font-medium">Invoice #</th><th className="pb-3 pr-4 font-medium">Total</th><th className="pb-3 pr-4 font-medium">Status</th><th className="pb-3 pr-4 font-medium">Date</th></tr></thead>
-            <tbody>
-              {items.map((i) => (
-                <tr key={i.id} className="border-b border-[#1a1725] text-white">
-                  <td className="py-3 pr-4 font-mono text-xs">{i.invoice_no || "—"}</td>
-                  <td className="py-3 pr-4">${Number(i.total || 0).toFixed(2)}</td>
-                  <td className="py-3 pr-4"><Badge variant="outline" className={i.status === "paid" ? "bg-green-900/50 text-green-400" : "bg-yellow-900/50 text-yellow-400"}>{i.status || "pending"}</Badge></td>
-                  <td className="py-3 pr-4 text-gray-400">{i.created_at ? new Date(i.created_at).toLocaleDateString() : "—"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>`n        </div>`n        </div>
+          <MobileTable
+            cols={[
+              { label: "Invoice #", key: "invoice_no", render: (i) => <span className="font-mono text-xs">{i.invoice_no || "—"}</span> },
+              { label: "Total", key: "total", render: (i) => `$${Number(i.total || 0).toFixed(2)}` },
+              { label: "Status", key: "status", render: (i) => <Badge variant="outline" className={i.status === "paid" ? "bg-green-900/50 text-green-400 border-green-700" : "bg-yellow-900/50 text-yellow-400 border-yellow-700"}>{i.status || "pending"}</Badge> },
+              { label: "Date", key: "created_at", render: (i) => i.created_at ? new Date(i.created_at).toLocaleDateString() : "—" },
+            ]}
+            data={items}
+          />
         </CardContent>
       </Card>
     </div>
   )
 }
-
-

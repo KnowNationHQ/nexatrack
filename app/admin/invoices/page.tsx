@@ -5,6 +5,7 @@ import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { MobileTable } from "@/components/mobile-table"
 import { Search } from "lucide-react"
 
 export default function InvoicesPage() {
@@ -27,21 +28,16 @@ export default function InvoicesPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-          <div className="overflow-x-auto">`n          <table className="min-w-[600px] w-full text-sm">
-            <thead><tr className="border-b border-[#1a1725] text-left text-gray-400"><th className="pb-3 pr-4 font-medium">Invoice #</th><th className="pb-3 pr-4 font-medium">Merchant</th><th className="pb-3 pr-4 font-medium">Total</th><th className="pb-3 pr-4 font-medium">Status</th><th className="pb-3 pr-4 font-medium">Date</th></tr></thead>
-            <tbody>
-              {items.filter((i) => !search || i.invoice_no?.toLowerCase().includes(search.toLowerCase())).map((i) => (
-                <tr key={i.id} className="border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50">
-                  <td className="py-3 pr-4 font-mono text-xs">{i.invoice_no || "—"}</td>
-                  <td className="py-3 pr-4">{i.profiles?.full_name || "—"}</td>
-                  <td className="py-3 pr-4 font-semibold">${Number(i.total || 0).toFixed(2)}</td>
-                  <td className="py-3 pr-4"><Badge variant="outline" className={i.status === "paid" ? "bg-green-900/50 text-green-400" : i.status === "overdue" ? "bg-red-900/50 text-red-400" : "bg-yellow-900/50 text-yellow-400"}>{i.status || "pending"}</Badge></td>
-                  <td className="py-3 pr-4 text-gray-400">{i.created_at ? new Date(i.created_at).toLocaleDateString() : "—"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>`n        </div>`n        </div>
+          <MobileTable
+            cols={[
+              { label: "Invoice #", key: "invoice_no", render: (i) => <span className="font-mono text-xs">{i.invoice_no || "—"}</span> },
+              { label: "Merchant", key: "profiles", render: (i) => i.profiles?.full_name || "—" },
+              { label: "Total", key: "total", render: (i) => <span className="font-semibold">${Number(i.total || 0).toFixed(2)}</span> },
+              { label: "Status", key: "status", render: (i) => <Badge variant="outline" className={i.status === "paid" ? "bg-green-900/50 text-green-400" : i.status === "overdue" ? "bg-red-900/50 text-red-400" : "bg-yellow-900/50 text-yellow-400"}>{i.status || "pending"}</Badge> },
+              { label: "Date", key: "created_at", render: (i) => <span className="text-gray-400">{i.created_at ? new Date(i.created_at).toLocaleDateString() : "—"}</span> },
+            ]}
+            data={items.filter((i) => !search || i.invoice_no?.toLowerCase().includes(search.toLowerCase()))}
+          />
         </CardContent>
       </Card>
     </div>

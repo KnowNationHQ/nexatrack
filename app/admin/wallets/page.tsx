@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { MobileTable } from "@/components/mobile-table"
 import { Search } from "lucide-react"
 
 export default function WalletsPage() {
@@ -26,19 +27,14 @@ export default function WalletsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-          <div className="overflow-x-auto">`n          <table className="min-w-[600px] w-full text-sm">
-            <thead><tr className="border-b border-[#1a1725] text-left text-gray-400"><th className="pb-3 pr-4 font-medium">Merchant</th><th className="pb-3 pr-4 font-medium">Email</th><th className="pb-3 pr-4 font-medium">Balance</th></tr></thead>
-            <tbody>
-              {items.filter((i) => !search || i.profiles?.full_name?.toLowerCase().includes(search.toLowerCase())).map((i) => (
-                <tr key={i.id} className="border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50">
-                  <td className="py-3 pr-4">{i.profiles?.full_name || "—"}</td>
-                  <td className="py-3 pr-4 text-gray-400">{i.profiles?.email || "—"}</td>
-                  <td className="py-3 pr-4 font-semibold">${Number(i.balance || 0).toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>`n        </div>`n        </div>
+          <MobileTable
+            cols={[
+              { label: "Merchant", key: "profiles", render: (i) => i.profiles?.full_name || "—" },
+              { label: "Email", key: "profiles.email", render: (i) => <span className="text-gray-400">{i.profiles?.email || "—"}</span> },
+              { label: "Balance", key: "balance", render: (i) => <span className="font-semibold">${Number(i.balance || 0).toFixed(2)}</span> },
+            ]}
+            data={items.filter((i) => !search || i.profiles?.full_name?.toLowerCase().includes(search.toLowerCase()))}
+          />
         </CardContent>
       </Card>
     </div>

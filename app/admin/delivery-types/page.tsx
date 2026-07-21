@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
 
 const blank = { name: "", description: "", base_price: 0, price_per_kg: 0 }
@@ -62,35 +63,16 @@ export default function DeliveryTypesPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="min-w-[600px] w-full text-sm">
-              <thead>
-                <tr className="border-b border-[#1a1725] text-left text-gray-400">
-                  <th className="pb-3 pr-4 font-medium">Name</th>
-                  <th className="pb-3 pr-4 font-medium">Description</th>
-                  <th className="pb-3 pr-4 font-medium">Base Price</th>
-                  <th className="pb-3 pr-4 font-medium">Price/kg</th>
-                  <th className="pb-3 pr-4 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((i) => (
-                  <tr key={i.id} className="border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50">
-                    <td className="py-3 pr-4">{i.name}</td>
-                    <td className="py-3 pr-4 text-gray-400">{i.description || "—"}</td>
-                    <td className="py-3 pr-4">${Number(i.base_price || 0).toFixed(2)}</td>
-                    <td className="py-3 pr-4">${Number(i.price_per_kg || 0).toFixed(2)}</td>
-                    <td className="py-3 pr-4">
-                      <div className="flex gap-2">
-                        <button onClick={() => openEdit(i)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button>
-                        <button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <MobileTable
+            cols={[
+              { label: "Name", key: "name" },
+              { label: "Description", key: "description", render: (i) => <span className="text-gray-400">{i.description || "—"}</span> },
+              { label: "Base Price", key: "base_price", render: (i) => `$${Number(i.base_price || 0).toFixed(2)}` },
+              { label: "Price/kg", key: "price_per_kg", render: (i) => `$${Number(i.price_per_kg || 0).toFixed(2)}` },
+              { label: "Actions", key: "actions", render: (i) => <div className="flex gap-2"><button onClick={() => openEdit(i)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
+            ]}
+            data={filtered}
+          />
         </CardContent>
       </Card>
 

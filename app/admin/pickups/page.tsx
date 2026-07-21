@@ -5,6 +5,7 @@ import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { MobileTable } from "@/components/mobile-table"
 import { Search } from "lucide-react"
 
 export default function PickupsPage() {
@@ -29,35 +30,16 @@ export default function PickupsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <div className="overflow-x-auto">
-          <div className="overflow-x-auto">`n          <table className="min-w-[600px] w-full text-sm">
-              <thead>
-                <tr className="border-b border-[#1a1725] text-left text-gray-400">
-                  <th className="pb-3 pr-4 font-medium">Address</th>
-                  <th className="pb-3 pr-4 font-medium">City</th>
-                  <th className="pb-3 pr-4 font-medium">Parcels</th>
-                  <th className="pb-3 pr-4 font-medium">Status</th>
-                  <th className="pb-3 pr-4 font-medium">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((p) => (
-                  <tr key={p.id} className="border-b border-[#1a1725] text-white hover:bg-[#1a1725]/50">
-                    <td className="py-3 pr-4">{p.address || "—"}</td>
-                    <td className="py-3 pr-4 text-gray-400">{p.city || "—"}</td>
-                    <td className="py-3 pr-4">{p.parcel_count || 1}</td>
-                    <td className="py-3 pr-4">
-                      <Badge variant="outline" className={p.status === "pending" ? "bg-yellow-900/50 text-yellow-400" : "bg-green-900/50 text-green-400"}>
-                        {p.status || "pending"}
-                      </Badge>
-                    </td>
-                    <td className="py-3 pr-4 text-gray-400">{p.created_at ? new Date(p.created_at).toLocaleDateString() : "—"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>`n        </div>`n        </div>
-          </div>
+          <MobileTable
+            cols={[
+              { label: "Address", key: "address", render: (p) => p.address || "—" },
+              { label: "City", key: "city", render: (p) => <span className="text-gray-400">{p.city || "—"}</span> },
+              { label: "Parcels", key: "parcel_count", render: (p) => p.parcel_count || 1 },
+              { label: "Status", key: "status", render: (p) => <Badge variant="outline" className={p.status === "pending" ? "bg-yellow-900/50 text-yellow-400" : "bg-green-900/50 text-green-400"}>{p.status || "pending"}</Badge> },
+              { label: "Date", key: "created_at", render: (p) => <span className="text-gray-400">{p.created_at ? new Date(p.created_at).toLocaleDateString() : "—"}</span> },
+            ]}
+            data={filtered}
+          />
         </CardContent>
       </Card>
     </div>
