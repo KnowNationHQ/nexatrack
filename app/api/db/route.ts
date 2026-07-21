@@ -43,6 +43,13 @@ export async function POST(req: Request) {
       return NextResponse.json(error ? { error: error.message } : d)
     }
 
+    if (action === "delete") {
+      let q = supabase.from(table).delete()
+      if (eq) for (const [k, v] of Object.entries(eq)) q = q.eq(k, v)
+      const { error } = await q
+      return NextResponse.json(error ? { error: error.message } : { success: true })
+    }
+
     return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 400 })
