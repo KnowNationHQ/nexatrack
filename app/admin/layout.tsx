@@ -99,43 +99,50 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex h-screen bg-[#0a0715]">
+      <style dangerouslySetInnerHTML={{__html: `
+        .sidebar-nav::-webkit-scrollbar { width: 4px; }
+        .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: #FF3E41; border-radius: 4px; }
+        .sidebar-nav::-webkit-scrollbar-thumb:hover { background: #d92e31; }
+        .sidebar-nav { scrollbar-width: thin; scrollbar-color: #FF3E41 transparent; }
+      `}} />
       <aside
         className={`${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed inset-y-0 left-0 z-50 flex h-full w-64 transform flex-col border-r border-[#1a1725] bg-[#0a0715] transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${
+        } fixed inset-y-0 left-0 z-50 flex h-full w-64 transform flex-col border-r border-[#1a1725] bg-gradient-to-b from-[#0a0715] via-[#0a0715] to-[#0f0a1e] transition-transform duration-200 ease-in-out lg:relative lg:translate-x-0 ${
           collapsed ? "lg:w-16" : "lg:w-64"
         }`}
       >
-        <div className="flex h-14 items-center justify-between border-b border-[#1a1725] px-4">
+        <div className="flex h-14 items-center justify-between border-b border-[#1a1725]/50 px-4">
           <Link href="/admin" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded bg-[#FF3E41] text-sm font-bold text-white">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FF3E41] to-[#d92e31] text-sm font-bold text-white shadow-lg shadow-[#FF3E41]/20">
               N
             </div>
-            {!collapsed && <span className="font-bold text-white">Nexatrack</span>}
+            {!collapsed && <span className="font-bold text-white/90 tracking-tight">Nexatrack</span>}
           </Link>
-          <button onClick={() => setSidebarOpen(false)} className="text-gray-400 lg:hidden">
-            <X size={20} />
+          <button onClick={() => setSidebarOpen(false)} className="rounded-lg p-1.5 text-gray-500 hover:bg-[#1a1725] hover:text-white lg:hidden">
+            <X size={18} />
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-2 py-4">
+        <nav className="sidebar-nav flex-1 overflow-y-auto px-3 py-4">
           {menuGroups.map((group) => {
             const isOpen = openGroups[group.label] !== false
-            const hasActive = group.items.some((i) => pathname === i.href)
             return (
-              <div key={group.label} className="mb-1">
+              <div key={group.label} className="mb-2">
                 <button
                   onClick={() => toggleGroup(group.label)}
-                  className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs font-semibold uppercase text-gray-500 hover:text-white lg:cursor-default lg:hover:text-gray-500"
+                  className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-[11px] font-semibold uppercase tracking-widest text-gray-600 hover:text-[#FF3E41] lg:cursor-default lg:hover:text-gray-600"
                 >
+                  <div className="h-3 w-0.5 rounded-full bg-[#FF3E41]/60" />
                   <span>{group.label}</span>
                   <ChevronDown
-                    size={14}
-                    className={`transition-transform lg:hidden ${isOpen ? "rotate-0" : "-rotate-90"}`}
+                    size={12}
+                    className={`ml-auto transition-transform lg:hidden ${isOpen ? "" : "-rotate-90"}`}
                   />
                 </button>
                 {(!collapsed || isOpen) && (
-                  <div className={`${isOpen ? "block" : "hidden lg:block"}`}>
+                  <div className={`mt-0.5 space-y-0.5 ${isOpen ? "block" : "hidden lg:block"}`}>
                     {group.items.map((item) => {
                       const Icon = item.icon
                       const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href))
@@ -144,10 +151,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                           key={item.href}
                           href={item.href}
                           onClick={() => setSidebarOpen(false)}
-                          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+                          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all border-l-2 ${
                             active
-                              ? "bg-[#FF3E41]/10 text-[#FF3E41]"
-                              : "text-gray-400 hover:bg-[#1a1725] hover:text-white"
+                              ? "border-[#FF3E41] bg-[#FF3E41]/5 text-[#FF3E41]"
+                              : "border-transparent text-gray-400 hover:border-[#FF3E41]/30 hover:bg-[#1a1725]/80 hover:text-white"
                           } ${collapsed ? "justify-center" : ""}`}
                         >
                           <Icon size={18} />
@@ -162,17 +169,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
 
-        <div className="border-t border-[#1a1725] p-3 space-y-1">
+        <div className="border-t border-[#1a1725]/50 bg-[#0a0715] p-3 space-y-1">
           <button
             onClick={toggleTheme}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 hover:bg-[#1a1725] hover:text-white"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-500 hover:bg-[#1a1725]/80 hover:text-white transition-all"
           >
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
             {!collapsed && <span>{isDark ? "Light" : "Dark"}</span>}
           </button>
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-400 hover:bg-[#1a1725] hover:text-white"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-500 hover:bg-[#1a1725]/80 hover:text-[#FF3E41] transition-all"
           >
             <LogOut size={18} />
             {!collapsed && <span>Logout</span>}
@@ -181,12 +188,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {sidebarOpen && (
-        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
       <div className="flex flex-1 flex-col overflow-hidden">
         <header className="flex h-14 items-center justify-between border-b border-[#1a1725] bg-[#0a0715] px-4">
-          <button onClick={() => setSidebarOpen(true)} className="text-gray-400 lg:hidden">
+          <button onClick={() => setSidebarOpen(true)} className="rounded-lg p-1.5 text-gray-500 hover:bg-[#1a1725] hover:text-white lg:hidden">
             <Menu size={20} />
           </button>
           <div />
