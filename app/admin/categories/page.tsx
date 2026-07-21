@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
 
-const blank = { name: "", description: "", sort_order: 0 }
+const blank = { name: "" }
 
 export default function CategoriesPage() {
   const [items, setItems] = useState<any[]>([])
@@ -23,7 +23,7 @@ export default function CategoriesPage() {
   useEffect(() => { load() }, [])
 
   const openAdd = () => { setEditing(null); setForm(blank); setDialog(true) }
-  const openEdit = (b: any) => { setEditing(b); setForm({ name: b.name, description: b.description || "", sort_order: b.sort_order || 0 }); setDialog(true) }
+  const openEdit = (b: any) => { setEditing(b); setForm({ name: b.name }); setDialog(true) }
 
   const save = async () => {
     setSaving(true)
@@ -97,8 +97,6 @@ export default function CategoriesPage() {
           <DialogHeader><DialogTitle>{editing ? "Edit Category" : "Add Category"}</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div><label className="mb-1 block text-sm text-gray-400">Name</label><Input value={form.name} onChange={set("name")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div><label className="mb-1 block text-sm text-gray-400">Description</label><Input value={form.description} onChange={set("description")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
-            <div><label className="mb-1 block text-sm text-gray-400">Sort Order</label><Input type="number" value={form.sort_order} onChange={set("sort_order")} className="border-[#1a1725] bg-[#1a1725] text-white" /></div>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setDialog(false)} className="text-gray-400">Cancel</Button>

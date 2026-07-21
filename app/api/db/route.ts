@@ -27,7 +27,8 @@ export async function POST(req: Request) {
 
     if (action === "insert") {
       const { data: d, error } = await supabase.from(table).insert(data).select()
-      return NextResponse.json(error ? { error: error.message } : d)
+      if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json(d)
     }
 
     if (action === "upsert") {
