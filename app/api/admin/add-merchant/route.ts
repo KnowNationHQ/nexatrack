@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
   const { error: profileError } = await supabase.from("profiles").insert({
     id: user.user.id,
-    full_name: name,
+    name,
     email,
     phone: phone || null,
     address: address || null,

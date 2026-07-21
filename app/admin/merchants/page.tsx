@@ -34,7 +34,7 @@ export default function MerchantsPage() {
   useEffect(() => { load() }, [])
 
   const filtered = merchants.filter((m) =>
-    m.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+    (m.name || m.full_name || "")?.toLowerCase().includes(search.toLowerCase()) ||
     m.email?.toLowerCase().includes(search.toLowerCase())
   )
 
@@ -137,7 +137,7 @@ export default function MerchantsPage() {
         <CardContent>
           <MobileTable
             cols={[
-              { label: "Name", key: "full_name", render: (m) => m.full_name || "—" },
+              { label: "Name", key: "name", render: (m) => m.name || m.full_name || "—" },
               { label: "Email", key: "email", render: (m) => <span style={{ color: 'var(--text-muted)' }}>{m.email}</span> },
               { label: "Status", key: "banned", render: (m) => <Badge variant="outline" style={m.banned ? {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'} : {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'}}>{m.banned ? "Banned" : "Active"}</Badge> },
               { label: "Joined", key: "created_at", render: (m) => <span style={{ color: 'var(--text-muted)' }}>{m.created_at ? new Date(m.created_at).toLocaleDateString() : "—"}</span> },
