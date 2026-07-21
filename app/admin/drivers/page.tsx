@@ -17,7 +17,7 @@ export default function DriversPage() {
   const [search, setSearch] = useState("")
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", nid: "", address: "", location: "" })
+  const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", nid: "", address: "" })
   const { toast } = useToast()
 
   const load = () => {
@@ -45,7 +45,7 @@ export default function DriversPage() {
       if (!res.ok) throw new Error((await res.json()).error || "Failed to add driver")
       toast({ title: "Driver added" })
       setOpen(false)
-      setForm({ name: "", email: "", phone: "", password: "", nid: "", address: "", location: "" })
+      setForm({ name: "", email: "", phone: "", password: "", nid: "", address: "" })
       load()
     } catch (e: any) {
       toast({ title: e.message, variant: "destructive" })
@@ -93,10 +93,7 @@ export default function DriversPage() {
                 <Label className="text-gray-300">Address</Label>
                 <Input value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} className="border-[#1a1725] bg-[#0f0a1e] text-white" />
               </div>
-              <div className="space-y-2">
-                <Label className="text-gray-300">Location / City</Label>
-                <Input value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} className="border-[#1a1725] bg-[#0f0a1e] text-white" />
-              </div>
+
               <Button type="submit" className="w-full bg-[#FF3E41] hover:bg-[#d92e31]" disabled={loading}>
                 {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Adding...</> : "Add Driver"}
               </Button>

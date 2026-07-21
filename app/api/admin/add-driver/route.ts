@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase-admin"
 
 export async function POST(req: Request) {
-  const { name, email, phone, password, nid, address, location } = await req.json()
+  const { name, email, phone, password, nid, address } = await req.json()
   if (!name || !email || !password) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
   }
@@ -21,10 +21,9 @@ export async function POST(req: Request) {
     id: user.user.id,
     name,
     email,
-    phone,
-    nid,
-    address,
-    location,
+    phone: phone || null,
+    nid: nid || null,
+    address: address || null,
     role: "driver",
     status: "active",
   })
