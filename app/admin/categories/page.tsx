@@ -19,7 +19,7 @@ export default function CategoriesPage() {
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState(blank)
 
-  const load = () => db<any[]>("delivery_categories", "select", { order: { column: "sort_order", ascending: true } }).then((d) => { if (d) setItems(d) })
+  const load = () => db<any[]>("delivery_categories", "select", { order: { column: "name", ascending: true } }).then((d) => { if (d) setItems(d) })
   useEffect(() => { load() }, [])
 
   const openAdd = () => { setEditing(null); setForm(blank); setDialog(true) }

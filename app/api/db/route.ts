@@ -20,9 +20,10 @@ export async function POST(req: Request) {
       if (order) for (const { column, ascending } of (Array.isArray(order) ? order : [order])) q = q.order(column, { ascending })
       if (limit) q = q.limit(limit)
       if (single) { const { data: d, error } = await q.single(); if (error) return NextResponse.json({ error: error.message }, { status: 400 }); return NextResponse.json(d) }
-      if (body.count && body.head) { const { count, error } = await q; return NextResponse.json(error ? { error: error.message } : { count }) }
+      if (body.count && body.head) { const { count, error } = await q; if (error) return NextResponse.json({ error: error.message }, { status: 400 }); return NextResponse.json({ count }) }
       const { data: d, error } = await q
-      return NextResponse.json(error ? { error: error.message } : d || [])
+      if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json(d || [])
     }
 
     if (action === "insert") {
@@ -34,21 +35,24 @@ export async function POST(req: Request) {
     if (action === "upsert") {
       const q = supabase.from(table).upsert(data, { onConflict, ignoreDuplicates: false }).select()
       const { data: d, error } = await q
-      return NextResponse.json(error ? { error: error.message } : d)
+      if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json(d)
     }
 
     if (action === "update") {
       let q = supabase.from(table).update(data)
       if (eq) for (const [k, v] of Object.entries(eq)) q = q.eq(k, v)
       const { data: d, error } = await q.select()
-      return NextResponse.json(error ? { error: error.message } : d)
+      if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json(d)
     }
 
     if (action === "delete") {
       let q = supabase.from(table).delete()
       if (eq) for (const [k, v] of Object.entries(eq)) q = q.eq(k, v)
       const { error } = await q
-      return NextResponse.json(error ? { error: error.message } : { success: true })
+      if (error) return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ success: true })
     }
 
     return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
