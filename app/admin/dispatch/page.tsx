@@ -64,17 +64,14 @@ export default function DispatchPage() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold text-white">Dispatch Board</h1>
-      <div className="flex gap-4 overflow-x-auto pb-4">
-        {grouped.map(group => (
-          <div key={group.status} className="min-w-[280px] flex-shrink-0">
-            <div className="mb-3 flex items-center justify-between">
+      <div className="space-y-6">
+        {grouped.filter(g => g.items.length > 0).map(group => (
+          <div key={group.status}>
+            <div className="mb-3 flex items-center gap-2">
               <h2 className="text-sm font-semibold text-gray-300">{group.label}</h2>
               <Badge variant="outline" className="bg-gray-800 text-gray-400">{group.items.length}</Badge>
             </div>
             <div className="space-y-3">
-              {group.items.length === 0 && (
-                <p className="py-8 text-center text-sm text-gray-600">No shipments</p>
-              )}
               {group.items.map(shipment => (
                 <Card
                   key={shipment.id}
@@ -94,6 +91,9 @@ export default function DispatchPage() {
             </div>
           </div>
         ))}
+        {grouped.every(g => g.items.length === 0) && (
+          <p className="py-12 text-center text-sm text-gray-600">No shipments to dispatch</p>
+        )}
       </div>
 
       <Sheet open={!!selected} onOpenChange={(o) => { if (!o) setSelected(null) }}>
