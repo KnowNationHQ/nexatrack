@@ -1,5 +1,4 @@
 import { createServerClient } from "@supabase/ssr"
-import { createClient } from "@supabase/supabase-js"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function middleware(request: NextRequest) {
@@ -31,18 +30,18 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse
   }
 
-  const adminDb = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  )
-  const { data: profile } = await adminDb
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single()
-
-  const role = profile?.role || "merchant"
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!
+  let role = "merchant"
+  try {
+    const res = await fetch(`${url}/rest/v1/profiles?select=role&id=eq.${user.id}&limit=1`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+    })
+    if (res.ok) {
+      const rows = await res.json()
+      if (rows?.[0]?.role) role = rows[0].role
+    }
+  } catch {}
   const roleDashboards: Record<string, string> = {
     admin: "/admin",
     merchant: "/merchant",
