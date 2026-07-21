@@ -7,7 +7,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   const { data: parcel } = await supabase
     .from("parcels")
     .select("*")
-    .eq("id", params.id)
+    .or(`id.eq.${params.id},tracking_number.eq.${params.id}`)
     .single()
 
   if (!parcel) {
