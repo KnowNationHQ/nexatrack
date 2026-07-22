@@ -21,7 +21,7 @@ export default function LiveChat({ role }: { role: "admin" | "merchant" | "drive
     ;(async () => {
       setLoading(true)
       const data = await db("livechat_messages", "select", {
-        columns: "id,sender,message,created_at,sender_type",
+        columns: "id,content,created_at,sender_type",
         eq: { chat_id: PORTAL_CHAT_ID },
         order: { column: "created_at", ascending: true },
         limit: 50,
@@ -45,9 +45,8 @@ export default function LiveChat({ role }: { role: "admin" | "merchant" | "drive
   async function sendMessage() {
     if (!text.trim() || sending) return
     setSending(true)
-    const { data: { user } } = await supabase.auth.getUser()
     await db("livechat_messages", "insert", {
-      data: { chat_id: PORTAL_CHAT_ID, sender: user?.email || role, message: text, sender_type: role },
+      data: { chat_id: PORTAL_CHAT_ID, content: text, sender_type: role },
     })
     setText("")
     setSending(false)
@@ -70,19 +69,17 @@ export default function LiveChat({ role }: { role: "admin" | "merchant" | "drive
           messages.map((m, i) => (
             <div key={m.id || i} className={`flex ${m.sender_type === role ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[75%] rounded-xl px-3 py-2 text-sm ${
-                m.sender_type === role
-                  ? "rounded-br-sm"
-                  : "rounded-bl-sm"
+                m.sender_type === role ? "rounded-br-sm" : "rounded-bl-sm"
               }`}
                 style={{
                   backgroundColor: m.sender_type === role ? 'var(--accent)' : 'var(--input-bg)',
                   color: m.sender_type === role ? '#fff' : 'var(--text-primary)',
                 }}
               >
-                {m.sender_type !== role && m.sender && (
-                  <p className="text-[10px] font-medium mb-0.5 opacity-60">{m.sender}</p>
+                {m.sender_type !== role && (
+                  <p className="text-[10px] font-medium mb-0.5 opacity-60 capitalize">{m.sender_type}</p>
                 )}
-                <p className="whitespace-pre-wrap break-words">{m.message}</p>
+                <p className="whitespace-pre-wrap break-words">{m.content}</p>
                 <p className="mt-1 text-[10px] opacity-50 text-right">
                   {m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
                 </p>
