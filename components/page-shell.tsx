@@ -33,9 +33,9 @@ const TEMPLATE_CSS = `
 .text-dark { color: #060315 !important; }
 .btn-primary { background-color: #FF3E41 !important; border-color: #FF3E41 !important; }
 .btn-secondary { background-color: #51CFED !important; border-color: #51CFED !important; }
-.bg-brand { background-color: #0F1F33 !important; }
-.text-brand { color: #0F1F33 !important; }
-.border-brand { border-color: #0F1F33 !important; }
+.bg-brand { background-color: #060315 !important; }
+.text-brand { color: #060315 !important; }
+.border-brand { border-color: #060315 !important; }
 .btn-primary { --bs-btn-hover-bg:#e63538; --bs-btn-hover-border-color:#e63538; --bs-btn-active-bg:#cc2f32; --bs-btn-active-border-color:#cc2f32; }
 .btn-secondary { --bs-btn-hover-bg:#45b8d4; --bs-btn-hover-border-color:#45b8d4; --bs-btn-active-bg:#3aa3be; --bs-btn-active-border-color:#3aa3be; }
 .fw-medium { font-weight: 600 !important; }
@@ -83,12 +83,17 @@ const TEMPLATE_CSS = `
 @media (min-width: 1400px) { .contact-page .contact-form { padding-left: calc(((100% - 1320px) / 2) + .75rem); } }
 .footer { background: linear-gradient(rgba(6, 3, 21, .5), rgba(6, 3, 21, .5)), url(/img/map.png) center center no-repeat; background-size: cover; }
 .footer .btn.btn-social { margin-right: 5px; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; color: var(--light); border: 1px solid #FFFFFF; border-radius: 35px; transition: .3s; }
-.footer .btn.btn-social:hover { color: var(--primary); }
+.footer .btn.btn-social:hover { color: #FFF; background: var(--primary); border-color: var(--primary); }
 .footer .btn.btn-link { display: block; margin-bottom: 5px; padding: 0; text-align: left; color: #FFFFFF; font-size: 15px; font-weight: normal; text-transform: capitalize; transition: .3s; }
 .footer .btn.btn-link::before { position: relative; content: "\\f105"; font-family: "Font Awesome 5 Free"; font-weight: 900; margin-right: 10px; }
 .footer .btn.btn-link:hover { letter-spacing: 1px; box-shadow: none; }
 .footer .copyright { padding: 25px 0; font-size: 15px; border-top: 1px solid rgba(256, 256, 256, .1); }
 .footer .copyright a { color: var(--light); }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--light); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: #e63538; }
+* { scrollbar-width: thin; scrollbar-color: var(--primary) var(--light); }
 `
 
 function injectTags(type: "link" | "script", urls: string[]) {
