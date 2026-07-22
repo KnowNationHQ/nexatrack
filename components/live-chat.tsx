@@ -45,10 +45,12 @@ export default function LiveChat({ role }: { role: "admin" | "merchant" | "drive
   async function sendMessage() {
     if (!text.trim() || sending) return
     setSending(true)
-    await db("livechat_messages", "insert", {
-      data: { chat_id: PORTAL_CHAT_ID, content: text, sender_type: role },
+    const { error } = await supabase.rpc("send_chat_message", {
+      p_chat_id: PORTAL_CHAT_ID,
+      p_content: text,
+      p_sender_type: role,
     })
-    setText("")
+    if (!error) setText("")
     setSending(false)
   }
 
