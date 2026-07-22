@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 
-const KEY = "f72df62c27445bc0eb38023e27b0d2c44f1c9054"
+const KEY = "4e3b26ee6838f18cc13b4cbf40a439652cf131b5"
 
 export default function SmartsuppChat() {
   useEffect(() => {
