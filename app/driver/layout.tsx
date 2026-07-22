@@ -19,6 +19,7 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
     const dark = stored ? stored === "dark" : true
     setIsDark(dark)
     document.documentElement.setAttribute("data-theme", dark ? "dark" : "light")
+    if (dark) document.documentElement.classList.add("dark"); else document.documentElement.classList.remove("dark")
   }, [])
 
   const toggleTheme = () => {
@@ -26,6 +27,7 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
     setIsDark(next)
     localStorage.setItem("nexatrack_theme", next ? "dark" : "light")
     document.documentElement.setAttribute("data-theme", next ? "dark" : "light")
+    if (next) document.documentElement.classList.add("dark"); else document.documentElement.classList.remove("dark")
   }
 
   const handleLogout = async () => {

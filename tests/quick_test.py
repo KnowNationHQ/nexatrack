@@ -51,8 +51,7 @@ with sync_playwright() as p:
             pg.fill('input[type="email"]', email)
             pg.fill('input[type="password"]', PASS)
             pg.click('button[type="submit"]')
-            pg.wait_for_load_state("networkidle")
-            time.sleep(4)
+            pg.wait_for_url(f"{BASE}/{slug}**", timeout=25000)
             final = pg.url
             check(f"{role} login lands on /{slug}", f"/{slug}" in final, f"got {final}")
             pg.screenshot(path=f"C:\\Users\\hp\\Desktop\\Nexatrack\\tests\\screenshots\\prod-{role}-after-login.png", full_page=True)
