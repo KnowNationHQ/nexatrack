@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, ReactNode } from "react"
+import { useEffect, useState, ReactNode } from "react"
 import ChatWidget from "@/components/chat-widget"
 
 const CSS_LINKS = [
@@ -112,6 +112,19 @@ function injectTags(type: "link" | "script", urls: string[]) {
 }
 
 export default function PageShell({ children, activePage }: { children: ReactNode; activePage: string }) {
+  const [newsletterEmail, setNewsletterEmail] = useState("")
+
+  async function handleNewsletter(e: React.FormEvent) {
+    e.preventDefault()
+    await fetch("/api/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "newsletter", email: newsletterEmail }),
+    })
+    setNewsletterEmail("")
+    alert("Thank you for subscribing!")
+  }
+
   useEffect(() => {
     const links = injectTags("link", CSS_LINKS)
     const scripts = injectTags("script", JS_SCRIPTS)
@@ -252,10 +265,10 @@ export default function PageShell({ children, activePage }: { children: ReactNod
             <div className="col-lg-3 col-md-6">
               <h4 className="text-light mb-4">Newsletter</h4>
               <p>Stay informed about our latest services and promotions.</p>
-              <div className="position-relative mx-auto" style={{ maxWidth: "400px" }}>
-                <input className="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email" />
-                <button type="button" className="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
-              </div>
+              <form className="position-relative mx-auto" style={{ maxWidth: "400px" }} onSubmit={handleNewsletter}>
+                <input className="form-control border-0 w-100 py-3 ps-4 pe-5" type="email" placeholder="Your email" value={newsletterEmail} onChange={e => setNewsletterEmail(e.target.value)} required />
+                <button type="submit" className="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+              </form>
             </div>
           </div>
         </div>

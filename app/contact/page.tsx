@@ -1,8 +1,22 @@
 "use client"
 
+import { useState } from "react"
 import PageShell from "@/components/page-shell"
 
 export default function ContactPage() {
+  const [cf, setCf] = useState({ name: "", email: "", subject: "", message: "" })
+
+  async function handleContact(e: React.FormEvent) {
+    e.preventDefault()
+    await fetch("/api/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "contact", name: cf.name, email: cf.email, subject: cf.subject, message: cf.message }),
+    })
+    setCf({ name: "", email: "", subject: "", message: "" })
+    alert("Thank you for your message! We'll get back to you shortly.")
+  }
+
   return (
     <PageShell activePage="contact">
       <div className="container-fluid page-header py-5" style={{ marginBottom: "6rem" }}>
@@ -25,29 +39,29 @@ export default function ContactPage() {
               <h6 className="text-secondary text-uppercase">Get In Touch</h6>
               <h1 className="mb-4">Contact For Any Query</h1>
               <div className="bg-light p-4">
-                <form id="contact-form">
+                <form onSubmit={handleContact}>
                   <div className="row g-3">
                     <div className="col-md-6">
                       <div className="form-floating">
-                        <input type="text" name="name" className="form-control" id="name" placeholder="Your Name" required />
+                        <input type="text" className="form-control" id="name" placeholder="Your Name" value={cf.name} onChange={e => setCf({...cf, name: e.target.value})} required />
                         <label htmlFor="name">Your Name</label>
                       </div>
                     </div>
                     <div className="col-md-6">
                       <div className="form-floating">
-                        <input type="email" name="email" className="form-control" id="email" placeholder="Your Email" required />
+                        <input type="email" className="form-control" id="email" placeholder="Your Email" value={cf.email} onChange={e => setCf({...cf, email: e.target.value})} required />
                         <label htmlFor="email">Your Email</label>
                       </div>
                     </div>
                     <div className="col-12">
                       <div className="form-floating">
-                        <input type="text" name="subject" className="form-control" id="subject" placeholder="Subject" required />
+                        <input type="text" className="form-control" id="subject" placeholder="Subject" value={cf.subject} onChange={e => setCf({...cf, subject: e.target.value})} required />
                         <label htmlFor="subject">Subject</label>
                       </div>
                     </div>
                     <div className="col-12">
                       <div className="form-floating">
-                        <textarea name="message" className="form-control" placeholder="Leave a message here" id="message" style={{ height: "100px" }} required></textarea>
+                        <textarea className="form-control" placeholder="Leave a message here" id="message" style={{ height: "100px" }} value={cf.message} onChange={e => setCf({...cf, message: e.target.value})} required></textarea>
                         <label htmlFor="message">Message</label>
                       </div>
                     </div>
