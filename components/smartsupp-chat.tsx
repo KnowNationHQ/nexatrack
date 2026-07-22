@@ -9,6 +9,7 @@ export default function SmartsuppChat() {
     const w = window as any
     w._smartsupp = w._smartsupp || {}
     w._smartsupp.key = KEY
+    w._smartsupp.color = "#FF3E41"
 
     if (!w.smartsupp) {
       const d = document
