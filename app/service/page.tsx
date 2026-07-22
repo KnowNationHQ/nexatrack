@@ -31,7 +31,7 @@ export default function ServicePage() {
               { title: "Customs Clearance", desc: "Expert handling of import and export documentation for smooth international shipping.", img: "/img/service-5.jpg" },
               { title: "Warehouse & Storage", desc: "Secure warehousing and inventory management solutions for businesses of all sizes.", img: "/img/service-6.jpg" },
             ].map((s, i) => (
-              <div key={i} className="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay={`${0.1 + i * 0.1}s`}>
+              <div key={i} className="col-lg-4 col-md-6 col-sm-6 wow fadeInUp" data-wow-delay={`${0.1 + i * 0.1}s`}>
                 <div className="service-item bg-light text-center p-5" style={{ height: "100%" }}>
                   <img className="img-fluid mb-4" src={s.img} alt={s.title} style={{ width: "80px", height: "80px", objectFit: "cover" }} />
                   <h4>{s.title}</h4>

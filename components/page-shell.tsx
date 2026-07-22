@@ -69,7 +69,7 @@ const TEMPLATE_CSS = `
 @media (min-width: 1200px) { .feature-text { padding-left: calc(((100% - 1140px) / 2) + .75rem); } }
 @media (min-width: 1400px) { .feature-text { padding-left: calc(((100% - 1320px) / 2) + .75rem); } }
 .service-item { box-shadow: 0 0 45px rgba(0, 0, 0, .07); }
-@media (max-width: 575.98px) { .service-item { padding: 1.5rem 1rem !important; } }
+@media (max-width: 575.98px) { .service-item { padding: 1.5rem 1rem !important; } .service-item img { width: 60px !important; height: 60px !important; } .service-item h4 { font-size: 1rem; } .service-item p { font-size: 0.85rem; } }
 .service-item img { transition: .5s; }
 .service-item:hover img { transform: scale(1.1); }
 .service-item a.btn-slide { position: relative; display: inline-block; overflow: hidden; font-size: 0; }
