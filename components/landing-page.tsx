@@ -23,6 +23,9 @@ const JS_SCRIPTS = [
 
 const TEMPLATE_CSS = `
 :root { --primary: #FF3E41; --secondary: #51CFED; --light: #F8F2F0; --dark: #060315; }
+:root { --bs-primary: #FF3E41; --bs-primary-rgb: 255,62,65; --bs-secondary: #51CFED; --bs-secondary-rgb: 81,207,237; --bs-dark: #060315; --bs-dark-rgb: 6,3,21; --bs-light: #F8F2F0; --bs-light-rgb: 248,242,240; }
+.btn-primary { --bs-btn-hover-bg:#e63538; --bs-btn-hover-border-color:#e63538; --bs-btn-active-bg:#cc2f32; --bs-btn-active-border-color:#cc2f32; }
+.btn-secondary { --bs-btn-hover-bg:#45b8d4; --bs-btn-hover-border-color:#45b8d4; --bs-btn-active-bg:#3aa3be; --bs-btn-active-border-color:#3aa3be; }
 .fw-medium { font-weight: 600 !important; }
 .back-to-top { position: fixed; display: none; right: 45px; bottom: 45px; z-index: 99; }
 #spinner { opacity: 0; visibility: hidden; transition: opacity .5s ease-out, visibility 0s linear .5s; z-index: 99999; }
@@ -35,12 +38,12 @@ const TEMPLATE_CSS = `
 .btn-square, .btn-sm-square, .btn-lg-square { padding: 0; display: flex; align-items: center; justify-content: center; font-weight: normal; }
 .navbar .dropdown-toggle::after { border: none; content: "\\f107"; font-family: "Font Awesome 5 Free"; font-weight: 900; vertical-align: middle; margin-left: 8px; }
 .navbar-light .navbar-nav .nav-link { position: relative; margin-right: 30px; padding: 25px 0; color: #FFFFFF; font-size: 15px; text-transform: uppercase; outline: none; }
-.navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .nav-link.active { color: var(--primary); }
-@media (max-width: 991.98px) { .navbar-light .navbar-nav .nav-link { margin-right: 0; padding: 10px 0; } .navbar-light .navbar-nav { border-top: 1px solid #EEEEEE; } }
-.navbar-light .navbar-brand, .navbar-light a.btn { height: 75px; }
-.navbar-light .navbar-nav .nav-link { color: var(--dark); font-weight: 500; }
-.navbar-light.sticky-top { top: -100px; transition: .5s; }
-@media (min-width: 992px) { .navbar-light .navbar-nav .nav-link::before { position: absolute; content: ""; width: 0; height: 5px; top: -6px; left: 50%; background: #FFFFFF; transition: .5s; } .navbar-light .navbar-nav .nav-link:hover::before, .navbar-light .navbar-nav .nav-link.active::before { width: 100%; left: 0; } .navbar-light .navbar-nav .nav-link.nav-contact::before { display: none; } .navbar .nav-item .dropdown-menu { display: block; border: none; margin-top: 0; top: 150%; opacity: 0; visibility: hidden; transition: .5s; } .navbar .nav-item:hover .dropdown-menu { top: 100%; visibility: visible; transition: .5s; opacity: 1; } }
+.navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link.active { color: var(--primary); }
+@media (max-width: 991.98px) { .navbar-dark .navbar-nav .nav-link { margin-right: 0; padding: 10px 0; } .navbar-dark .navbar-nav { border-top: 1px solid rgba(255,255,255,.1); } }
+.navbar-dark .navbar-brand, .navbar-dark a.btn { height: 75px; }
+.navbar-dark .navbar-nav .nav-link { color: rgba(255,255,255,.8); font-weight: 500; }
+.navbar-dark.sticky-top { top: -100px; transition: .5s; }
+@media (min-width: 992px) { .navbar-dark .navbar-nav .nav-link::before { position: absolute; content: ""; width: 0; height: 5px; top: -6px; left: 50%; background: var(--primary); transition: .5s; } .navbar-dark .navbar-nav .nav-link:hover::before, .navbar-dark .navbar-nav .nav-link.active::before { width: 100%; left: 0; } .navbar-dark .navbar-nav .nav-link.nav-contact::before { display: none; } .navbar .nav-item .dropdown-menu { display: block; border: none; margin-top: 0; top: 150%; opacity: 0; visibility: hidden; transition: .5s; } .navbar .nav-item:hover .dropdown-menu { top: 100%; visibility: visible; transition: .5s; opacity: 1; } }
 @media (max-width: 768px) { .header-carousel .owl-carousel-item { position: relative; min-height: 500px; } .header-carousel .owl-carousel-item img { position: absolute; width: 100%; height: 100%; object-fit: cover; } .header-carousel .owl-carousel-item h5, .header-carousel .owl-carousel-item p { font-size: 14px !important; font-weight: 400 !important; } .header-carousel .owl-carousel-item h1 { font-size: 30px; font-weight: 600; } }
 .header-carousel .owl-nav { position: absolute; top: 50%; right: 8%; transform: translateY(-50%); display: flex; flex-direction: column; }
 .header-carousel .owl-nav .owl-prev, .header-carousel .owl-nav .owl-next { margin: 7px 0; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #FFFFFF; background: transparent; border: 1px solid #FFFFFF; border-radius: 45px; font-size: 22px; transition: .5s; }
@@ -146,7 +149,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      <nav className="navbar navbar-expand-lg bg-white navbar-light shadow border-top border-5 border-primary sticky-top p-0">
+      <nav className="navbar navbar-expand-lg bg-dark navbar-dark shadow border-top border-5 border-primary sticky-top p-0">
         <a href="/" className="navbar-brand bg-primary d-flex align-items-center px-4 px-lg-5">
           <h2 className="mb-2 text-white">Nexatrack</h2>
         </a>
