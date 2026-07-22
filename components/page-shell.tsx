@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, ReactNode } from "react"
-import ChatWidget from "@/components/chat-widget"
+import SmartsuppChat from "@/components/smartsupp-chat"
 
 const CSS_LINKS = [
   "https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css",
@@ -285,7 +285,7 @@ export default function PageShell({ children, activePage }: { children: ReactNod
 
       <a href="#" className="btn btn-lg btn-primary btn-lg-square rounded-0 back-to-top"><i className="bi bi-arrow-up"></i></a>
 
-      <ChatWidget />
+      <SmartsuppChat />
     </>
   )
 }
