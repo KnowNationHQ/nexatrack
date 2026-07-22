@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 import ChatWidget from "@/components/chat-widget"
 
 const CSS_LINKS = [
@@ -96,52 +96,46 @@ function injectTags(type: "link" | "script", urls: string[]) {
 }
 
 export default function LandingPage() {
-  const styleRef = useRef<HTMLStyleElement>(null)
-  const cleanupRef = useRef<(() => void) | null>(null)
-
   useEffect(() => {
     const links = injectTags("link", CSS_LINKS)
     const scripts = injectTags("script", JS_SCRIPTS)
     const style = document.createElement("style")
     style.textContent = TEMPLATE_CSS
     document.head.appendChild(style)
-    styleRef.current = style
 
     let loaded = 0
     const checkAll = () => {
       loaded++
-      if (loaded >= JS_SCRIPTS.length && typeof jQuery !== "undefined" && jQuery.fn) {
-        ;(function init($: any) {
-          setTimeout(() => { if ($("#spinner").length > 0) $("#spinner").removeClass("show") }, 1)
-          new (window as any).WOW().init()
-          $(window).scroll(function() {
-            if ($(this).scrollTop() > 300) $(".sticky-top").css("top", "0px")
-            else $(".sticky-top").css("top", "-100px")
-          })
-          const $dropdown = $(".dropdown"), $dropdownToggle = $(".dropdown-toggle"), $dropdownMenu = $(".dropdown-menu"), showClass = "show"
-          $(window).on("load resize", function() {
-            if (this.matchMedia("(min-width: 992px)").matches) {
-              $dropdown.hover(
-                function() { const $this = $(this); $this.addClass(showClass); $this.find($dropdownToggle).attr("aria-expanded", "true"); $this.find($dropdownMenu).addClass(showClass) },
-                function() { const $this = $(this); $this.removeClass(showClass); $this.find($dropdownToggle).attr("aria-expanded", "false"); $this.find($dropdownMenu).removeClass(showClass) }
-              )
-            } else { $dropdown.off("mouseenter mouseleave") }
-          })
-          $(window).scroll(function() { if ($(this).scrollTop() > 300) $(".back-to-top").fadeIn("slow"); else $(".back-to-top").fadeOut("slow") })
-          $(".back-to-top").click(function() { $("html, body").animate({ scrollTop: 0 }, 1500, "easeInOutExpo"); return false })
-          $(".header-carousel").owlCarousel({ autoplay: false, smartSpeed: 1500, items: 1, dots: false, loop: true, nav: true, navText: ['<i class="bi bi-chevron-left"></i>', '<i class="bi bi-chevron-right"></i>'] })
-        })(jQuery)
+      const $ = (window as any).jQuery
+      if (loaded >= JS_SCRIPTS.length && $ && $.fn) {
+        setTimeout(() => { if ($("#spinner").length > 0) $("#spinner").removeClass("show") }, 1)
+        new (window as any).WOW().init()
+        $(window).on("scroll", () => {
+          if ($(window).scrollTop() > 300) $(".sticky-top").css("top", "0px")
+          else $(".sticky-top").css("top", "-100px")
+        })
+        const $dropdown = $(".dropdown"), $dropdownToggle = $(".dropdown-toggle"), $dropdownMenu = $(".dropdown-menu"), showClass = "show"
+        $(window).on("load resize", function(this: Window) {
+          if (this.matchMedia("(min-width: 992px)").matches) {
+            $dropdown.hover(
+              function(this: any) { $(this).addClass(showClass); $(this).find($dropdownToggle).attr("aria-expanded", "true"); $(this).find($dropdownMenu).addClass(showClass) },
+              function(this: any) { $(this).removeClass(showClass); $(this).find($dropdownToggle).attr("aria-expanded", "false"); $(this).find($dropdownMenu).removeClass(showClass) }
+            )
+          } else { $dropdown.off("mouseenter mouseleave") }
+        })
+        $(window).on("scroll", () => { if ($(window).scrollTop() > 300) $(".back-to-top").fadeIn("slow"); else $(".back-to-top").fadeOut("slow") })
+        $(".back-to-top").on("click", () => { $("html, body").animate({ scrollTop: 0 }, 1500, "easeInOutExpo"); return false })
+        $(".header-carousel").owlCarousel({ autoplay: false, smartSpeed: 1500, items: 1, dots: false, loop: true, nav: true, navText: ['<i class="bi bi-chevron-left"></i>', '<i class="bi bi-chevron-right"></i>'] })
       }
     }
     for (const s of scripts) { s.onload = checkAll }
     checkAll()
 
-    cleanupRef.current = () => {
+    return () => {
       links.forEach(el => el.remove())
       scripts.forEach(el => el.remove())
       style.remove()
     }
-    return () => cleanupRef.current?.()
   }, [])
 
   return (
