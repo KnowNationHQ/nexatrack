@@ -1,0 +1,45 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "shipments": "Shipments",
+    "new_shipment": "New Shipment",
+    "pickups": "Pickup Request",
+    "wallet": "Wallet",
+    "transactions": "Transactions",
+    "invoices": "Invoices",
+    "support": "Support",
+    "chat": "Chat",
+    "profile": "Profile",
+    "my_shipments": "My Shipments",
+    "all_jobs": "All Jobs"
+  },
+  "tracking": {
+    "title": "Track Your Shipment",
+    "search": "Enter tracking number...",
+    "status": "Status",
+    "from": "From",
+    "to": "To",
+    "weight": "Weight",
+    "progress": "Progress",
+    "history": "Tracking History"
+  },
+  "status": {
+    "pending": "Pending",
+    "picked_up": "Picked Up",
+    "in_transit": "In Transit",
+    "delivered": "Delivered"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel"
+  }
+}

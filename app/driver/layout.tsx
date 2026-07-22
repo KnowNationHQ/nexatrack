@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase-browser"
-import { Package, LogOut, Menu, X, MapPin, Sun, Moon } from "lucide-react"
+import NotificationBell from "@/components/notification-bell"
+import { Package, LogOut, Menu, X, MapPin, MessageSquare, Sun, Moon } from "lucide-react"
 
 export default function DriverLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -36,6 +37,7 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
   const navItems = [
     { href: "/driver", label: "My Shipments", icon: Package },
     { href: "/driver/shipments", label: "All Jobs", icon: MapPin },
+    { href: "/driver/chat", label: "Chat", icon: MessageSquare },
   ]
 
   return (
@@ -141,6 +143,9 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
       <div className="flex flex-1 flex-col overflow-hidden" style={{ backgroundColor: 'var(--main-bg)' }}>
         <header className="flex h-14 items-center justify-between px-4" style={{ borderBottom: `1px solid var(--main-border)`, backgroundColor: 'var(--card-bg)' }}>
           <button onClick={() => setSidebarOpen(true)} className="rounded-lg p-1.5 lg:hidden" style={{ color: 'var(--sidebar-text)' }}><Menu size={20} /></button>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6" style={{ backgroundColor: 'var(--main-bg)' }}>{children}</main>
       </div>

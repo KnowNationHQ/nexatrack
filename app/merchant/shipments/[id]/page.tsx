@@ -107,7 +107,7 @@ export default function MerchantShipmentDetail() {
         <Button variant="ghost" onClick={() => router.push("/merchant/shipments")} style={{ color: 'var(--text-muted)' }} className="hover:text-white">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={share} style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }} className="hover:text-white">
             <Share2 size={14} className="mr-1" /> Share
           </Button>
@@ -121,7 +121,7 @@ export default function MerchantShipmentDetail() {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
               <div>
                 <CardTitle style={{ color: 'var(--text-primary)' }}>Shipment Details</CardTitle>
                 <p className="font-mono text-sm" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>

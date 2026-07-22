@@ -1,9 +1,10 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { Suspense, useEffect, useState } from "react"
+import { Suspense, useEffect, useMemo, useRef, useState } from "react"
+import { getCityCoords } from "@/lib/florida-cities"
 
-const MapView = dynamic(() => import("@/components/map"), { ssr: false, loading: () => <div className="h-[300px] w-full animate-pulse rounded-lg bg-gray-800" /> })
+const MockMap = dynamic(() => import("@/components/mock-map"), { ssr: false, loading: () => <div className="h-[300px] w-full animate-pulse rounded-lg" style={{backgroundColor:'var(--input-bg)'}} /> })
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,6 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { Search, Package, MapPin, Share2, Copy, Check, ChevronRight, Shield, Truck } from "lucide-react"
+import { createClient } from "@/lib/supabase-browser"
 
 const ALL_STATUSES = [
   "pending", "pickup_assign", "picked_up", "received_warehouse",
@@ -43,7 +45,24 @@ function TrackPageInner() {
   const [error, setError] = useState("")
   const [copied, setCopied] = useState(false)
   const [driverLoc, setDriverLoc] = useState<{latitude: number; longitude: number} | null>(null)
+  const [driverId, setDriverId] = useState<string | null>(null)
+
+  const originCoords = useMemo(() => {
+    if (shipment?.origin_lat && shipment?.origin_lng) return { lat: shipment.origin_lat, lng: shipment.origin_lng }
+    return getCityCoords(shipment?.origin_city || "")
+  }, [shipment?.origin_lat, shipment?.origin_lng, shipment?.origin_city])
+
+  const destCoords = useMemo(() => {
+    if (shipment?.dest_lat && shipment?.dest_lng) return { lat: shipment.dest_lat, lng: shipment.dest_lng }
+    return getCityCoords(shipment?.destination_city || "")
+  }, [shipment?.dest_lat, shipment?.dest_lng, shipment?.destination_city])
+
+  const driverCoord = useMemo(() => {
+    if (!driverLoc) return null
+    return { lat: driverLoc.latitude, lng: driverLoc.longitude }
+  }, [driverLoc])
   const searchParams = useSearchParams()
+  const channelRef = useRef<ReturnType<ReturnType<typeof createClient>['channel']> | null>(null)
 
   useEffect(() => {
     const num = searchParams.get("number")
@@ -51,7 +70,25 @@ function TrackPageInner() {
       setTracking(num)
       doTrack(num)
     }
+    return () => { channelRef.current?.unsubscribe() }
   }, [])
+
+  useEffect(() => {
+    if (!driverId || !shipment?.id) return
+    const supabase = createClient()
+    channelRef.current?.unsubscribe()
+    channelRef.current = supabase
+      .channel(`driver-loc-${shipment.id}`)
+      .on("postgres_changes",
+        { event: "*", schema: "public", table: "driver_locations", filter: `driver_id=eq.${driverId}` },
+        (payload) => {
+          const loc = payload.new as any
+          if (loc?.lat && loc?.lng) setDriverLoc({ latitude: loc.lat, longitude: loc.lng })
+        }
+      )
+      .subscribe()
+    return () => { channelRef.current?.unsubscribe() }
+  }, [driverId, shipment?.id])
 
   async function doTrack(num: string) {
     setLoading(true)
@@ -61,6 +98,7 @@ function TrackPageInner() {
       const data = await res.json()
       if (!res.ok) { setError(data.error); setLoading(false); return }
       setShipment(data.parcel)
+      setDriverId(data.parcel.driver_id ?? null)
       if (data.events) setEvents(data.events)
       if (data?.parcel?.id) {
         fetch(`/api/driver-location?shipment_id=${data.parcel.id}`)
@@ -162,7 +200,7 @@ function TrackPageInner() {
                 {shipment.status !== "cancelled" && (
                   <div className="space-y-2">
                     <p className="text-xs" style={{color:'var(--text-muted)'}}>Progress</p>
-                    <div className="flex items-center gap-1 overflow-x-auto pb-1">
+                    <div className="hidden sm:flex items-center gap-1 flex-wrap">
                       {ALL_STATUSES.map((s, i) => {
                         const isComplete = currentIdx > i || (currentIdx === i && s === shipment.status)
                         const isCurrent = s === shipment.status
@@ -176,6 +214,18 @@ function TrackPageInner() {
                             {i < ALL_STATUSES.length - 1 && (
                               <ChevronRight size={12} className="shrink-0" style={{color: isComplete && i < ALL_STATUSES.length - 1 ? '#22c55e' : 'var(--card-border)'}} />
                             )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                    <div className="sm:hidden space-y-1">
+                      {ALL_STATUSES.map((s, i) => {
+                        const isComplete = currentIdx > i || (currentIdx === i && s === shipment.status)
+                        const isCurrent = s === shipment.status
+                        return (
+                          <div key={s} className="flex items-center gap-2">
+                            <div className={`h-2 w-2 shrink-0 rounded-full ${isCurrent ? 'bg-[#FF3E41]' : isComplete ? 'bg-green-500' : ''}`} style={isCurrent || isComplete ? undefined : {backgroundColor:'var(--card-border)'}} />
+                            <span className={`text-xs ${isCurrent ? 'font-bold' : ''}`} style={{color: isCurrent ? '#FF3E41' : isComplete ? 'var(--badge-success-text)' : 'var(--text-muted)'}}>{STATUS_LABELS[s]}</span>
                           </div>
                         )
                       })}
@@ -198,14 +248,21 @@ function TrackPageInner() {
               </CardContent>
             </Card>
 
-            {driverLoc && (
+            {(originCoords || destCoords) && (
               <div className="mt-6">
-                <h2 className="mb-3 text-lg font-semibold" style={{color:'var(--text-primary)'}}>Driver Location</h2>
-                <MapView
-                  center={[driverLoc.latitude, driverLoc.longitude]}
-                  zoom={15}
-                  markers={[{ lat: driverLoc.latitude, lng: driverLoc.longitude, label: "Driver" }]}
-                />
+                <div className="mb-3 flex items-center justify-between">
+                  <h2 className="text-lg font-semibold" style={{color:'var(--text-primary)'}}>Live Map</h2>
+                </div>
+                <Suspense fallback={<div className="h-[300px] w-full animate-pulse rounded-lg" style={{backgroundColor:'var(--input-bg)'}} />}>
+                  <MockMap
+                    origin={originCoords}
+                    destination={destCoords}
+                    driverLoc={driverCoord}
+                    originLabel={shipment?.origin_city || "Origin"}
+                    destLabel={shipment?.destination_city || "Destination"}
+                    driverLabel="Driver"
+                  />
+                </Suspense>
               </div>
             )}
 
@@ -228,6 +285,30 @@ function TrackPageInner() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {shipment.status === "delivered" && (shipment.pod_photo_url || shipment.pod_signature_url) && (
+              <Card className="mb-4" style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
+                <CardHeader><CardTitle className="" style={{color:'var(--text-primary)'}}>Delivery Proof</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {shipment.pod_photo_url && (
+                      <div>
+                        <p className="text-sm mb-2" style={{color:'var(--text-muted)'}}>Delivery Photo</p>
+                        <a href={shipment.pod_photo_url} target="_blank" rel="noopener noreferrer">
+                          <img src={shipment.pod_photo_url} alt="Delivery photo" className="h-32 w-32 rounded-lg object-cover border" style={{borderColor:'var(--card-border)'}} />
+                        </a>
+                      </div>
+                    )}
+                    {shipment.pod_signature_url && (
+                      <div>
+                        <p className="text-sm mb-2" style={{color:'var(--text-muted)'}}>Signature</p>
+                        <img src={shipment.pod_signature_url} alt="Delivery signature" className="h-20 rounded-lg border object-contain" style={{borderColor:'var(--card-border)',backgroundColor:'#1a1a2e'}} />
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

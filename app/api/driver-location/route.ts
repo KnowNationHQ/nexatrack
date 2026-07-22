@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import { createAdminClient } from "@/lib/supabase-admin"
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -7,18 +6,18 @@ export async function GET(req: Request) {
   if (!shipment_id) {
     return NextResponse.json({ error: "Missing shipment_id" }, { status: 400 })
   }
+  const { createAdminClient } = await import("@/lib/supabase-admin")
   const supabase = createAdminClient()
   const { data, error } = await supabase
-    .from("tracking_events")
-    .select("lat, lng, event_time")
+    .from("driver_locations")
+    .select("lat, lng, updated_at")
     .eq("shipment_id", shipment_id)
-    .not("lat", "is", null)
-    .order("event_time", { ascending: false })
+    .order("updated_at", { ascending: false })
     .limit(1)
     .maybeSingle()
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 400 })
   }
   if (!data) return NextResponse.json(null)
-  return NextResponse.json({ latitude: data.lat, longitude: data.lng, recorded_at: data.event_time })
+  return NextResponse.json({ latitude: data.lat, longitude: data.lng, recorded_at: data.updated_at })
 }

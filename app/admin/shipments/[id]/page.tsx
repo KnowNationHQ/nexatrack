@@ -140,7 +140,7 @@ export default function AdminShipmentDetail() {
           onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Shipments
         </Button>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Link href={`/admin/shipments/${id}/edit`}>
             <Button variant="outline" size="sm"
               style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
@@ -162,7 +162,7 @@ export default function AdminShipmentDetail() {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
               <div>
                 <CardTitle style={{ color: 'var(--text-primary)' }}>Shipment Details</CardTitle>
                 <p className="font-mono text-sm" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>

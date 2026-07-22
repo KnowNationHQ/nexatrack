@@ -1,19 +1,26 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { createClient } from "@/lib/supabase-browser"
 import { db } from "@/lib/db-client"
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/hooks/use-toast"
 import DriverLocationSender from "@/components/driver-location-sender"
+import SignaturePad from "@/components/signature-pad"
 
 export default function ShipmentDetail() {
   const { id } = useParams<{ id: string }>()
   const [shipment, setShipment] = useState<any>(null)
-  const router = useRouter()
+  const [isAssignedToMe, setIsAssignedToMe] = useState(false)
+  const [deliveryPhoto, setDeliveryPhoto] = useState<File | null>(null)
+  const [deliveryPhotoPreview, setDeliveryPhotoPreview] = useState<string | null>(null)
+  const [deliverySignature, setDeliverySignature] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
+  const [deliveryPhotos, setDeliveryPhotos] = useState<string[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
   const { toast } = useToast()
 
@@ -46,14 +53,71 @@ export default function ShipmentDetail() {
     }
   }
 
-  const [isAssignedToMe, setIsAssignedToMe] = useState(false)
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setDeliveryPhoto(file)
+    setDeliveryPhotoPreview(URL.createObjectURL(file))
+  }
+
+  const uploadFile = async (file: Blob, fileName: string, type: string): Promise<string | null> => {
+    const formData = new FormData()
+    formData.append("shipment_id", id)
+    formData.append("file", file, fileName)
+    formData.append("type", type)
+    try {
+      const res = await fetch("/api/upload-delivery-proof", { method: "POST", body: formData })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      return data.url
+    } catch (e: any) {
+      toast({ title: `Failed to upload ${type}`, variant: "destructive" })
+      return null
+    }
+  }
+
+  const uploadSignature = async (dataUrl: string): Promise<string | null> => {
+    const blob = await (await fetch(dataUrl)).blob()
+    return uploadFile(blob, "signature.png", "signature")
+  }
+
+  const completeDelivery = async () => {
+    if (!deliveryPhoto) {
+      toast({ title: "Please take a delivery photo", variant: "destructive" })
+      return
+    }
+
+    setUploading(true)
+
+    const photoUrl = await uploadFile(deliveryPhoto, deliveryPhoto.name, "photo")
+    if (!photoUrl) { setUploading(false); return }
+
+    setDeliveryPhotos((prev) => [...prev, photoUrl])
+
+    let signatureUrl: string | null = null
+    if (deliverySignature) {
+      signatureUrl = await uploadSignature(deliverySignature)
+    }
+
+    try {
+      const updates: any = { status: "delivered", pod_photo_url: photoUrl }
+      if (signatureUrl) updates.pod_signature_url = signatureUrl
+      await db("parcels", "update", { data: updates, eq: { id } })
+      toast({ title: "Delivery completed!" })
+      const data = await db("parcels", "select", { eq: { id }, single: true })
+      if (data) setShipment(data)
+    } catch (e: any) {
+      toast({ title: "Error completing delivery", variant: "destructive" })
+    }
+    setUploading(false)
+  }
 
   if (!shipment) return <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
   const statusActions: Record<string, string[]> = {
     pending: ["picked_up"],
     delivery_man_assign: ["picked_up"],
     picked_up: ["in_transit"],
-    in_transit: ["delivered"],
+    in_transit: [],
   }
 
   return (
@@ -102,6 +166,34 @@ export default function ShipmentDetail() {
               </Button>
             )}
           </div>
+
+          {shipment.status === "in_transit" && (
+            <div className="space-y-4 pt-4 border-t" style={{ borderColor: "var(--card-border)" }}>
+              <div>
+                <p className="text-sm mb-2" style={{ color: "var(--text-muted)" }}>Delivery Photo</p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handlePhotoChange}
+                  className="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#FF3E41] file:text-white hover:file:bg-[#d92e31]"
+                  style={{ color: "var(--text-primary)" }}
+                />
+                {deliveryPhotoPreview && (
+                  <div className="mt-2">
+                    <img src={deliveryPhotoPreview} alt="Delivery preview" className="h-24 w-24 rounded-lg object-cover border" style={{ borderColor: "var(--card-border)" }} />
+                  </div>
+                )}
+              </div>
+
+              <SignaturePad onSave={(dataUrl) => setDeliverySignature(dataUrl)} />
+
+              <Button onClick={completeDelivery} disabled={uploading} className="w-full bg-[#FF3E41] hover:bg-[#d92e31]">
+                {uploading ? "Uploading..." : "Complete Delivery"}
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

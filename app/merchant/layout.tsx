@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase-browser"
-import { LayoutDashboard, Package, Plus, ClipboardList, Wallet, Receipt, FileText, Ticket, User, LogOut, Menu, X, Sun, Moon } from "lucide-react"
+import NotificationBell from "@/components/notification-bell"
+import { LayoutDashboard, Package, Plus, ClipboardList, Wallet, Receipt, FileText, Ticket, MessageSquare, User, LogOut, Menu, X, Sun, Moon } from "lucide-react"
 
 const menuItems = [
   { href: "/merchant", label: "Dashboard", icon: LayoutDashboard },
@@ -15,6 +16,7 @@ const menuItems = [
   { href: "/merchant/transactions", label: "Transactions", icon: Receipt },
   { href: "/merchant/invoices", label: "Invoices", icon: FileText },
   { href: "/merchant/tickets", label: "Support", icon: Ticket },
+  { href: "/merchant/chat", label: "Chat", icon: MessageSquare },
   { href: "/merchant/profile", label: "Profile", icon: User },
 ]
 
@@ -149,6 +151,9 @@ export default function MerchantLayout({ children }: { children: React.ReactNode
       <div className="flex flex-1 flex-col overflow-hidden" style={{ backgroundColor: 'var(--main-bg)' }}>
         <header className="flex h-14 items-center justify-between px-4" style={{ borderBottom: `1px solid var(--main-border)`, backgroundColor: 'var(--card-bg)' }}>
           <button onClick={() => setSidebarOpen(true)} className="rounded-lg p-1.5 lg:hidden" style={{ color: 'var(--sidebar-text)' }}><Menu size={20} /></button>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6" style={{ backgroundColor: 'var(--main-bg)' }}>{children}</main>
       </div>

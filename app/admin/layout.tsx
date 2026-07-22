@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase-browser"
+import NotificationBell from "@/components/notification-bell"
 import {
   LayoutDashboard, Package, Users, Truck, MapPin, Tag, PackageOpen, 
   Box, DollarSign, ClipboardList, Wallet, Receipt, FileText,
@@ -238,7 +239,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <button onClick={() => setSidebarOpen(true)} className="rounded-lg p-1.5 lg:hidden" style={{ color: 'var(--sidebar-text)' }}>
             <Menu size={20} />
           </button>
-          <div />
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6" style={{ backgroundColor: 'var(--main-bg)' }}>{children}</main>
       </div>

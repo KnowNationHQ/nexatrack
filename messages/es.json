@@ -1,0 +1,45 @@
+{
+  "nav": {
+    "dashboard": "Panel",
+    "shipments": "Envíos",
+    "new_shipment": "Nuevo Envío",
+    "pickups": "Solicitud de Recojo",
+    "wallet": "Billetera",
+    "transactions": "Transacciones",
+    "invoices": "Facturas",
+    "support": "Soporte",
+    "chat": "Chat",
+    "profile": "Perfil",
+    "my_shipments": "Mis Envíos",
+    "all_jobs": "Todos los Trabajos"
+  },
+  "tracking": {
+    "title": "Rastrea tu Envío",
+    "search": "Ingresa el número de rastreo...",
+    "status": "Estado",
+    "from": "Origen",
+    "to": "Destino",
+    "weight": "Peso",
+    "progress": "Progreso",
+    "history": "Historial de Rastreo"
+  },
+  "status": {
+    "pending": "Pendiente",
+    "picked_up": "Recogido",
+    "in_transit": "En Tránsito",
+    "delivered": "Entregado"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "email": "Correo Electrónico",
+    "password": "Contraseña"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "back": "Atrás",
+    "save": "Guardar",
+    "cancel": "Cancelar"
+  }
+}

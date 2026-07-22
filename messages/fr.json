@@ -1,0 +1,45 @@
+{
+  "nav": {
+    "dashboard": "Tableau de Bord",
+    "shipments": "Expéditions",
+    "new_shipment": "Nouvelle Expédition",
+    "pickups": "Demande d'Enlèvement",
+    "wallet": "Portefeuille",
+    "transactions": "Transactions",
+    "invoices": "Factures",
+    "support": "Support",
+    "chat": "Chat",
+    "profile": "Profil",
+    "my_shipments": "Mes Expéditions",
+    "all_jobs": "Toutes les Missions"
+  },
+  "tracking": {
+    "title": "Suivez votre Envoi",
+    "search": "Entrez le numéro de suivi...",
+    "status": "Statut",
+    "from": "De",
+    "to": "À",
+    "weight": "Poids",
+    "progress": "Progression",
+    "history": "Historique de Suivi"
+  },
+  "status": {
+    "pending": "En Attente",
+    "picked_up": "Récupéré",
+    "in_transit": "En Transit",
+    "delivered": "Livré"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "email": "Email",
+    "password": "Mot de Passe"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue",
+    "back": "Retour",
+    "save": "Enregistrer",
+    "cancel": "Annuler"
+  }
+}
