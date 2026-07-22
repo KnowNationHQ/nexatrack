@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,13 +11,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label"
 import { MobileTable } from "@/components/mobile-table"
 import { useToast } from "@/components/hooks/use-toast"
-import { Search, Plus, Trash2, Loader2 } from "lucide-react"
+import { Search, Plus, Trash2, Loader2, ExternalLink, Edit3 } from "lucide-react"
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
 export default function MerchantsPage() {
+  const router = useRouter()
   const [merchants, setMerchants] = useState<any[]>([])
   const [search, setSearch] = useState("")
   const [open, setOpen] = useState(false)
@@ -136,8 +138,14 @@ export default function MerchantsPage() {
         </CardHeader>
         <CardContent>
           <MobileTable
+            onRowClick={(m) => router.push(`/admin/merchants/${m.id}`)}
             cols={[
-              { label: "Name", key: "name", render: (m) => m.name || m.full_name || "—" },
+              { label: "Name", key: "name", render: (m) => (
+                <div className="flex items-center gap-1.5">
+                  {m.name || m.full_name || "—"}
+                  <ExternalLink size={12} className="opacity-0 group-hover:opacity-100" style={{ color: 'var(--text-muted)' }} />
+                </div>
+              )},
               { label: "Email", key: "email", render: (m) => <span style={{ color: 'var(--text-muted)' }}>{m.email}</span> },
               { label: "Status", key: "banned", render: (m) => <Badge variant="outline" style={m.banned ? {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'} : {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'}}>{m.banned ? "Banned" : "Active"}</Badge> },
               { label: "Joined", key: "created_at", render: (m) => <span style={{ color: 'var(--text-muted)' }}>{m.created_at ? new Date(m.created_at).toLocaleDateString() : "—"}</span> },

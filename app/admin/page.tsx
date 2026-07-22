@@ -3,8 +3,17 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { db } from "@/lib/db-client"
-import { Card, CardContent } from "@/components/ui/card"
-import { ArrowUpRight } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowUpRight, Package, TrendingUp } from "lucide-react"
+import dynamic from "next/dynamic"
+
+const Bar = dynamic(() => import("react-chartjs-2").then(m => m.Bar), { ssr: false })
+const Doughnut = dynamic(() => import("react-chartjs-2").then(m => m.Doughnut), { ssr: false })
+import {
+  Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement,
+  Title, Tooltip, Legend, PointElement, LineElement,
+} from "chart.js"
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend, PointElement, LineElement)
 
 const cardStyle = [
   { label: "Total Shipments", href: "/admin/shipments", isCurrency: false, bg: "bg-blue-500/10", hex: "#3b82f6",
@@ -31,6 +40,9 @@ export default function AdminDashboard() {
     totalRevenue: 0, totalMerchants: 0, pendingPickups: 0, openTickets: 0,
   })
 
+  const [chartData, setChartData] = useState<{ dailyRev: number[]; dailyShip: number[]; statusCounts: Record<string, number> }>({ dailyRev: [], dailyShip: [], statusCounts: {} })
+  const [chartLabels, setChartLabels] = useState<string[]>([])
+
   useEffect(() => {
     async function loadStats() {
       const [{ count: totalShipments }, { count: pending }, { count: inTransit }, { count: delivered },
@@ -43,9 +55,23 @@ export default function AdminDashboard() {
         db("pickup_requests", "select", { count: "exact", head: true, eq: { status: "pending" } }),
         db("support_tickets", "select", { count: "exact", head: true, neq: { status: "closed" } }),
       ])
-      const { data: revenueData } = await db("transactions", "select", { columns: "amount", eq: { type: "credit" } })
+      const { data: revenueData } = await db("transactions", "select", { columns: "amount,created_at", eq: { type: "credit" } })
       const totalRevenue = (revenueData || []).reduce((sum: number, t: any) => sum + Number(t.amount), 0)
       setStats({ totalShipments: totalShipments || 0, pending: pending || 0, inTransit: inTransit || 0, delivered: delivered || 0, totalRevenue, totalMerchants: totalMerchants || 0, pendingPickups: pendingPickups || 0, openTickets: openTickets || 0 })
+
+      const days: string[] = []
+      const rev: number[] = []
+      const ship: number[] = []
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i)
+        const key = d.toISOString().slice(0, 10)
+        days.push(d.toLocaleDateString("en", { weekday: "short" }))
+        rev.push((revenueData || []).filter((t: any) => t.created_at?.slice(0, 10) === key).reduce((s: number, t: any) => s + Number(t.amount), 0))
+        const { count: cnt } = await db("parcels", "select", { count: "exact", head: true, gte: { created_at: key }, lt: { created_at: new Date(d.getTime() + 86400000).toISOString().slice(0, 10) } })
+        ship.push(cnt || 0)
+      }
+      setChartLabels(days)
+      setChartData({ dailyRev: rev, dailyShip: ship, statusCounts: { pending: pending || 0, in_transit: inTransit || 0, delivered: delivered || 0 } })
     }
     loadStats()
   }, [])
@@ -85,6 +111,59 @@ export default function AdminDashboard() {
           )
         })}
       </div>
+
+      {chartLabels.length > 0 && (
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                <TrendingUp size={16} style={{ color: 'var(--text-muted)' }} />
+                Revenue (Last 7 Days)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Bar data={{
+                labels: chartLabels,
+                datasets: [{ label: "Revenue", data: chartData.dailyRev, backgroundColor: "#10b98166", borderColor: "#10b981", borderWidth: 1 }]
+              }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#9ca3af' } }, y: { ticks: { color: '#9ca3af', callback: (v) => '$' + v } } } }} height={180} />
+            </CardContent>
+          </Card>
+
+          <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                <Package size={16} style={{ color: 'var(--text-muted)' }} />
+                Shipment Status
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Doughnut data={{
+                labels: ["Pending", "In Transit", "Delivered"],
+                datasets: [{
+                  data: [chartData.statusCounts.pending, chartData.statusCounts.in_transit, chartData.statusCounts.delivered],
+                  backgroundColor: ["#eab308", "#f97316", "#22c55e"],
+                  borderWidth: 0,
+                }]
+              }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af', boxWidth: 12, padding: 12 } } } }} height={220} />
+            </CardContent>
+          </Card>
+
+          <Card className="lg:col-span-2" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                <Package size={16} style={{ color: 'var(--text-muted)' }} />
+                Shipments Created (Last 7 Days)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Bar data={{
+                labels: chartLabels,
+                datasets: [{ label: "Shipments", data: chartData.dailyShip, backgroundColor: "#3b82f666", borderColor: "#3b82f6", borderWidth: 1 }]
+              }} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#9ca3af' } }, y: { ticks: { color: '#9ca3af' } } } }} height={180} />
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }
