@@ -31,11 +31,13 @@ export default function ServicePage() {
               { title: "Customs Clearance", desc: "Expert handling of import and export documentation for smooth international shipping.", img: "/img/service-5.jpg" },
               { title: "Warehouse & Storage", desc: "Secure warehousing and inventory management solutions for businesses of all sizes.", img: "/img/service-6.jpg" },
             ].map((s, i) => (
-              <div key={i} className="col-lg-4 col-md-6 col-sm-6 wow fadeInUp" data-wow-delay={`${0.1 + i * 0.1}s`}>
-                <div className="service-item bg-light text-center p-5" style={{ height: "100%" }}>
-                  <img className="mb-4 d-block mx-auto" src={s.img} alt={s.title} style={{ width: "80px", height: "80px", objectFit: "cover" }} />
-                  <h4>{s.title}</h4>
-                  <p className="mb-3">{s.desc}</p>
+              <div key={i} className="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay={`${0.3 + i * 0.2}s`}>
+                <div className="service-item p-4">
+                  <div className="overflow-hidden mb-4">
+                    <img className="img-fluid" src={s.img} alt={s.title} />
+                  </div>
+                  <h4 className="mb-3">{s.title}</h4>
+                  <p>{s.desc}</p>
                   <a className="btn-slide mt-2" href="/service"><i className="fa fa-arrow-right"></i><span>Read More</span></a>
                 </div>
               </div>
