@@ -63,8 +63,10 @@ export default function LandingPage() {
               </div>
               <a href="/service" className="btn btn-primary py-3 px-5">Explore More</a>
             </div>
-            <div className="col-lg-6 wow fadeInRight d-flex" data-wow-delay="0.1s">
-              <div className="flex-grow-1" style={{ background: "url(/img/about.jpg) center/cover no-repeat", minHeight: "400px" }}></div>
+            <div className="col-lg-6 wow fadeInRight" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
+              <div className="position-relative h-100">
+                <img className="position-absolute img-fluid w-100 h-100" src="/img/about.jpg" style={{ objectFit: "cover" }} alt="" />
+              </div>
             </div>
           </div>
         </div>
@@ -127,8 +129,10 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-            <div className="col-lg-6 pe-lg-0 wow fadeInRight d-flex" data-wow-delay="0.1s">
-              <div className="flex-grow-1" style={{ background: "url(/img/feature.jpg) center/cover no-repeat", minHeight: "400px" }}></div>
+            <div className="col-lg-6 pe-lg-0 wow fadeInRight" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
+              <div className="position-relative h-100">
+                <img className="position-absolute img-fluid w-100 h-100" src="/img/feature.jpg" style={{ objectFit: "cover" }} alt="" />
+              </div>
             </div>
           </div>
         </div>
