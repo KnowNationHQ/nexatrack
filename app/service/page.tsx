@@ -33,7 +33,7 @@ export default function ServicePage() {
             ].map((s, i) => (
               <div key={i} className="col-lg-4 col-md-6 col-sm-6 wow fadeInUp" data-wow-delay={`${0.1 + i * 0.1}s`}>
                 <div className="service-item bg-light text-center p-5" style={{ height: "100%" }}>
-                  <img className="img-fluid mb-4" src={s.img} alt={s.title} style={{ width: "80px", height: "80px", objectFit: "cover" }} />
+                  <img className="mb-4 d-block mx-auto" src={s.img} alt={s.title} style={{ width: "80px", height: "80px", objectFit: "cover" }} />
                   <h4>{s.title}</h4>
                   <p className="mb-3">{s.desc}</p>
                   <a className="btn-slide mt-2" href="/service"><i className="fa fa-arrow-right"></i><span>Read More</span></a>
