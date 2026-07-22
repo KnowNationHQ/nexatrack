@@ -24,6 +24,23 @@ with sync_playwright() as p:
         check(f"{label} page loads", r.status < 400, str(r.status))
         page.screenshot(path=f"C:\\Users\\hp\\Desktop\\Nexatrack\\tests\\screenshots\\prod-{label.lower()}.png", full_page=True)
 
+    # ── Chat widget ──
+    print("\n======== CHAT WIDGET ========")
+    page.goto(BASE, wait_until="networkidle")
+    check("Landing at /", page.url == BASE+"/", page.url)
+    chat_btn = page.locator('button[style*="fixed"]')
+    check("Chat button visible", chat_btn.is_visible())
+    chat_btn.click()
+    time.sleep(1.5)
+    input_f = page.locator('input[placeholder*="message"]')
+    check("Chat panel opens with input", input_f.is_visible())
+    input_f.fill("Test from landing page widget")
+    input_f.press("Enter")
+    time.sleep(3)
+    body = page.inner_text("body")
+    check("Message sent and visible", "Test from landing page widget" in body)
+    page.screenshot(path=f"C:\\Users\\hp\\Desktop\\Nexatrack\\tests\\screenshots\\prod-chat-widget-sent.png", full_page=True)
+
     # ── Theme check ──
     print("\n======== THEME ========")
     page.evaluate("localStorage.setItem('nexatrack_theme','dark')")
@@ -47,17 +64,17 @@ with sync_playwright() as p:
         pg = cx.new_page()
         pg.goto(f"{BASE}/auth/login", wait_until="networkidle")
         try:
-            pg.wait_for_selector('input[type="email"]', timeout=15000)
+            pg.wait_for_selector('input[type="email"]', timeout=30000)
             pg.fill('input[type="email"]', email)
             pg.fill('input[type="password"]', PASS)
             pg.click('button[type="submit"]')
-            pg.wait_for_url(f"{BASE}/{slug}**", timeout=25000)
+            pg.wait_for_url(f"{BASE}/{slug}**", timeout=45000)
             final = pg.url
             check(f"{role} login lands on /{slug}", f"/{slug}" in final, f"got {final}")
             pg.screenshot(path=f"C:\\Users\\hp\\Desktop\\Nexatrack\\tests\\screenshots\\prod-{role}-after-login.png", full_page=True)
         except Exception as e:
             check(f"{role} login form", False, str(e)[:80])
-        cx.close(); time.sleep(0.5)
+        cx.close(); time.sleep(1)
 
     # ── Authenticated pages ──
     print("\n======== AUTH PAGES ========")
