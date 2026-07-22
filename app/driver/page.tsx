@@ -1,12 +1,17 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import dynamic from "next/dynamic"
+import { useEffect, useMemo, useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
 import { db } from "@/lib/db-client"
+import { getCityCoords } from "@/lib/florida-cities"
+import { optimizeRoute, totalRouteDistance } from "@/lib/route-optimizer"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Package, Truck, CheckCircle, Clock, MapPin, User, ArrowRight } from "lucide-react"
+import { Package, Truck, CheckCircle, Clock, MapPin, User, ArrowRight, Navigation } from "lucide-react"
+
+const MockMap = dynamic(() => import("@/components/mock-map"), { ssr: false })
 
 export default function DriverDashboard() {
   const [shipments, setShipments] = useState<any[]>([])
@@ -25,6 +30,20 @@ export default function DriverDashboard() {
       })
     })
   }, [])
+
+  const routeStops = useMemo(() => {
+    const stops: { lat: number; lng: number; label: string }[] = []
+    for (const sh of shipments) {
+      if (sh.status === "delivered" || sh.status === "cancelled") continue
+      const o = sh.origin_lat ? { lat: Number(sh.origin_lat), lng: Number(sh.origin_lng) } : getCityCoords(sh.origin_city || "")
+      const d = sh.dest_lat ? { lat: Number(sh.dest_lat), lng: Number(sh.dest_lng) } : getCityCoords(sh.destination_city || "")
+      if (o) stops.push({ ...o, label: `Pickup: ${sh.tracking_number}` })
+      if (d) stops.push({ ...d, label: `Drop: ${sh.tracking_number}` })
+    }
+    return stops.length > 2 ? optimizeRoute(stops) : stops
+  }, [shipments])
+
+  const routeDist = useMemo(() => routeStops.length > 1 ? totalRouteDistance(routeStops) : 0, [routeStops])
 
   const active = shipments.filter(s => !["delivered", "cancelled"].includes(s.status))
   const delivered = shipments.filter(s => s.status === "delivered")
@@ -81,6 +100,31 @@ export default function DriverDashboard() {
           )
         })}
       </div>
+
+      {routeStops.length > 0 && (
+        <div>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>My Route</h2>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{routeStops.length} stops · {routeDist.toFixed(1)} mi</p>
+          </div>
+          <div className="mb-6">
+            <MockMap
+              origin={routeStops[0]}
+              destination={routeStops[routeStops.length - 1]}
+              originLabel={routeStops[0]?.label}
+              destLabel={routeStops[routeStops.length - 1]?.label}
+            />
+          </div>
+          <div className="mb-6 flex flex-wrap gap-1">
+            <Navigation size={14} className="mr-1" style={{ color: 'var(--text-muted)' }} />
+            {routeStops.map((s, i) => (
+              <Badge key={i} variant="outline" className="text-[10px]" style={i === 0 ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : i === routeStops.length - 1 ? {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'} : {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'}}>
+                {i + 1}. {s.label}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
 
       <h2 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>My Jobs</h2>
       {shipments.length === 0 && <p style={{ color: 'var(--text-muted)' }}>No shipments assigned yet.</p>}

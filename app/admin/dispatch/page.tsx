@@ -4,6 +4,7 @@ import dynamic from "next/dynamic"
 import { useEffect, useMemo, useState } from "react"
 import { db } from "@/lib/db-client"
 import { getCityCoords } from "@/lib/florida-cities"
+import { optimizeRoute, totalRouteDistance } from "@/lib/route-optimizer"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -94,13 +95,15 @@ export default function DispatchPage() {
     const s = shipments.filter(x => x.driver_id === routeDriver && x.status !== "delivered" && x.status !== "cancelled")
     const stops: { lat: number; lng: number; label: string }[] = []
     for (const sh of s) {
-      const o = sh.origin_lat ? { lat: sh.origin_lat, lng: sh.origin_lng } : getCityCoords(sh.origin_city || "")
-      const d = sh.dest_lat ? { lat: sh.dest_lat, lng: sh.dest_lng } : getCityCoords(sh.destination_city || "")
+      const o = sh.origin_lat ? { lat: Number(sh.origin_lat), lng: Number(sh.origin_lng) } : getCityCoords(sh.origin_city || "")
+      const d = sh.dest_lat ? { lat: Number(sh.dest_lat), lng: Number(sh.dest_lng) } : getCityCoords(sh.destination_city || "")
       if (o) stops.push({ ...o, label: `Pickup: ${sh.tracking_number}` })
       if (d) stops.push({ ...d, label: `Drop: ${sh.tracking_number}` })
     }
-    return stops
+    return stops.length > 2 ? optimizeRoute(stops) : stops
   }, [routeDriver, shipments])
+
+  const routeDist = useMemo(() => routeStops.length > 1 ? totalRouteDistance(routeStops) : 0, [routeStops])
 
   const grouped = DISPATCH_STATUSES.map(status => ({
     status,
@@ -222,7 +225,7 @@ export default function DispatchPage() {
             ) : (
               <>
                 <div className="space-y-1">
-                  <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>{routeStops.length} stop{routeStops.length > 1 ? "s" : ""} · Sorted by proximity</p>
+                  <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>{routeStops.length} stop{routeStops.length > 1 ? "s" : ""} · {routeDist.toFixed(1)} mi total · Nearest-neighbor optimized</p>
                   <div className="flex flex-wrap gap-1">
                     {routeStops.map((s, i) => (
                       <Badge key={i} variant="outline" className="text-[10px]" style={{backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'}}>
