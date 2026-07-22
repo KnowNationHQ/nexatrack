@@ -24,6 +24,13 @@ const JS_SCRIPTS = [
 const TEMPLATE_CSS = `
 :root { --primary: #FF3E41; --secondary: #51CFED; --light: #F8F2F0; --dark: #060315; }
 :root { --bs-primary: #FF3E41; --bs-primary-rgb: 255,62,65; --bs-secondary: #51CFED; --bs-secondary-rgb: 81,207,237; --bs-dark: #060315; --bs-dark-rgb: 6,3,21; --bs-light: #F8F2F0; --bs-light-rgb: 248,242,240; }
+.bg-dark { background-color: #060315 !important; }
+.bg-light { background-color: #F8F2F0 !important; }
+.text-primary { color: #FF3E41 !important; }
+.text-secondary { color: #51CFED !important; }
+.border-primary { border-color: #FF3E41 !important; }
+.btn-primary { background-color: #FF3E41 !important; border-color: #FF3E41 !important; }
+.btn-secondary { background-color: #51CFED !important; border-color: #51CFED !important; }
 .btn-primary { --bs-btn-hover-bg:#e63538; --bs-btn-hover-border-color:#e63538; --bs-btn-active-bg:#cc2f32; --bs-btn-active-border-color:#cc2f32; }
 .btn-secondary { --bs-btn-hover-bg:#45b8d4; --bs-btn-hover-border-color:#45b8d4; --bs-btn-active-bg:#3aa3be; --bs-btn-active-border-color:#3aa3be; }
 .fw-medium { font-weight: 600 !important; }
