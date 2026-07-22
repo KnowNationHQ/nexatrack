@@ -66,7 +66,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(dashboard, request.url))
   }
 
-  if (pathname !== `/${role}` && !pathname.startsWith(`/${role}/`)) {
+  if (rest !== "/" && pathname !== `/${role}` && !pathname.startsWith(`/${role}/`)) {
     return NextResponse.redirect(new URL(dashboard, request.url))
   }
 
