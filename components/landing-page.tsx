@@ -46,7 +46,7 @@ const TEMPLATE_CSS = `
 .navbar .dropdown-toggle::after { border: none; content: "\\f107"; font-family: "Font Awesome 5 Free"; font-weight: 900; vertical-align: middle; margin-left: 8px; }
 .navbar-light .navbar-nav .nav-link { position: relative; margin-right: 30px; padding: 25px 0; color: #FFFFFF; font-size: 15px; text-transform: uppercase; outline: none; }
 .navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link.active { color: var(--primary); }
-@media (max-width: 991.98px) { .navbar-dark .navbar-nav .nav-link { margin-right: 0; padding: 10px 0; } .navbar-dark .navbar-nav { border-top: 1px solid rgba(255,255,255,.1); } }
+@media (max-width: 991.98px) { .navbar-dark .navbar-nav .nav-link { margin-right: 0; padding: 12px 20px; } .navbar-dark .navbar-nav { border-top: 1px solid rgba(255,255,255,.1); padding-bottom: 10px; } .nav-item.dropdown .dropdown-toggle::after { float: right; margin-top: 8px; } .nav-item.dropdown .dropdown-menu { position: static !important; background: transparent !important; border: none !important; padding-left: 20px; display: block !important; opacity: 1 !important; visibility: visible !important; } .nav-item.dropdown .dropdown-menu .dropdown-item { color: rgba(255,255,255,.55); padding: 8px 20px; font-size: 14px; } .nav-item.dropdown .dropdown-menu .dropdown-item:hover { color: var(--primary); background: transparent; } }
 .navbar-dark .navbar-brand, .navbar-dark a.btn { height: 75px; }
 .navbar-dark .navbar-nav .nav-link { color: rgba(255,255,255,.8); font-weight: 500; }
 .navbar-dark.sticky-top { top: -100px; transition: .5s; }
@@ -131,7 +131,15 @@ export default function LandingPage() {
               function(this: any) { $(this).addClass(showClass); $(this).find($dropdownToggle).attr("aria-expanded", "true"); $(this).find($dropdownMenu).addClass(showClass) },
               function(this: any) { $(this).removeClass(showClass); $(this).find($dropdownToggle).attr("aria-expanded", "false"); $(this).find($dropdownMenu).removeClass(showClass) }
             )
-          } else { $dropdown.off("mouseenter mouseleave") }
+          } else {
+            $dropdown.off("mouseenter mouseleave")
+            $dropdownToggle.off("click.dropdown")
+            $dropdownToggle.on("click.dropdown", function(this: any) {
+              const parent = $(this).parent()
+              parent.toggleClass(showClass)
+              parent.find($dropdownMenu).toggleClass(showClass)
+            })
+          }
         })
         $(window).on("scroll", () => { if ($(window).scrollTop() > 300) $(".back-to-top").fadeIn("slow"); else $(".back-to-top").fadeOut("slow") })
         $(".back-to-top").on("click", () => { $("html, body").animate({ scrollTop: 0 }, 1500, "easeInOutExpo"); return false })
@@ -169,7 +177,7 @@ export default function LandingPage() {
             <a href="/about" className="nav-item nav-link">About</a>
             <a href="/service" className="nav-item nav-link">Services</a>
             <div className="nav-item dropdown">
-              <a href="#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+              <a role="button" tabIndex={0} className="nav-link dropdown-toggle">Pages</a>
               <div className="dropdown-menu fade-up m-0">
                 <a href="/track" className="dropdown-item">Tracking</a>
                 <a href="/#features" className="dropdown-item">Features</a>
