@@ -49,7 +49,7 @@ const TEMPLATE_CSS = `
 .navbar .dropdown-toggle::after { border: none; content: "\\f107"; font-family: "Font Awesome 5 Free"; font-weight: 900; vertical-align: middle; margin-left: 8px; }
 .navbar-light .navbar-nav .nav-link { position: relative; margin-right: 30px; padding: 25px 0; color: #FFFFFF; font-size: 15px; text-transform: uppercase; outline: none; }
 .navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link.active { color: var(--primary); }
-@media (max-width: 991.98px) { .navbar-dark .navbar-nav .nav-link { margin-right: 0; padding: 12px 20px; } .navbar-dark .navbar-nav { border-top: 1px solid rgba(255,255,255,.1); padding-bottom: 10px; } .nav-item.dropdown .dropdown-toggle::after { float: right; margin-top: 8px; } .nav-item.dropdown .dropdown-menu { position: static !important; background: transparent !important; border: none !important; padding-left: 20px; display: block !important; opacity: 1 !important; visibility: visible !important; } .nav-item.dropdown .dropdown-menu .dropdown-item { color: rgba(255,255,255,.55); padding: 8px 20px; font-size: 14px; } .nav-item.dropdown .dropdown-menu .dropdown-item:hover { color: var(--primary); background: transparent; } }
+@media (max-width: 991.98px) { .sticky-top { top: 0 !important; } .navbar-collapse { position: absolute; top: 100%; left: 0; right: 0; background: #060315; z-index: 1000; max-height: calc(100vh - 75px); overflow-y: auto; } .navbar-dark .navbar-nav .nav-link { margin-right: 0; padding: 14px 20px; font-size: 15px; color: rgba(255,255,255,.9) !important; } .navbar-dark .navbar-nav { padding: 10px 0; } .nav-item.dropdown .dropdown-toggle::after { float: right; margin-top: 8px; } .nav-item.dropdown .dropdown-menu { position: static !important; background: transparent !important; border: none !important; padding-left: 24px; display: block !important; } .nav-item.dropdown .dropdown-menu .dropdown-item { color: rgba(255,255,255,.6); padding: 10px 20px; font-size: 14px; } .nav-item.dropdown .dropdown-menu .dropdown-item:hover { color: var(--primary); background: transparent; } }
 .navbar-dark .navbar-brand, .navbar-dark a.btn { height: 75px; }
 .navbar-dark .navbar-nav .nav-link { color: rgba(255,255,255,.8); font-weight: 500; }
 .navbar-dark.sticky-top { top: -100px; transition: .5s; }
@@ -124,10 +124,13 @@ export default function LandingPage() {
         setTimeout(() => { if ($("#spinner").length > 0) $("#spinner").removeClass("show") }, 1)
         new (window as any).WOW().init()
         $(window).on("scroll", () => {
+          if ($(window).width()! < 992) return
           if ($(window).scrollTop() > 300) $(".sticky-top").css("top", "0px")
           else $(".sticky-top").css("top", "-100px")
         })
         const $dropdown = $(".dropdown"), $dropdownToggle = $(".dropdown-toggle"), $dropdownMenu = $(".dropdown-menu"), showClass = "show"
+        const collapseEl = document.getElementById("navbarCollapse")
+        $(document).on("click", ".navbar-nav .nav-link:not(.dropdown-toggle)", () => { if ($(window).width()! < 992 && collapseEl) { (window as any).bootstrap?.Collapse?.getOrCreateInstance?.(collapseEl)?.hide() } })
         $(window).on("load resize", function(this: Window) {
           if (this.matchMedia("(min-width: 992px)").matches) {
             $dropdown.hover(
