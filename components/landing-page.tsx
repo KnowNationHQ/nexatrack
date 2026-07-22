@@ -31,6 +31,9 @@ const TEMPLATE_CSS = `
 .border-primary { border-color: #FF3E41 !important; }
 .btn-primary { background-color: #FF3E41 !important; border-color: #FF3E41 !important; }
 .btn-secondary { background-color: #51CFED !important; border-color: #51CFED !important; }
+.bg-brand { background-color: #0F1F33 !important; }
+.text-brand { color: #0F1F33 !important; }
+.border-brand { border-color: #0F1F33 !important; }
 .btn-primary { --bs-btn-hover-bg:#e63538; --bs-btn-hover-border-color:#e63538; --bs-btn-active-bg:#cc2f32; --bs-btn-active-border-color:#cc2f32; }
 .btn-secondary { --bs-btn-hover-bg:#45b8d4; --bs-btn-hover-border-color:#45b8d4; --bs-btn-active-bg:#3aa3be; --bs-btn-active-border-color:#3aa3be; }
 .fw-medium { font-weight: 600 !important; }
@@ -164,8 +167,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      <nav className="navbar navbar-expand-lg bg-dark navbar-dark shadow border-top border-5 border-primary sticky-top p-0">
-        <a href="/" className="navbar-brand bg-primary d-flex align-items-center px-4 px-lg-5">
+      <nav className="navbar navbar-expand-lg bg-dark navbar-dark shadow border-top border-3 border-brand sticky-top p-0">
+        <a href="/" className="navbar-brand bg-brand d-flex align-items-center px-4 px-lg-5">
           <h2 className="mb-2 text-white">Nexatrack</h2>
         </a>
         <button type="button" className="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -186,7 +189,7 @@ export default function LandingPage() {
             </div>
             <a href="/contact" className="nav-item nav-link">Contact</a>
           </div>
-          <h4 className="m-0 pe-lg-5 d-none d-lg-block"><i className="fa fa-headphones text-primary me-3"></i>+1 305 555 0199</h4>
+          <h4 className="m-0 pe-lg-5 d-none d-lg-block text-white-50"><i className="fa fa-headphones text-white-50 me-3"></i>+1 305 555 0199</h4>
         </div>
       </nav>
 
