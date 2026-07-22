@@ -1,14 +1,5 @@
 {
-  "builds": [
-    { "src": "package.json", "use": "@vercel/next" }
-  ],
   "rewrites": [
-    { "source": "/about", "destination": "/about.html" },
-    { "source": "/contact", "destination": "/contact.html" },
-    { "source": "/service", "destination": "/service.html" },
-    { "source": "/feature", "destination": "/feature.html" },
-    { "source": "/quote", "destination": "/quote.html" },
-    { "source": "/chatbot", "destination": "/chatbot.html" },
     { "source": "/", "has": [{ "type": "host", "value": "widget.nexatrackcourierservices.com" }], "destination": "/chatbot.html" }
   ]
 }
