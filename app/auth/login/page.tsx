@@ -32,7 +32,10 @@ export default function LoginPage() {
       return
     }
 
-    router.push("/admin")
+    const { data: { user } } = await supabase.auth.getUser()
+    const role = user?.app_metadata?.role || "merchant"
+    const dash: Record<string, string> = { admin: "/admin", merchant: "/merchant", driver: "/driver" }
+    router.push(dash[role] || "/merchant")
     router.refresh()
   }
 

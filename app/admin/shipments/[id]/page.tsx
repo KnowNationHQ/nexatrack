@@ -315,7 +315,7 @@ export default function AdminShipmentDetail() {
                   const isComplete = currentIdx >= statusIdx && shipment.status !== "cancelled"
                   const isCurrent = s === shipment.status
                   const dot = shipment.status === "cancelled" ? "bg-gray-700" : isComplete ? "bg-green-500" : isCurrent ? "bg-[#FF3E41] animate-pulse" : "bg-[#1a1725]"
-                  const textClr = shipment.status === "cancelled" ? "text-gray-600" : isComplete ? "text-green-400" : isCurrent ? "text-white font-medium" : "text-gray-600"
+                  const textClr = shipment.status === "cancelled" ? "text-[var(--text-muted)]" : isComplete ? "text-green-400" : isCurrent ? "text-white font-medium" : "text-[var(--text-muted)]"
                   return (
                     <div key={s} className="flex items-center gap-2 py-0.5">
                       <div className={`h-2 w-2 shrink-0 rounded-full ${dot}`} />

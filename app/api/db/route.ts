@@ -26,34 +26,10 @@ export async function POST(req: Request) {
       return NextResponse.json(d || [])
     }
 
-    if (action === "insert") {
-      const { data: d, error } = await supabase.from(table).insert(data).select()
-      if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-      return NextResponse.json(d)
-    }
-
-    if (action === "upsert") {
-      const q = supabase.from(table).upsert(data, { onConflict, ignoreDuplicates: false }).select()
-      const { data: d, error } = await q
-      if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-      return NextResponse.json(d)
-    }
-
-    if (action === "update") {
-      let q = supabase.from(table).update(data)
-      if (eq) for (const [k, v] of Object.entries(eq)) q = q.eq(k, v)
-      const { data: d, error } = await q.select()
-      if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-      return NextResponse.json(d)
-    }
-
-    if (action === "delete") {
-      let q = supabase.from(table).delete()
-      if (eq) for (const [k, v] of Object.entries(eq)) q = q.eq(k, v)
-      const { error } = await q
-      if (error) return NextResponse.json({ error: error.message }, { status: 400 })
-      return NextResponse.json({ success: true })
-    }
+    if (action === "insert") { const { data: d, error } = await supabase.from(table).insert(data).select(); if (error) return NextResponse.json({ error: error.message }, { status: 400 }); return NextResponse.json(d) }
+    if (action === "upsert") { const { data: d, error } = await supabase.from(table).upsert(data, { onConflict, ignoreDuplicates: false }).select(); if (error) return NextResponse.json({ error: error.message }, { status: 400 }); return NextResponse.json(d) }
+    if (action === "update") { let q = supabase.from(table).update(data); if (eq) for (const [k, v] of Object.entries(eq)) q = q.eq(k, v); const { data: d, error } = await q.select(); if (error) return NextResponse.json({ error: error.message }, { status: 400 }); return NextResponse.json(d) }
+    if (action === "delete") { let q = supabase.from(table).delete(); if (eq) for (const [k, v] of Object.entries(eq)) q = q.eq(k, v); const { error } = await q; if (error) return NextResponse.json({ error: error.message }, { status: 400 }); return NextResponse.json({ success: true }) }
 
     return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
   } catch (e: any) {

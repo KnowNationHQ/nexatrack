@@ -91,8 +91,8 @@ export default function PickupsPage() {
                     {STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
                   </select>
                   <button onClick={() => setSelected(p)}
-                    className="rounded px-1.5 py-0.5 text-[10px] font-medium transition-colors hover:bg-[#FF3E41] hover:text-white"
-                    style={{ border: '1px solid var(--card-border)', color: 'var(--text-muted)' }}>
+                    className="rounded px-1.5 py-0.5 text-[10px] font-medium transition-colors"
+                    style={{ border: '1px solid var(--card-border)', color: 'var(--accent)' }}>
                     Assign
                   </button>
                 </div>
@@ -120,7 +120,7 @@ export default function PickupsPage() {
                 </SelectTrigger>
                 <SelectContent style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }}>
                   {drivers.map((d: any) => (
-                    <SelectItem key={d.id} value={d.id} className="focus:bg-gray-800 focus:text-white" style={{ color: 'var(--text-primary)' }}>
+                    <SelectItem key={d.id} value={d.id} style={{ color: 'var(--text-primary)' }}>
                       {d.name || d.email || d.id?.slice(0, 8)}
                     </SelectItem>
                   ))}

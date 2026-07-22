@@ -104,14 +104,14 @@ export default function MerchantShipmentDetail() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Button variant="ghost" onClick={() => router.push("/merchant/shipments")} style={{ color: 'var(--text-muted)' }} className="hover:text-white">
+        <Button variant="ghost" onClick={() => router.push("/merchant/shipments")}>
           <ArrowLeft className="mr-2 h-4 w-4" /> Back
         </Button>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={share} style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }} className="hover:text-white">
+          <Button variant="outline" size="sm" onClick={share}>
             <Share2 size={14} className="mr-1" /> Share
           </Button>
-          <Button variant="outline" size="sm" onClick={copyLink} style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }} className="hover:text-white">
+          <Button variant="outline" size="sm" onClick={copyLink}>
             {copied ? <Check size={14} className="mr-1 text-green-400" /> : <Copy size={14} className="mr-1" />}
             {copied ? "Copied" : "Copy Link"}
           </Button>
@@ -227,7 +227,7 @@ export default function MerchantShipmentDetail() {
                 <canvas ref={qrRef} className="h-40 w-40 rounded-lg" />
               )}
               <p className="text-xs text-center" style={{color:'var(--text-muted)'}}>Scan to track this shipment</p>
-              <Button variant="outline" size="sm" onClick={copyLink} style={{borderColor:'var(--card-border)',color:'var(--text-muted)'}} className="w-full hover:text-white">
+              <Button variant="outline" size="sm" onClick={copyLink} className="w-full">
                 {copied ? <Check size={14} className="mr-1 text-green-400" /> : <Copy size={14} className="mr-1" />}
                 {copied ? "Copied" : "Copy Tracking Link"}
               </Button>

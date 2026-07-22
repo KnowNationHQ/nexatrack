@@ -234,13 +234,13 @@ function TrackPageInner() {
                 )}
 
                 <div className="flex flex-wrap gap-2 pt-2">
-                  <Button variant="outline" size="sm" onClick={shareWhatsApp} style={{borderColor:'var(--card-border)',color:'var(--text-muted)'}} onMouseEnter={(e)=>(e.currentTarget.style.color='white')} onMouseLeave={(e)=>(e.currentTarget.style.color='var(--text-muted)')}>
+                  <Button variant="outline" size="sm" onClick={shareWhatsApp}>
                     <Share2 size={14} className="mr-1" /> WhatsApp
                   </Button>
-                  <Button variant="outline" size="sm" onClick={shareSMS} style={{borderColor:'var(--card-border)',color:'var(--text-muted)'}} onMouseEnter={(e)=>(e.currentTarget.style.color='white')} onMouseLeave={(e)=>(e.currentTarget.style.color='var(--text-muted)')}>
+                  <Button variant="outline" size="sm" onClick={shareSMS}>
                     <Share2 size={14} className="mr-1" /> SMS
                   </Button>
-                  <Button variant="outline" size="sm" onClick={copyLink} style={{borderColor:'var(--card-border)',color:'var(--text-muted)'}} onMouseEnter={(e)=>(e.currentTarget.style.color='white')} onMouseLeave={(e)=>(e.currentTarget.style.color='var(--text-muted)')}>
+                  <Button variant="outline" size="sm" onClick={copyLink}>
                     {copied ? <Check size={14} className="mr-1 text-green-400" /> : <Copy size={14} className="mr-1" />}
                     {copied ? "Copied" : "Copy Link"}
                   </Button>

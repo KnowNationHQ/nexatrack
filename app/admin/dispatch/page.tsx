@@ -147,7 +147,7 @@ export default function DispatchPage() {
           <div key={group.status}>
             <div className="mb-3 flex items-center gap-2">
               <h2 className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>{group.label}</h2>
-              <Badge variant="outline" className="bg-gray-800" style={{ color: 'var(--text-muted)' }}>{group.items.length}</Badge>
+              <Badge variant="outline" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-muted)', borderColor: 'var(--card-border)' }}>{group.items.length}</Badge>
             </div>
             <div className="space-y-3">
               {group.items.map(shipment => (
@@ -198,7 +198,7 @@ export default function DispatchPage() {
                 </SelectTrigger>
                 <SelectContent style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }}>
                   {drivers.map((d: any) => (
-                    <SelectItem key={d.id} value={d.id} className="focus:bg-gray-800 focus:text-white" style={{ color: 'var(--text-primary)' }}>
+                    <SelectItem key={d.id} value={d.id} style={{ color: 'var(--text-primary)' }}>
                       {d.name || d.email || d.id?.slice(0, 8)}
                     </SelectItem>
                   ))}
