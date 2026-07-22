@@ -216,7 +216,7 @@ export default function PageShell({ children, activePage }: { children: ReactNod
             <a href="/about" className={'nav-item nav-link' + (activePage === 'about' ? ' active' : '')}>About</a>
             <a href="/service" className={'nav-item nav-link' + (activePage === 'service' ? ' active' : '')}>Services</a>
             <div className="nav-item dropdown">
-              <a role="button" tabIndex={0} className="nav-link dropdown-toggle" onClick={(e) => { if (window.innerWidth < 992) { const m = e.currentTarget.nextElementSibling; if (m) m.classList.toggle("show"); } }}>Pages</a>
+              <a role="button" tabIndex={0} className="nav-link dropdown-toggle" onClick={(e) => { if (window.innerWidth < 992) { const m = e.currentTarget.nextElementSibling; if (m) m.classList.toggle("show"); } }}>Resources</a>
               <div className="dropdown-menu fade-up m-0">
                 <a href="/track" className="dropdown-item">Tracking</a>
                 <a href="/#features" className="dropdown-item">Features</a>
