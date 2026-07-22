@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Send, Loader2 } from "lucide-react"
 
-const PORTAL_CHAT_ID = "00000000-0000-0000-0000-000000000001"
-
 export default function LiveChat({ role }: { role: "admin" | "merchant" | "driver" }) {
   const [messages, setMessages] = useState<any[]>([])
   const [text, setText] = useState("")
@@ -20,9 +18,8 @@ export default function LiveChat({ role }: { role: "admin" | "merchant" | "drive
   useEffect(() => {
     ;(async () => {
       setLoading(true)
-      const data = await db("livechat_messages", "select", {
-        columns: "id,content,created_at,sender_type",
-        eq: { chat_id: PORTAL_CHAT_ID },
+      const data = await db("portal_messages", "select", {
+        columns: "id,role,message,sender,created_at",
         order: { column: "created_at", ascending: true },
         limit: 50,
       })
@@ -30,8 +27,8 @@ export default function LiveChat({ role }: { role: "admin" | "merchant" | "drive
       setLoading(false)
     })()
     const channel = supabase
-      .channel(`portal-chat-${PORTAL_CHAT_ID}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "livechat_messages", filter: `chat_id=eq.${PORTAL_CHAT_ID}` }, (payload) => {
+      .channel("portal-messages")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "portal_messages" }, (payload) => {
         setMessages((prev) => [...prev, payload.new])
       })
       .subscribe()
@@ -45,12 +42,11 @@ export default function LiveChat({ role }: { role: "admin" | "merchant" | "drive
   async function sendMessage() {
     if (!text.trim() || sending) return
     setSending(true)
-    const { error } = await supabase.rpc("send_chat_message", {
-      p_chat_id: PORTAL_CHAT_ID,
-      p_content: text,
-      p_sender_type: role,
+    const { data: { user } } = await supabase.auth.getUser()
+    await db("portal_messages", "insert", {
+      data: { message: text, role, sender: user?.email || role },
     })
-    if (!error) setText("")
+    setText("")
     setSending(false)
   }
 
@@ -69,19 +65,19 @@ export default function LiveChat({ role }: { role: "admin" | "merchant" | "drive
           </div>
         ) : (
           messages.map((m, i) => (
-            <div key={m.id || i} className={`flex ${m.sender_type === role ? "justify-end" : "justify-start"}`}>
+            <div key={m.id || i} className={`flex ${m.role === role ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[75%] rounded-xl px-3 py-2 text-sm ${
-                m.sender_type === role ? "rounded-br-sm" : "rounded-bl-sm"
+                m.role === role ? "rounded-br-sm" : "rounded-bl-sm"
               }`}
                 style={{
-                  backgroundColor: m.sender_type === role ? 'var(--accent)' : 'var(--input-bg)',
-                  color: m.sender_type === role ? '#fff' : 'var(--text-primary)',
+                  backgroundColor: m.role === role ? 'var(--accent)' : 'var(--input-bg)',
+                  color: m.role === role ? '#fff' : 'var(--text-primary)',
                 }}
               >
-                {m.sender_type !== role && (
-                  <p className="text-[10px] font-medium mb-0.5 opacity-60 capitalize">{m.sender_type}</p>
+                {m.role !== role && (
+                  <p className="text-[10px] font-medium mb-0.5 opacity-60 capitalize">{m.sender || m.role}</p>
                 )}
-                <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                <p className="whitespace-pre-wrap break-words">{m.message}</p>
                 <p className="mt-1 text-[10px] opacity-50 text-right">
                   {m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
                 </p>

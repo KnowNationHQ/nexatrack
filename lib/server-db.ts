@@ -12,7 +12,7 @@ const ALLOWED = new Set([
   "profiles", "wallets", "transactions", "invoices", "pickup_requests",
   "settings", "livechat_messages", "branches", "packaging_options",
   "delivery_charges", "faqs", "support_tickets", "subscribers",
-  "categories", "blocked_emails",
+  "categories", "blocked_emails", "portal_messages",
 ])
 
 export function assertTable(table: string) {
