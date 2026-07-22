@@ -51,7 +51,7 @@ const TEMPLATE_CSS = `
 .navbar .dropdown-toggle::after { border: none; content: "\\f107"; font-family: "Font Awesome 5 Free"; font-weight: 900; vertical-align: middle; margin-left: 8px; }
 .navbar-light .navbar-nav .nav-link { position: relative; margin-right: 30px; padding: 25px 0; color: #060315; font-size: 15px; text-transform: uppercase; outline: none; }
 .navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link.active, .navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .nav-link.active { color: var(--primary); }
-@media (max-width: 991.98px) { .sticky-top { top: 0 !important; } .navbar-collapse { position: absolute; top: 100%; left: 0; right: 0; background: #FFFFFF; z-index: 1000; max-height: calc(100vh - 75px); overflow-y: auto; } .navbar-nav .nav-link { margin-right: 0; padding: 14px 20px; font-size: 15px; color: #060315 !important; } .navbar-nav { padding: 10px 0; } .nav-item.dropdown .dropdown-toggle::after { float: right; margin-top: 8px; } .nav-item.dropdown .dropdown-menu { position: static !important; background: transparent !important; border: none !important; padding-left: 24px; } .nav-item.dropdown .dropdown-menu:not(.show) { display: none; } .nav-item.dropdown .dropdown-menu .dropdown-item { color: #333; padding: 10px 20px; font-size: 14px; } .nav-item.dropdown .dropdown-menu .dropdown-item:hover { color: var(--primary); background: transparent; } }
+@media (max-width: 991.98px) { .sticky-top { top: 0 !important; } #navbarCollapse:not(.show-nav) { display: none !important; } #navbarCollapse.show-nav { display: block !important; } .navbar-collapse { position: absolute; top: 100%; left: 0; right: 0; background: #FFFFFF; z-index: 1000; max-height: calc(100vh - 75px); overflow-y: auto; } .navbar-nav .nav-link { margin-right: 0; padding: 14px 20px; font-size: 15px; color: #060315 !important; } .navbar-nav { padding: 10px 0; } .nav-item.dropdown .dropdown-toggle::after { float: right; margin-top: 8px; } .nav-item.dropdown .dropdown-menu { position: static !important; background: transparent !important; border: none !important; padding-left: 24px; } .nav-item.dropdown .dropdown-menu:not(.show) { display: none; } .nav-item.dropdown .dropdown-menu .dropdown-item { color: #333; padding: 10px 20px; font-size: 14px; } .nav-item.dropdown .dropdown-menu .dropdown-item:hover { color: var(--primary); background: transparent; } }
 @media (min-width: 768px) and (max-width: 991.98px) { .navbar-collapse { left: auto; right: 12px; max-width: 380px; border-radius: 0 0 8px 8px; } }
 .navbar .navbar-brand, .navbar a.btn { height: 75px; }
 .navbar-nav .nav-link { font-weight: 500; }
@@ -69,6 +69,7 @@ const TEMPLATE_CSS = `
 @media (min-width: 1200px) { .feature-text { padding-left: calc(((100% - 1140px) / 2) + .75rem); } }
 @media (min-width: 1400px) { .feature-text { padding-left: calc(((100% - 1320px) / 2) + .75rem); } }
 .service-item { box-shadow: 0 0 45px rgba(0, 0, 0, .07); }
+@media (max-width: 575.98px) { .service-item { padding: 1.5rem 1rem !important; } }
 .service-item img { transition: .5s; }
 .service-item:hover img { transform: scale(1.1); }
 .service-item a.btn-slide { position: relative; display: inline-block; overflow: hidden; font-size: 0; }
@@ -126,8 +127,6 @@ export default function PageShell({ children, activePage }: { children: ReactNod
         setTimeout(() => { if ($("#spinner").length > 0) $("#spinner").removeClass("show") }, 1)
         new (window as any).WOW().init()
         const $dropdown = $(".dropdown"), $dropdownToggle = $(".dropdown-toggle"), $dropdownMenu = $(".dropdown-menu"), showClass = "show"
-        const collapseEl = document.getElementById("navbarCollapse")
-        $("#navbarCollapse .nav-link:not(.dropdown-toggle)").on("click", () => { if ($(window).width()! < 992 && collapseEl) { const c = (window as any).bootstrap?.Collapse; if (c) { const i = c.getInstance(collapseEl) || new c(collapseEl, {toggle:false}); i.hide() } } })
         ;(function setupDropdowns() {
           if (window.matchMedia("(min-width: 992px)").matches) {
             $dropdown.hover(
@@ -147,6 +146,7 @@ export default function PageShell({ children, activePage }: { children: ReactNod
         })()
         $(window).on("resize", function(this: Window) {
           if (this.matchMedia("(min-width: 992px)").matches) {
+            $("#navbarCollapse").removeClass("show-nav")
             $dropdown.off("mouseenter mouseleave")
             $dropdownToggle.off("click.dropdown")
             $dropdown.hover(
@@ -194,10 +194,10 @@ export default function PageShell({ children, activePage }: { children: ReactNod
         <a href="/" className="navbar-brand bg-primary d-flex align-items-center px-4 px-lg-5">
           <h2 className="mb-2 text-white">Nexatrack</h2>
         </a>
-        <button type="button" className="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <button type="button" className="navbar-toggler me-4" id="navbarToggle" onClick={() => document.getElementById("navbarCollapse")?.classList.toggle("show-nav")}>
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarCollapse">
+        <div className="navbar-collapse" id="navbarCollapse" onClick={(e) => { const t = (e.target as HTMLElement).closest(".nav-link:not(.dropdown-toggle)"); if (t && window.innerWidth < 992) document.getElementById("navbarCollapse")?.classList.remove("show-nav") }}>
           <div className="navbar-nav ms-auto p-4 p-lg-0">
             <a href="/" className={'nav-item nav-link' + (activePage === 'home' ? ' active' : '')}>Home</a>
             <a href="/about" className={'nav-item nav-link' + (activePage === 'about' ? ' active' : '')}>About</a>
