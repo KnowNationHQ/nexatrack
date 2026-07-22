@@ -46,7 +46,7 @@ export default function FeaturePage() {
                 </div>
               </div>
             </div>
-            <div className="col-lg-6 pe-lg-0 wow fadeInRight" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
+            <div className="col-lg-6 pe-lg-0 wow fadeInRight d-flex" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
               <div className="position-relative h-100">
                 <img className="position-absolute img-fluid w-100 h-100" src="/img/feature.jpg" style={{ objectFit: "cover" }} alt="" />
               </div>

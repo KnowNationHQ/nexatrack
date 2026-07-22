@@ -21,7 +21,7 @@ export default function AboutPage() {
       <div className="container-fluid overflow-hidden py-5 px-lg-0">
         <div className="container about py-5 px-lg-0">
           <div className="row g-5 mx-lg-0">
-            <div className="col-lg-6 ps-lg-0 wow fadeInLeft" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
+            <div className="col-lg-6 ps-lg-0 wow fadeInLeft d-flex" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
               <div className="position-relative h-100">
                 <img className="position-absolute img-fluid w-100 h-100" src="/img/about.jpg" style={{ objectFit: "cover" }} alt="About Nexatrack" />
               </div>
@@ -76,7 +76,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-            <div className="col-lg-6 pe-lg-0 wow fadeInRight" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
+            <div className="col-lg-6 pe-lg-0 wow fadeInRight d-flex" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
               <div className="position-relative h-100">
                 <img className="position-absolute img-fluid w-100 h-100" src="/img/feature.jpg" style={{ objectFit: "cover" }} alt="" />
               </div>

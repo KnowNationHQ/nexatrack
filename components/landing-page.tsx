@@ -76,7 +76,7 @@ export default function LandingPage() {
               </div>
               <a href="/service" className="btn btn-primary py-3 px-5">Explore More</a>
             </div>
-            <div className="col-lg-6 wow fadeInRight" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
+            <div className="col-lg-6 wow fadeInRight d-flex" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
               <div className="position-relative h-100">
                 <img className="position-absolute img-fluid w-100 h-100" src="/img/about.jpg" style={{ objectFit: "cover" }} alt="" />
               </div>
@@ -142,7 +142,7 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-            <div className="col-lg-6 pe-lg-0 wow fadeInRight" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
+            <div className="col-lg-6 pe-lg-0 wow fadeInRight d-flex" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
               <div className="position-relative h-100">
                 <img className="position-absolute img-fluid w-100 h-100" src="/img/feature.jpg" style={{ objectFit: "cover" }} alt="" />
               </div>
@@ -171,16 +171,16 @@ export default function LandingPage() {
                 <form onSubmit={handleQuote}>
                   <div className="row g-3">
                     <div className="col-12 col-sm-6">
-                      <input type="text" className="form-control border-0" placeholder="Your Name" style={{ height: "55px" }} value={qf.name} onChange={e => setQf({...qf, name: e.target.value})} required />
+                      <input type="text" className="form-control border-0" placeholder="Your Name" style={{ height: "55px" }} value={qf.name} onChange={e => setQf({...qf, name: e.target.value})} name="name" required />
                     </div>
                     <div className="col-12 col-sm-6">
-                      <input type="email" className="form-control border-0" placeholder="Your Email" style={{ height: "55px" }} value={qf.email} onChange={e => setQf({...qf, email: e.target.value})} required />
+                      <input type="email" className="form-control border-0" placeholder="Your Email" style={{ height: "55px" }} value={qf.email} onChange={e => setQf({...qf, email: e.target.value})} name="email" required />
                     </div>
                     <div className="col-12 col-sm-6">
-                      <input type="text" className="form-control border-0" placeholder="Your Mobile" style={{ height: "55px" }} value={qf.mobile} onChange={e => setQf({...qf, mobile: e.target.value})} />
+                      <input type="text" className="form-control border-0" placeholder="Your Mobile" style={{ height: "55px" }} value={qf.mobile} onChange={e => setQf({...qf, mobile: e.target.value})} name="mobile" />
                     </div>
                     <div className="col-12 col-sm-6">
-                      <select className="form-select border-0" style={{ height: "55px" }} value={qf.service} onChange={e => setQf({...qf, service: e.target.value})}>
+                      <select className="form-select border-0" style={{ height: "55px" }} value={qf.service} onChange={e => setQf({...qf, service: e.target.value})} name="service">
                         <option value="Select Service Type">Select Service Type</option>
                         <option value="Express Delivery">Express Delivery</option>
                         <option value="International Shipping">International Shipping</option>
@@ -188,7 +188,7 @@ export default function LandingPage() {
                       </select>
                     </div>
                     <div className="col-12">
-                      <textarea className="form-control border-0" placeholder="Special Note" value={qf.note} onChange={e => setQf({...qf, note: e.target.value})}></textarea>
+                      <textarea className="form-control border-0" placeholder="Special Note" name="note" value={qf.note} onChange={e => setQf({...qf, note: e.target.value})}></textarea>
                     </div>
                     <div className="col-12">
                       <button className="btn btn-primary w-100 py-3" type="submit">Submit</button>

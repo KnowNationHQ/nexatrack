@@ -216,7 +216,7 @@ export default function PageShell({ children, activePage }: { children: ReactNod
             <a href="/about" className={'nav-item nav-link' + (activePage === 'about' ? ' active' : '')}>About</a>
             <a href="/service" className={'nav-item nav-link' + (activePage === 'service' ? ' active' : '')}>Services</a>
             <div className="nav-item dropdown">
-              <a role="button" tabIndex={0} className="nav-link dropdown-toggle">Pages</a>
+              <a role="button" tabIndex={0} className="nav-link dropdown-toggle" onClick={(e) => { if (window.innerWidth < 992) { const m = e.currentTarget.nextElementSibling; if (m) m.classList.toggle("show"); } }}>Pages</a>
               <div className="dropdown-menu fade-up m-0">
                 <a href="/track" className="dropdown-item">Tracking</a>
                 <a href="/#features" className="dropdown-item">Features</a>
@@ -266,7 +266,7 @@ export default function PageShell({ children, activePage }: { children: ReactNod
               <h4 className="text-light mb-4">Newsletter</h4>
               <p>Stay informed about our latest services and promotions.</p>
               <form className="position-relative mx-auto" style={{ maxWidth: "400px" }} onSubmit={handleNewsletter}>
-                <input className="form-control border-0 w-100 py-3 ps-4 pe-5" type="email" placeholder="Your email" value={newsletterEmail} onChange={e => setNewsletterEmail(e.target.value)} required />
+                <input className="form-control border-0 w-100 py-3 ps-4 pe-5" type="email" placeholder="Your email" name="email" value={newsletterEmail} onChange={e => setNewsletterEmail(e.target.value)} required />
                 <button type="submit" className="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
               </form>
             </div>
