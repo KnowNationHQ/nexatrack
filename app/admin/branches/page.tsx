@@ -72,7 +72,7 @@ export default function BranchesPage() {
               { label: "Name", key: "name" },
               { label: "City", key: "city", render: (b) => <span style={{ color: 'var(--text-muted)' }}>{b.city || "—"}</span> },
               { label: "Phone", key: "phone", render: (b) => <span style={{ color: 'var(--text-muted)' }}>{b.phone || "—"}</span> },
-              { label: "Status", key: "status", render: (b) => <Badge variant="outline" className={b.status === "active" ? "bg-green-900/50 text-green-400" : "bg-yellow-900/50 text-yellow-400"}>{b.status || "active"}</Badge> },
+              { label: "Status", key: "status", render: (b) => <Badge variant="outline" style={b.status === "active" ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'}}>{b.status || "active"}</Badge> },
               { label: "Actions", key: "actions", render: (b) => <div className="flex gap-2"><button onClick={() => openEdit(b)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(b.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
             ]}
             data={filtered}

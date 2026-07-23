@@ -66,9 +66,10 @@ export async function POST(req: Request) {
   if (parcel.driver_id) recipients.push({ id: parcel.driver_id, role: "driver" })
   for (const r of recipients) {
     await supabase.from("notifications").insert({
-      recipient_id: r.id,
+      user_id: r.id,
       title: `Shipment ${label}`,
-      message: `${parcel.tracking_number} is now ${label.toLowerCase()}`,
+      body: `${parcel.tracking_number} is now ${label.toLowerCase()}`,
+      type: "shipment",
       link: `/${r.role}/shipments/${parcel.id}`,
     }).maybeSingle()
   }

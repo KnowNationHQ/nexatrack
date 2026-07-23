@@ -171,8 +171,8 @@ export default function MerchantShipmentDetail() {
                 <div className="space-y-1">
                   <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Service Type</p>
                   <div className="flex flex-wrap gap-2">
-                    {serviceType && <Badge variant="outline" className="border-blue-700 bg-blue-900/30 text-blue-300">{serviceType}</Badge>}
-                    {category && <Badge variant="outline" className="border-emerald-700 bg-emerald-900/30 text-emerald-300">{category}</Badge>}
+                    {serviceType && <Badge variant="outline" style={{backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'}}>{serviceType}</Badge>}
+                    {category && <Badge variant="outline" style={{backgroundColor:'var(--badge-green-bg)',color:'var(--badge-green-text)'}}>{category}</Badge>}
                   </div>
                 </div>
               )}

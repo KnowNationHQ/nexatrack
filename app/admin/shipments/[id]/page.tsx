@@ -142,8 +142,7 @@ export default function AdminShipmentDetail() {
         </Button>
         <div className="flex flex-wrap gap-2">
           <Link href={`/admin/shipments/${id}/edit`}>
-            <Button variant="outline" size="sm"
-              style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
+            <Button size="sm" className="bg-[#FF3E41] hover:bg-[#d92e31] text-white">
               <PenSquare size={14} className="mr-1" /> Edit
             </Button>
           </Link>

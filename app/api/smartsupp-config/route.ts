@@ -20,7 +20,7 @@ export async function GET() {
   })
 }
 
-export async function PUT(req: Request) {
+export async function POST(req: Request) {
   const body = await req.json()
   const { key, enabled } = body
 

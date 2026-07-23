@@ -10,9 +10,9 @@ export function createAdminClient() {
 const ALLOWED = new Set([
   "parcels", "tracking_events", "delivery_types", "delivery_categories",
   "profiles", "wallets", "transactions", "invoices", "pickup_requests",
-  "settings", "livechat_messages", "branches", "packaging_options",
+  "settings", "branches", "packaging_options",
   "delivery_charges", "faqs", "support_tickets", "subscribers",
-  "categories", "blocked_emails", "portal_messages",
+  "categories", "blocked_emails",
 ])
 
 export function assertTable(table: string) {

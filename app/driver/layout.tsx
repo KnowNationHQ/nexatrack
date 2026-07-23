@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase-browser"
 import NotificationBell from "@/components/notification-bell"
-import { Package, LogOut, Menu, X, MapPin, MessageSquare, Sun, Moon } from "lucide-react"
+import { Package, LogOut, Menu, X, MapPin, MessageSquare, Sun, Moon, Bell } from "lucide-react"
 
 export default function DriverLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -39,6 +39,7 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
   const navItems = [
     { href: "/driver", label: "My Shipments", icon: Package },
     { href: "/driver/shipments", label: "All Jobs", icon: MapPin },
+    { href: "/driver/notifications", label: "Notifications", icon: Bell },
     { href: "/driver/chat", label: "Chat", icon: MessageSquare },
   ]
 

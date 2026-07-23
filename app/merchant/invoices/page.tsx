@@ -29,7 +29,7 @@ export default function MerchantInvoices() {
             cols={[
               { label: "Invoice #", key: "invoice_no", render: (i) => <span className="font-mono text-xs">{i.invoice_no || "—"}</span> },
               { label: "Total", key: "total", render: (i) => `$${Number(i.total || 0).toFixed(2)}` },
-              { label: "Status", key: "status", render: (i) => <Badge variant="outline" className={i.status === "paid" ? "bg-green-900/50 text-green-400 border-green-700" : "bg-yellow-900/50 text-yellow-400 border-yellow-700"}>{i.status || "pending"}</Badge> },
+              { label: "Status", key: "status", render: (i) => <Badge variant="outline" style={i.status === "paid" ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'}}>{i.status || "pending"}</Badge> },
               { label: "Date", key: "created_at", render: (i) => i.created_at ? new Date(i.created_at).toLocaleDateString() : "—" },
             ]}
             data={items}

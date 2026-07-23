@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MobileTable } from "@/components/mobile-table"
-import { Plus, Search } from "lucide-react"
+import { Plus, Search, Pencil, ExternalLink } from "lucide-react"
 
 const statusStyles: Record<string, React.CSSProperties> = {
   pending: { backgroundColor: 'var(--badge-warning-bg)', color: 'var(--badge-warning-text)', borderColor: 'transparent' },
@@ -75,9 +75,18 @@ export default function ShipmentsPage() {
               { label: "Status", key: "status", render: (s) => <Badge variant="outline" style={statusStyles[s.status]}>{s.status?.replace(/_/g, " ") || "pending"}</Badge> },
               { label: "Charge", key: "total_charge", render: (s) => `$${Number(s.total_charge || 0).toFixed(2)}` },
               { label: "Date", key: "created_at", render: (s) => <span style={{ color: 'var(--text-muted)' }}>{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
+              { label: "", key: "actions", render: (s) => (
+                <div className="flex gap-1">
+                  <Link href={`/admin/shipments/${s.id}`}>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0" title="View"><ExternalLink size={14} /></Button>
+                  </Link>
+                  <Link href={`/admin/shipments/${s.id}/edit`}>
+                    <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-[#FF3E41]" title="Edit"><Pencil size={14} /></Button>
+                  </Link>
+                </div>
+              )},
             ]}
             data={filtered}
-            onRowClick={(s) => window.location.href = `/admin/shipments/${s.id}`}
           />
         </CardContent>
       </Card>

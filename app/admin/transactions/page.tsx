@@ -30,7 +30,7 @@ export default function TransactionsPage() {
         <CardContent>
           <MobileTable
             cols={[
-              { label: "Type", key: "type", render: (i) => <Badge variant="outline" className={i.type === "credit" ? "bg-green-900/50 text-green-400" : "bg-red-900/50 text-red-400"}>{i.type}</Badge> },
+              { label: "Type", key: "type", render: (i) => <Badge variant="outline" style={i.type === "credit" ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'}}>{i.type}</Badge> },
               { label: "Amount", key: "amount", render: (i) => <span className="font-semibold">${Number(i.amount || 0).toFixed(2)}</span> },
               { label: "Reference", key: "reference", render: (i) => <span style={{color:'var(--text-muted)'}} className="font-mono text-xs">{i.reference || "—"}</span> },
               { label: "Date", key: "created_at", render: (i) => <span style={{color:'var(--text-muted)'}}>{i.created_at ? new Date(i.created_at).toLocaleDateString() : "—"}</span> },

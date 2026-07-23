@@ -6,14 +6,17 @@ import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase-browser"
 import NotificationBell from "@/components/notification-bell"
 import {
-  LayoutDashboard, Package, Users, Truck, MapPin, Tag, PackageOpen, 
+  LayoutDashboard, Package, Users, Truck, MapPin, Tag, PackageOpen,
   Box, DollarSign, ClipboardList, Wallet, Receipt, FileText,
   HelpCircle, Mail, Settings, LogOut, Menu, X, ChevronDown,
-  Ticket, MessageSquare, Sun, Moon
+  Ticket, MessageSquare, Sun, Moon, Bell
 } from "lucide-react"
 
 const menuGroups = [
-  { label: "Main", items: [{ href: "/admin", label: "Dashboard", icon: LayoutDashboard }] },
+  { label: "Main", items: [
+    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/notifications", label: "Notifications", icon: Bell },
+  ]},
   { label: "Logistics", items: [
     { href: "/admin/shipments", label: "All Shipments", icon: Package },
     { href: "/admin/shipments/pending", label: "Pending", icon: PackageOpen },
@@ -37,7 +40,6 @@ const menuGroups = [
   ]},
   { label: "Support", items: [
     { href: "/admin/tickets", label: "Tickets", icon: Ticket },
-    { href: "/admin/chat", label: "Live Chat", icon: MessageSquare },
     { href: "/admin/faq", label: "FAQ", icon: HelpCircle },
     { href: "/admin/smartsupp", label: "LiveChat", icon: MessageSquare },
   ]},

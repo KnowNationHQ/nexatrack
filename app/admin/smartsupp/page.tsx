@@ -2,44 +2,34 @@
 
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ExternalLink, Plug, PlugZap, Loader2, CheckCircle, XCircle } from "lucide-react"
+import { ExternalLink, Plug, Loader2, X } from "lucide-react"
 
 export default function SmartsuppPage() {
   const [config, setConfig] = useState({ key: "", enabled: false })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
+  const [showDialog, setShowDialog] = useState(false)
 
   useEffect(() => {
     fetch("/api/smartsupp-config")
       .then((r) => r.json())
-      .then((data) => {
-        if (data.key !== undefined) setConfig(data)
-      })
+      .then((data) => { if (data.key !== undefined) setConfig(data) })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
 
   async function handleSave() {
     setSaving(true)
-    setMessage(null)
     try {
       const r = await fetch("/api/smartsupp-config", {
-        method: "PUT",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(config),
       })
       const data = await r.json()
-      if (data.success) {
-        setMessage({ type: "success", text: "Settings saved. Reload page to apply." })
-      } else {
-        setMessage({ type: "error", text: data.error || "Failed to save" })
-      }
-    } catch {
-      setMessage({ type: "error", text: "Network error" })
-    } finally {
-      setSaving(false)
-    }
+      if (data.success) setShowDialog(true)
+    } catch {}
+    setSaving(false)
   }
 
   return (
@@ -87,15 +77,6 @@ export default function SmartsuppPage() {
                   </button>
                 </div>
 
-                {message && (
-                  <div className={`flex items-center gap-2 rounded-lg px-4 py-3 text-sm ${
-                    message.type === "success" ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"
-                  }`}>
-                    {message.type === "success" ? <CheckCircle size={16} /> : <XCircle size={16} />}
-                    {message.text}
-                  </div>
-                )}
-
                 <button
                   onClick={handleSave}
                   disabled={saving}
@@ -112,7 +93,7 @@ export default function SmartsuppPage() {
         <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
-              <CheckCircle size={16} className="text-[#FF3E41]" />
+              <Plug size={16} className="text-[#FF3E41]" />
               Status
             </CardTitle>
           </CardHeader>
@@ -156,6 +137,62 @@ export default function SmartsuppPage() {
           </CardContent>
         </Card>
       </div>
+
+      {showDialog && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in"
+          style={{ backgroundColor: 'rgba(0,0,0,0.6)' }}
+          onClick={() => setShowDialog(false)}
+        >
+          <div
+            className="relative w-full max-w-sm rounded-2xl p-8 text-center shadow-2xl animate-in zoom-in-95"
+            style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--card-border)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowDialog(false)}
+              className="absolute right-3 top-3 rounded-lg p-1.5 transition-colors hover:bg-white/10"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              <X size={18} />
+            </button>
+
+            <svg className="mx-auto mb-4 h-20 w-20" viewBox="0 0 80 80" fill="none">
+              <circle cx="40" cy="40" r="36" stroke="#22c55e" strokeWidth="4" fill="none" strokeDasharray="226" strokeDashoffset="226">
+                <animate attributeName="strokeDashoffset" from="226" to="0" dur="0.5s" fill="freeze" />
+              </circle>
+              <path d="M26 40l10 10 18-18" stroke="#22c55e" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="50" strokeDashoffset="50">
+                <animate attributeName="strokeDashoffset" from="50" to="0" dur="0.35s" begin="0.5s" fill="freeze" />
+              </path>
+            </svg>
+
+            <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>Connected!</h2>
+            <p className="mt-2 text-sm" style={{ color: 'var(--text-muted)' }}>
+              Your Smartsupp live chat is now active. Visitors can reach you directly from the website.
+            </p>
+
+            <button
+              onClick={() => setShowDialog(false)}
+              className="mx-auto mt-6 inline-flex items-center gap-2 rounded-lg bg-[#FF3E41] px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#e63538]"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes animate-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes zoom-in-95 {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .animate-in.fade-in { animation: animate-in 0.2s ease-out; }
+        .animate-in.zoom-in-95 { animation: zoom-in-95 0.25s ease-out; }
+      `}</style>
     </div>
   )
 }

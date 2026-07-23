@@ -33,7 +33,7 @@ export default function InvoicesPage() {
               { label: "Invoice #", key: "invoice_no", render: (i) => <span className="font-mono text-xs">{i.invoice_no || "—"}</span> },
               { label: "Merchant", key: "profiles", render: (i) => i.profiles?.full_name || "—" },
               { label: "Total", key: "total", render: (i) => <span className="font-semibold">${Number(i.total || 0).toFixed(2)}</span> },
-              { label: "Status", key: "status", render: (i) => <Badge variant="outline" className={i.status === "paid" ? "bg-green-900/50 text-green-400" : i.status === "overdue" ? "bg-red-900/50 text-red-400" : "bg-yellow-900/50 text-yellow-400"}>{i.status || "pending"}</Badge> },
+              { label: "Status", key: "status", render: (i) => <Badge variant="outline" style={i.status === "paid" ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : i.status === "overdue" ? {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'} : {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'}}>{i.status || "pending"}</Badge> },
               { label: "Date", key: "created_at", render: (i) => <span style={{color:'var(--text-muted)'}}>{i.created_at ? new Date(i.created_at).toLocaleDateString() : "—"}</span> },
             ]}
             data={items.filter((i) => !search || i.invoice_no?.toLowerCase().includes(search.toLowerCase()))}
