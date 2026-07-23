@@ -7,3 +7,6 @@ next-env.d.ts
 
 .env.temp
 .env.vercel
+audit-*.png
+audit-*.txt
+audit-*
