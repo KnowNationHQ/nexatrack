@@ -1,14 +1,17 @@
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/server-db"
 
-const supabase = createAdminClient()
+export const dynamic = "force-dynamic"
+export const revalidate = 0
 
 export async function GET() {
+  const supabase = createAdminClient()
   const { data, error } = await supabase
     .from("settings")
     .select("value")
     .eq("category", "smartsupp")
     .eq("name", "config")
+    .limit(1)
     .maybeSingle()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
@@ -21,6 +24,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  const supabase = createAdminClient()
   const body = await req.json()
   const { key, enabled } = body
 
@@ -29,6 +33,7 @@ export async function POST(req: Request) {
     .select("id")
     .eq("category", "smartsupp")
     .eq("name", "config")
+    .limit(1)
     .maybeSingle()
 
   const payload = {
