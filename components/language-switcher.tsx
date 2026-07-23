@@ -44,13 +44,8 @@ export default function LanguageSwitcher() {
     script.async = true
     document.body.appendChild(script)
 
-    const saved = localStorage.getItem("nexatrack_lang")
-    if (saved && saved !== "en") {
-      setTimeout(() => {
-        const sel = document.querySelector(".goog-te-combo") as HTMLSelectElement
-        if (sel) { sel.value = saved; sel.dispatchEvent(new Event("change")); setCurrent(saved) }
-      }, 2000)
-    }
+    const match = document.cookie.match(/googtrans=\/en\/(\w+)/)
+    if (match) setCurrent(match[1])
   }, [])
 
   useEffect(() => {
