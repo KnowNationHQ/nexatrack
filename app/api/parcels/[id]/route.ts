@@ -12,7 +12,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     .from("parcels")
     .select("*")
     .or(`tracking_number.eq.${params.id},id.eq.${params.id}`)
-    .single()
+    .maybeSingle()
 
   if (!parcel) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
