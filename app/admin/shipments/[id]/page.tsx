@@ -14,6 +14,8 @@ import {
   ArrowLeft, Package, MapPin, User, Phone, Map, Weight, CreditCard,
   Clock, Share2, Copy, Check, QrCode, FileText, PenSquare, Loader2,
 } from "lucide-react"
+import html2canvas from "html2canvas"
+import { jsPDF } from "jspdf"
 
 import { ALL_STATUSES, STATUS_LABELS, STATUS_COLORS_3, PROGRESS_STATUSES } from "@/lib/statuses"
 const statusStyles = STATUS_COLORS_3 as unknown as Record<string, React.CSSProperties>
@@ -76,9 +78,6 @@ export default function AdminShipmentDetail() {
     if (!receiptRef.current) return
     setSending(true)
     try {
-      const html2canvas = (await import("html2canvas")).default
-      const { jsPDF } = await import("jspdf")
-
       const canvas = await html2canvas(receiptRef.current, {
         scale: 2,
         backgroundColor: null,
@@ -104,7 +103,9 @@ export default function AdminShipmentDetail() {
         a.click()
         URL.revokeObjectURL(url)
       }
-    } catch {}
+    } catch (e) {
+      toast({ title: "PDF Error", description: String(e), variant: "destructive" })
+    }
     setSending(false)
   }
 
