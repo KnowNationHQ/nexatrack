@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,7 +12,7 @@ import { useToast } from "@/components/hooks/use-toast"
 import { DetailSkeleton, TableSkeleton } from "@/components/ui/skeleton-table"
 import {
   ArrowLeft, Package, MapPin, User, Phone, Map, Weight, CreditCard,
-  Clock, Share2, Copy, Check, QrCode, FileText, PenSquare,
+  Clock, Share2, Copy, Check, QrCode, FileText, PenSquare, Loader2,
 } from "lucide-react"
 
 import { ALL_STATUSES, STATUS_LABELS, STATUS_COLORS_3, PROGRESS_STATUSES } from "@/lib/statuses"
@@ -31,6 +31,8 @@ export default function AdminShipmentDetail() {
   const [updating, setUpdating] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [successStatus, setSuccessStatus] = useState("")
+  const [sending, setSending] = useState(false)
+  const receiptRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const { toast } = useToast()
 
@@ -68,6 +70,42 @@ export default function AdminShipmentDetail() {
     await navigator.clipboard.writeText(trackingUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const shareAsPdf = async () => {
+    if (!receiptRef.current) return
+    setSending(true)
+    try {
+      const html2canvas = (await import("html2canvas")).default
+      const { jsPDF } = await import("jspdf")
+
+      const canvas = await html2canvas(receiptRef.current, {
+        scale: 2,
+        backgroundColor: null,
+        logging: false,
+      })
+
+      const imgData = canvas.toDataURL("image/png")
+      const pdf = new jsPDF({ format: "a5", unit: "px", orientation: "portrait" })
+      const pdfW = pdf.internal.pageSize.getWidth()
+      const pdfH = (canvas.height * pdfW) / canvas.width
+      pdf.addImage(imgData, "PNG", 0, 0, pdfW, pdfH)
+
+      const blob = pdf.output("blob")
+      const file = new File([blob], `nexatrack-${shipment.tracking_number}.pdf`, { type: "application/pdf" })
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: `Nexatrack Receipt - ${shipment.tracking_number}` })
+      } else {
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = url
+        a.download = file.name
+        a.click()
+        URL.revokeObjectURL(url)
+      }
+    } catch {}
+    setSending(false)
   }
 
   const updateStatus = async () => {
@@ -228,7 +266,7 @@ export default function AdminShipmentDetail() {
           <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
             <CardHeader><CardTitle className="flex items-center gap-2" style={{ color: 'var(--text-primary)' }}><FileText size={16} /> Receipt</CardTitle></CardHeader>
             <CardContent>
-              <div className="relative overflow-hidden rounded-xl border text-sm" style={{ borderColor: 'var(--card-border)', background: 'linear-gradient(135deg, var(--card-bg) 0%, color-mix(in srgb, var(--card-bg) 95%, #FF3E41) 100%)' }}>
+              <div ref={receiptRef} className="relative overflow-hidden rounded-xl border text-sm" style={{ borderColor: 'var(--card-border)', background: 'linear-gradient(135deg, var(--card-bg) 0%, color-mix(in srgb, var(--card-bg) 95%, #FF3E41) 100%)' }}>
                 <div className="relative z-10 p-5">
                   <div className="mb-4 flex items-center justify-between">
                     <div>
@@ -275,9 +313,10 @@ export default function AdminShipmentDetail() {
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-t pt-3" style={{ borderColor: 'var(--card-border)', opacity: 0.4 }}>
                     <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Thank you for choosing Nexatrack</p>
                     <div className="flex gap-2 w-full sm:w-auto">
-                      <Button size="sm" variant="outline" onClick={share} className="flex-1 sm:flex-none text-xs h-7"
+                      <Button size="sm" variant="outline" onClick={shareAsPdf} disabled={sending} className="flex-1 sm:flex-none text-xs h-7"
                         style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
-                        <Share2 size={12} className="mr-1" /> Share
+                        {sending ? <Loader2 size={12} className="mr-1 animate-spin" /> : <Share2 size={12} className="mr-1" />}
+                        {sending ? "PDF..." : "PDF"}
                       </Button>
                       <Button size="sm" variant="outline" onClick={copyLink} className="flex-1 sm:flex-none text-xs h-7"
                         style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
