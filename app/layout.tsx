@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, getLocale } from "next-intl/server"
 import CookieConsent from "@/components/CookieConsent"
+import SmartsuppChat from "@/components/smartsupp-chat"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -30,11 +31,7 @@ export const metadata: Metadata = {
   icons: [
     { url: "/favicon.svg", type: "image/svg+xml", sizes: "any" },
   ],
-  appleWebApp: {
-    capable: true,
-    title: "Nexatrack",
-    statusBarStyle: "black-translucent",
-  },
+  other: { "mobile-web-app-capable": "yes" },
   manifest: "/manifest.json",
   formatDetection: {
     telephone: true,
@@ -79,14 +76,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
           <CookieConsent />
+          <SmartsuppChat />
         </NextIntlClientProvider>
-        <script
-          type="text/javascript"
-          dangerouslySetInnerHTML={{
-            __html: `var _smartsupp=_smartsupp||{};_smartsupp.key='9ff0811092d59b64990cfb0e774d6d152bb61340';window.smartsupp||(function(d){var s,c,o=smartsupp=function(){o._.push(arguments)};o._=[];s=d.getElementsByTagName('script')[0];c=d.createElement('script');c.type='text/javascript';c.charset='utf-8';c.async=true;c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s)})(document);`,
-          }}
-        />
-        <noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
       </body>
     </html>
   )
