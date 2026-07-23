@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { MobileTable } from "@/components/mobile-table"
 import { Search } from "lucide-react"
 import { TableSkeleton } from "@/components/ui/skeleton-table"
+import { STATUS_COLORS } from "@/lib/statuses"
 
 export default function MerchantShipments() {
   const [shipments, setShipments] = useState<any[]>([])
@@ -30,14 +31,7 @@ export default function MerchantShipments() {
     s.receiver_name?.toLowerCase().includes(search.toLowerCase())
   )
 
-  const statusColors: Record<string, {backgroundColor:string;color:string}> = {
-    pending: {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'},
-    in_transit: {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'},
-    delivered: {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'},
-    picked_up: {backgroundColor:'var(--badge-purple-bg)',color:'var(--badge-purple-text)'},
-    cancelled: {backgroundColor:'var(--badge-neutral-bg)',color:'var(--badge-neutral-text)'},
-    returned: {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'},
-  }
+  const statusColors = STATUS_COLORS
 
   return (
     <div>

@@ -12,38 +12,7 @@ import {
 } from "lucide-react"
 import { DetailSkeleton } from "@/components/ui/skeleton-table"
 
-const ALL_STATUSES = [
-  "pending", "pickup_assign", "picked_up", "received_warehouse",
-  "delivery_man_assign", "in_transit", "out_for_delivery",
-  "partial_delivered", "delivered", "return_assign_to_merchant",
-  "return_received_by_merchant", "cancelled",
-]
-
-const statusColors: Record<string, {backgroundColor:string;color:string}> = {
-  pending: {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'},
-  pickup_assign: {backgroundColor:'var(--badge-orange-bg)',color:'var(--badge-orange-text)'},
-  picked_up: {backgroundColor:'var(--badge-purple-bg)',color:'var(--badge-purple-text)'},
-  received_warehouse: {backgroundColor:'var(--badge-indigo-bg)',color:'var(--badge-indigo-text)'},
-  delivery_man_assign: {backgroundColor:'var(--badge-cyan-bg)',color:'var(--badge-cyan-text)'},
-  in_transit: {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'},
-  out_for_delivery: {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'},
-  partial_delivered: {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'},
-  delivered: {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'},
-  return_assign_to_merchant: {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'},
-  return_received_by_merchant: {backgroundColor:'var(--badge-purple-bg)',color:'var(--badge-purple-text)'},
-  cancelled: {backgroundColor:'var(--badge-neutral-bg)',color:'var(--badge-neutral-text)'},
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: "Pending", pickup_assign: "Pickup Assigned", picked_up: "Picked Up",
-  received_warehouse: "At Warehouse", delivery_man_assign: "Driver Assigned",
-  in_transit: "In Transit", out_for_delivery: "Out for Delivery",
-  partial_delivered: "Partially Delivered", delivered: "Delivered",
-  return_assign_to_merchant: "Return Initiated", return_received_by_merchant: "Returned",
-  cancelled: "Cancelled",
-}
-
-const PROGRESS_STATUSES = ALL_STATUSES.filter(s => s !== "cancelled")
+import { ALL_STATUSES, STATUS_LABELS, STATUS_COLORS, PROGRESS_STATUSES } from "@/lib/statuses"
 
 export default function MerchantShipmentDetail() {
   const { id } = useParams<{ id: string }>()
@@ -127,7 +96,7 @@ export default function MerchantShipmentDetail() {
                 <CardTitle style={{ color: 'var(--text-primary)' }}>Shipment Details</CardTitle>
                 <p className="font-mono text-sm" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>
               </div>
-              <Badge variant="outline" style={statusColors[shipment.status]}>
+              <Badge variant="outline" style={STATUS_COLORS[shipment.status]}>
                 {STATUS_LABELS[shipment.status] || shipment.status?.replace(/_/g, " ")}
               </Badge>
             </CardHeader>
@@ -241,12 +210,12 @@ export default function MerchantShipmentDetail() {
               <div className="space-y-1">
                 {PROGRESS_STATUSES.map((s, i) => {
                   const statusIdx = ALL_STATUSES.indexOf(s)
-                  const isComplete = currentIdx >= statusIdx && shipment.status !== "cancelled"
+                  const isComplete = currentIdx >= statusIdx && shipment.status !== "on_hold"
                   const isCurrent = s === shipment.status
                   return (
                     <div key={s} className="flex items-center gap-2 py-0.5">
-                      <div style={{backgroundColor: shipment.status === "cancelled" ? "#374151" : isComplete ? "#22c55e" : isCurrent ? "#FF3E41" : "var(--input-bg)"}} className={`h-2 w-2 shrink-0 rounded-full ${isCurrent ? "animate-pulse" : ""}`} />
-                      <span style={{color: shipment.status === "cancelled" ? "var(--text-muted)" : isComplete ? "#22c55e" : isCurrent ? "var(--text-primary)" : "var(--text-muted)"}} className={`text-xs ${isCurrent ? "font-medium" : ""}`}>
+                      <div style={{backgroundColor: shipment.status === "on_hold" ? "#374151" : isComplete ? "#22c55e" : isCurrent ? "#FF3E41" : "var(--input-bg)"}} className={`h-2 w-2 shrink-0 rounded-full ${isCurrent ? "animate-pulse" : ""}`} />
+                      <span style={{color: shipment.status === "on_hold" ? "var(--text-muted)" : isComplete ? "#22c55e" : isCurrent ? "var(--text-primary)" : "var(--text-muted)"}} className={`text-xs ${isCurrent ? "font-medium" : ""}`}>
                         {STATUS_LABELS[s]}
                       </span>
                     </div>

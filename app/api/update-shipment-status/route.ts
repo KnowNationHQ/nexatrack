@@ -2,20 +2,8 @@ import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/server-db"
 import { sendEmail } from "@/lib/email"
 
-const VALID_STATUSES = [
-  "pending", "pickup_assign", "picked_up", "received_warehouse",
-  "delivery_man_assign", "in_transit", "out_for_delivery",
-  "partial_delivered", "delivered", "return_assign_to_merchant",
-  "return_received_by_merchant", "cancelled",
-]
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: "Pending", pickup_assign: "Pickup Assigned", picked_up: "Picked Up",
-  received_warehouse: "At Warehouse", delivery_man_assign: "Driver Assigned",
-  in_transit: "In Transit", out_for_delivery: "Out for Delivery",
-  partial_delivered: "Partially Delivered", delivered: "Delivered",
-  cancelled: "Cancelled",
-}
+import { ALL_STATUSES, STATUS_LABELS } from "@/lib/statuses"
+const VALID_STATUSES = ALL_STATUSES
 
 export async function POST(req: Request) {
   const { shipment_id, status, location, description } = await req.json()

@@ -15,38 +15,8 @@ import {
   Clock, Share2, Copy, Check, QrCode, FileText, PenSquare,
 } from "lucide-react"
 
-const ALL_STATUSES = [
-  "pending", "pickup_assign", "picked_up", "received_warehouse",
-  "delivery_man_assign", "in_transit", "out_for_delivery",
-  "partial_delivered", "delivered", "return_assign_to_merchant",
-  "return_received_by_merchant", "cancelled",
-]
-
-const statusStyles: Record<string, React.CSSProperties> = {
-  pending: {color:'var(--badge-warning-text)',borderColor:'var(--badge-warning-bg)',backgroundColor:'var(--badge-warning-bg)'},
-  pickup_assign: {color:'var(--badge-orange-text)',borderColor:'var(--badge-orange-bg)',backgroundColor:'var(--badge-orange-bg)'},
-  picked_up: {color:'var(--badge-purple-text)',borderColor:'var(--badge-purple-bg)',backgroundColor:'var(--badge-purple-bg)'},
-  received_warehouse: {color:'var(--badge-indigo-text)',borderColor:'var(--badge-indigo-bg)',backgroundColor:'var(--badge-indigo-bg)'},
-  delivery_man_assign: {color:'var(--badge-info-text)',borderColor:'var(--badge-info-bg)',backgroundColor:'var(--badge-info-bg)'},
-  in_transit: {color:'var(--badge-info-text)',borderColor:'var(--badge-info-bg)',backgroundColor:'var(--badge-info-bg)'},
-  out_for_delivery: {color:'var(--badge-info-text)',borderColor:'var(--badge-info-bg)',backgroundColor:'var(--badge-info-bg)'},
-  partial_delivered: {color:'var(--badge-warning-text)',borderColor:'var(--badge-warning-bg)',backgroundColor:'var(--badge-warning-bg)'},
-  delivered: {color:'var(--badge-success-text)',borderColor:'var(--badge-success-bg)',backgroundColor:'var(--badge-success-bg)'},
-  return_assign_to_merchant: {color:'var(--badge-error-text)',borderColor:'var(--badge-error-bg)',backgroundColor:'var(--badge-error-bg)'},
-  return_received_by_merchant: {color:'var(--badge-purple-text)',borderColor:'var(--badge-purple-bg)',backgroundColor:'var(--badge-purple-bg)'},
-  cancelled: {color:'var(--badge-neutral-text)',borderColor:'var(--badge-neutral-bg)',backgroundColor:'var(--badge-neutral-bg)'},
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: "Pending", pickup_assign: "Pickup Assigned", picked_up: "Picked Up",
-  received_warehouse: "At Warehouse", delivery_man_assign: "Driver Assigned",
-  in_transit: "In Transit", out_for_delivery: "Out for Delivery",
-  partial_delivered: "Partially Delivered", delivered: "Delivered",
-  return_assign_to_merchant: "Return Initiated", return_received_by_merchant: "Returned",
-  cancelled: "Cancelled",
-}
-
-const PROGRESS_STATUSES = ALL_STATUSES.filter(s => s !== "cancelled")
+import { ALL_STATUSES, STATUS_LABELS, STATUS_COLORS_3, PROGRESS_STATUSES } from "@/lib/statuses"
+const statusStyles = STATUS_COLORS_3 as unknown as Record<string, React.CSSProperties>
 
 export default function AdminShipmentDetail() {
   const { id } = useParams<{ id: string }>()
@@ -312,14 +282,14 @@ export default function AdminShipmentDetail() {
               <div className="space-y-1">
                 {PROGRESS_STATUSES.map((s) => {
                   const statusIdx = ALL_STATUSES.indexOf(s)
-                  const isComplete = currentIdx >= statusIdx && shipment.status !== "cancelled"
+                  const isComplete = currentIdx >= statusIdx && shipment.status !== "on_hold"
                   const isCurrent = s === shipment.status
-                  const dot = shipment.status === "cancelled" ? "bg-gray-700" : isComplete ? "bg-green-500" : isCurrent ? "bg-[#FF3E41] animate-pulse" : "bg-[#1a1725]"
-                  const textClr = shipment.status === "cancelled" ? "text-[var(--text-muted)]" : isComplete ? "text-green-400" : isCurrent ? "text-white font-medium" : "text-[var(--text-muted)]"
+                  const dot = shipment.status === "on_hold" ? "bg-gray-700" : isComplete ? "bg-green-500" : isCurrent ? "bg-[#FF3E41] animate-pulse" : "bg-[#1a1725]"
+                  const textClr = shipment.status === "on_hold" ? "text-[var(--text-muted)]" : isComplete ? "text-green-400" : isCurrent ? "text-white font-medium" : "text-[var(--text-muted)]"
                   return (
                     <div key={s} className="flex items-center gap-2 py-0.5">
                       <div className={`h-2 w-2 shrink-0 rounded-full ${dot}`} />
-                      <span className={`text-xs ${textClr}`} style={isCurrent && shipment.status !== "cancelled" ? { color: 'var(--text-primary)' } : {}}>
+                      <span className={`text-xs ${textClr}`} style={isCurrent && shipment.status !== "on_hold" ? { color: 'var(--text-primary)' } : {}}>
                         {STATUS_LABELS[s]}
                       </span>
                     </div>

@@ -11,15 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { TableSkeleton } from "@/components/ui/skeleton-table"
 import { MobileTable } from "@/components/mobile-table"
 import { Plus, Search, Pencil, ExternalLink } from "lucide-react"
-
-const statusStyles: Record<string, React.CSSProperties> = {
-  pending: { backgroundColor: 'var(--badge-warning-bg)', color: 'var(--badge-warning-text)', borderColor: 'transparent' },
-  in_transit: { backgroundColor: 'var(--badge-info-bg)', color: 'var(--badge-info-text)', borderColor: 'transparent' },
-  delivered: { backgroundColor: 'var(--badge-success-bg)', color: 'var(--badge-success-text)', borderColor: 'transparent' },
-  returned: { backgroundColor: 'var(--badge-error-bg)', color: 'var(--badge-error-text)', borderColor: 'transparent' },
-  cancelled: { backgroundColor: 'var(--badge-neutral-bg)', color: 'var(--badge-neutral-text)', borderColor: 'transparent' },
-  picked_up: { backgroundColor: 'var(--badge-purple-bg)', color: 'var(--badge-purple-text)', borderColor: 'transparent' },
-}
+import { STATUS_COLORS } from "@/lib/statuses"
+const statusStyles = STATUS_COLORS as unknown as Record<string, React.CSSProperties>
 
 export default function ShipmentsPage() {
   const [shipments, setShipments] = useState<any[]>([])

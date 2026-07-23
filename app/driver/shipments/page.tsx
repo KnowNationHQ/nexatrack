@@ -6,22 +6,19 @@ import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { STATUS_COLORS_3 } from "@/lib/statuses"
 
 export default function AllJobsPage() {
   const [shipments, setShipments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    db<{ data: any[] }>("parcels", "select", { neq: [{ col: "status", val: "delivered" }, { col: "status", val: "cancelled" }], order: { column: "created_at", ascending: false } }).then(({ data }) => {
+    db<{ data: any[] }>("parcels", "select", { neq: [{ col: "status", val: "arrived" }, { col: "status", val: "on_hold" }], order: { column: "created_at", ascending: false } }).then(({ data }) => {
       if (data) setShipments(data)
     }).finally(() => setLoading(false))
   }, [])
 
-  const statusColors: Record<string, {color:string;borderColor:string;backgroundColor:string}> = {
-    pending: {color:'var(--badge-warning-text)',borderColor:'var(--badge-warning-bg)',backgroundColor:'var(--badge-warning-bg)'},
-    in_transit: {color:'var(--badge-info-text)',borderColor:'var(--badge-info-bg)',backgroundColor:'var(--badge-info-bg)'},
-    picked_up: {color:'var(--badge-purple-text)',borderColor:'var(--badge-purple-bg)',backgroundColor:'var(--badge-purple-bg)'},
-  }
+  const statusColors = STATUS_COLORS_3
 
   return (
     <div>

@@ -14,28 +14,7 @@ import { useSearchParams } from "next/navigation"
 import { Search, Package, MapPin, Share2, Copy, Check, ChevronRight, Shield, Truck } from "lucide-react"
 import { createClient } from "@/lib/supabase-browser"
 
-const ALL_STATUSES = [
-  "pending", "pickup_assign", "picked_up", "received_warehouse",
-  "delivery_man_assign", "in_transit", "out_for_delivery",
-  "partial_delivered", "delivered",
-]
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: "Pending", pickup_assign: "Pickup Assigned", picked_up: "Picked Up",
-  received_warehouse: "At Warehouse", delivery_man_assign: "Driver Assigned",
-  in_transit: "In Transit", out_for_delivery: "Out for Delivery",
-  partial_delivered: "Partially Delivered", delivered: "Delivered",
-  cancelled: "Cancelled",
-}
-
-const statusColors: Record<string, {backgroundColor:string;color:string}> = {
-  pending: {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'},
-  picked_up: {backgroundColor:'var(--badge-purple-bg)',color:'var(--badge-purple-text)'},
-  in_transit: {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'},
-  delivered: {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'},
-  returned: {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'},
-  cancelled: {backgroundColor:'var(--badge-neutral-bg)',color:'var(--badge-neutral-text)'},
-}
+import { ALL_STATUSES, STATUS_LABELS, STATUS_COLORS } from "@/lib/statuses"
 
 function TrackPageInner() {
   const [tracking, setTracking] = useState("")
@@ -172,7 +151,7 @@ function TrackPageInner() {
                     <CardTitle className="" style={{color:'var(--text-primary)'}}>Shipment Status</CardTitle>
                     <p className="font-mono text-xs" style={{color:'var(--text-muted)'}}>{shipment.tracking_number}</p>
                   </div>
-                  <Badge variant="outline" style={statusColors[shipment.status]}>
+                  <Badge variant="outline" style={STATUS_COLORS[shipment.status]}>
                     {STATUS_LABELS[shipment.status] || shipment.status?.replace(/_/g, " ")}
                   </Badge>
                 </div>
@@ -197,7 +176,7 @@ function TrackPageInner() {
                   </div>
                 </div>
 
-                {shipment.status !== "cancelled" && (
+                {shipment.status !== "on_hold" && (
                   <div className="space-y-2">
                     <p className="text-xs" style={{color:'var(--text-muted)'}}>Progress</p>
                     <div className="hidden sm:flex items-center gap-1 flex-wrap">

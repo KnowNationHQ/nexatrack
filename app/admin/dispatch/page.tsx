@@ -18,17 +18,8 @@ import { StatCardSkeleton } from "@/components/ui/skeleton-table"
 
 const MockMap = dynamic(() => import("@/components/mock-map"), { ssr: false })
 
-const DISPATCH_STATUSES = ["pending", "pickup_assign", "picked_up", "received_warehouse", "delivery_man_assign", "in_transit", "out_for_delivery"]
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: "Pending",
-  pickup_assign: "Pickup Assigned",
-  picked_up: "Picked Up",
-  received_warehouse: "At Warehouse",
-  delivery_man_assign: "Delivery Assigned",
-  in_transit: "In Transit",
-  out_for_delivery: "Out for Delivery",
-}
+import { STATUS_LABELS } from "@/lib/statuses"
+const DISPATCH_STATUSES = ["pending", "processing", "cargo_on_air", "on_transit", "cargo_on_transit", "custom_check", "out_for_delivery"]
 
 export default function DispatchPage() {
   const [shipments, setShipments] = useState<any[]>([])

@@ -12,6 +12,7 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Package, Truck, CheckCircle, Clock, MapPin, User, ArrowRight, Navigation } from "lucide-react"
+import { STATUS_COLORS_3 } from "@/lib/statuses"
 
 const MockMap = dynamic(() => import("@/components/mock-map"), { ssr: false })
 
@@ -48,26 +49,22 @@ export default function DriverDashboard() {
 
   const routeDist = useMemo(() => routeStops.length > 1 ? totalRouteDistance(routeStops) : 0, [routeStops])
 
-  const active = shipments.filter(s => !["delivered", "cancelled"].includes(s.status))
-  const delivered = shipments.filter(s => s.status === "delivered")
+  const active = shipments.filter(s => !["arrived", "on_hold"].includes(s.status))
+  const delivered = shipments.filter(s => s.status === "arrived")
   const today = delivered.filter(s => {
     const d = s.updated_at ? new Date(s.updated_at) : null
     return d && d.toDateString() === new Date().toDateString()
   })
 
-  const statusColors: Record<string, {color:string;borderColor:string;backgroundColor:string}> = {
-    delivery_man_assign: {color:'var(--badge-orange-text)',borderColor:'var(--badge-orange-bg)',backgroundColor:'var(--badge-orange-bg)'},
-    out_for_delivery:    {color:'var(--badge-info-text)',borderColor:'var(--badge-info-bg)',backgroundColor:'var(--badge-info-bg)'},
-    in_transit:          {color:'var(--badge-indigo-text)',borderColor:'var(--badge-indigo-bg)',backgroundColor:'var(--badge-indigo-bg)'},
-    picked_up:           {color:'var(--badge-purple-text)',borderColor:'var(--badge-purple-bg)',backgroundColor:'var(--badge-purple-bg)'},
-    delivered:           {color:'var(--badge-success-text)',borderColor:'var(--badge-success-bg)',backgroundColor:'var(--badge-success-bg)'},
-    pending:             {color:'var(--badge-warning-text)',borderColor:'var(--badge-warning-bg)',backgroundColor:'var(--badge-warning-bg)'},
-  }
+  const statusColors = STATUS_COLORS_3
 
   const dotColors: Record<string, string> = {
-    delivery_man_assign: "bg-orange-400", out_for_delivery: "bg-blue-400",
-    in_transit: "bg-indigo-400", picked_up: "bg-purple-400",
-    delivered: "bg-green-400", pending: "bg-yellow-400",
+    pending: "bg-yellow-400", processing: "bg-blue-400",
+    cargo_on_air: "bg-cyan-400", on_transit: "bg-indigo-400",
+    cargo_on_transit: "bg-purple-400", custom_check: "bg-orange-400",
+    on_customs_hold: "bg-red-400", cargo_on_move: "bg-purple-400",
+    arrived: "bg-green-400", out_for_delivery: "bg-blue-400",
+    on_hold: "bg-gray-400",
   }
 
   const statCards = [

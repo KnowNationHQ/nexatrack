@@ -202,7 +202,7 @@ export default function AdminEditShipment() {
                   <select value={form.status} onChange={set("status")}
                     className="w-full rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#FF3E41]"
                     style={{ border: '1px solid var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }}>
-                    {["pending","pickup_assign","picked_up","received_warehouse","delivery_man_assign","in_transit","out_for_delivery","partial_delivered","delivered","return_assign_to_merchant","return_received_by_merchant","cancelled"].map(s => (
+                    {["pending","processing","cargo_on_air","on_transit","cargo_on_transit","custom_check","on_customs_hold","cargo_on_move","arrived","out_for_delivery","on_hold"].map(s => (
                       <option key={s} value={s}>{s.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase())}</option>
                     ))}
                   </select>

@@ -101,7 +101,7 @@ export default function ShipmentDetail() {
     }
 
     try {
-      const updates: any = { status: "delivered", pod_photo_url: photoUrl }
+      const updates: any = { status: "arrived", pod_photo_url: photoUrl }
       if (signatureUrl) updates.pod_signature_url = signatureUrl
       await db("parcels", "update", { data: updates, eq: { id } })
       toast({ title: "Delivery completed!" })
@@ -115,10 +115,9 @@ export default function ShipmentDetail() {
 
   if (!shipment) return <DetailSkeleton />
   const statusActions: Record<string, string[]> = {
-    pending: ["picked_up"],
-    delivery_man_assign: ["picked_up"],
-    picked_up: ["in_transit"],
-    in_transit: [],
+    pending: ["processing"],
+    processing: ["cargo_on_air"],
+    out_for_delivery: ["arrived"],
   }
 
   return (
@@ -162,13 +161,13 @@ export default function ShipmentDetail() {
               </Button>
             ))}
             {!shipment.driver_id && (
-              <Button onClick={() => updateStatus("picked_up")} variant="outline" className="border-[#FF3E41] text-[#FF3E41] hover:bg-[#FF3E41]/10">
+              <Button onClick={() => updateStatus("processing")} variant="outline" className="border-[#FF3E41] text-[#FF3E41] hover:bg-[#FF3E41]/10">
                 Accept Job
               </Button>
             )}
           </div>
 
-          {shipment.status === "in_transit" && (
+          {shipment.status === "out_for_delivery" && (
             <div className="space-y-4 pt-4 border-t" style={{ borderColor: "var(--card-border)" }}>
               <div>
                 <p className="text-sm mb-2" style={{ color: "var(--text-muted)" }}>Delivery Photo</p>
