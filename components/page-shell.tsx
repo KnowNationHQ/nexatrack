@@ -266,6 +266,7 @@ export default function PageShell({ children, activePage }: { children: ReactNod
               <a className="btn btn-link" href="/service">Our Services</a>
               <a className="btn btn-link" href="/auth/register">Get a Quote</a>
               <a className="btn btn-link" href="/track">Track Parcel</a>
+              <a className="btn btn-link" href="/privacy">Privacy Policy</a>
             </div>
             <div className="col-lg-3 col-md-6">
               <h4 className="text-light mb-4">Newsletter</h4>
