@@ -40,7 +40,7 @@ const nextConfig = {
               "default-src 'self'",
 "script-src 'self' 'unsafe-inline' https://*.smartsuppchat.com https://*.smartsuppcdn.com https://*.supabase.co https://code.jquery.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
 "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://*.smartsuppcdn.com",
-              "img-src 'self' data: blob: https://*.supabase.co https://cdnjs.cloudflare.com",
+              "img-src 'self' data: blob: https://*.supabase.co https://cdnjs.cloudflare.com https://*.smartsuppcdn.com https://widget-v3.smartsuppcdn.com",
               "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net",
               "connect-src 'self' https://*.supabase.co wss://*.smartsuppchat.com https://*.smartsuppchat.com wss://*.smartsupp.com https://*.smartsuppcdn.com https://cdn.jsdelivr.net",
               "frame-src 'self' https://*.smartsuppchat.com",
