@@ -6,12 +6,13 @@ const supabase = createAdminClient()
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { table, action, data, columns, eq, order, limit, single, neq, isNull, onConflict } = body
+    const { table, action, data, columns, eq, order, limit, single, neq, isNull, onConflict, in: inFilter } = body
     assertTable(table)
 
     if (action === "select") {
       let q = supabase.from(table).select(columns || "*", { count: body.count || undefined, head: body.head || false })
       if (eq) for (const [k, v] of Object.entries(eq)) q = q.eq(k, v)
+      if (inFilter) for (const [k, v] of Object.entries(inFilter)) q = q.in(k, v as any[])
       if (neq) {
         const pairs: { col: string; val: any }[] = Array.isArray(neq) ? neq : Object.entries(neq as Record<string, any>).map(([k, v]) => ({ col: k, val: v }))
         for (const { col, val } of pairs) q = q.neq(col, val)

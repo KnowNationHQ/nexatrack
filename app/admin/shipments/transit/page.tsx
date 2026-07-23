@@ -5,16 +5,19 @@ import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
+import { STATUS_LABELS, STATUS_COLORS } from "@/lib/statuses"
 import { MobileTable } from "@/components/mobile-table"
 import { Search } from "lucide-react"
 import { TableSkeleton } from "@/components/ui/skeleton-table"
+
+const TRANSIT_STATUSES = ["cargo_on_air", "on_transit", "cargo_on_transit", "custom_check", "on_customs_hold", "cargo_on_move"]
 
 export default function InTransitPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
   const [loading, setLoading] = useState(true)
   useEffect(() => {
-    db<any[]>("parcels", "select", { eq: { status: "in_transit" }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
+    db<any[]>("parcels", "select", { in: { status: TRANSIT_STATUSES }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
       if (data) setItems(data)
     }).finally(() => setLoading(false))
   }, [])
@@ -40,7 +43,7 @@ export default function InTransitPage() {
               { label: "Tracking #", key: "tracking_number", render: (s) => <span className="font-mono text-xs">{s.tracking_number || "—"}</span> },
               { label: "Sender", key: "sender_name" },
               { label: "Receiver", key: "receiver_name" },
-              { label: "Status", key: "status", render: () => <Badge variant="outline" style={{backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'}}>in transit</Badge> },
+              { label: "Status", key: "status", render: (s) => <Badge variant="outline" style={{backgroundColor:STATUS_COLORS[s.status]?.backgroundColor || 'var(--badge-info-bg)',color:STATUS_COLORS[s.status]?.color || 'var(--badge-info-text)'}}>{STATUS_LABELS[s.status] || s.status}</Badge> },
               { label: "Date", key: "created_at", render: (s) => <span style={{ color: 'var(--text-muted)' }}>{s.created_at ? new Date(s.created_at).toLocaleDateString() : "—"}</span> },
             ]}
             data={filtered}
