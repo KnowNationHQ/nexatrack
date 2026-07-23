@@ -57,7 +57,7 @@ export default function AdminEditShipment() {
         })
       }
       setFetching(false)
-    })
+    }).catch(() => setFetching(false))
   }, [id])
 
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
@@ -111,6 +111,7 @@ export default function AdminEditShipment() {
   }
 
   if (fetching) return <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
+  if (!form) return <p style={{ color: 'var(--text-muted)' }}>Shipment not found.</p>
 
   const inputStyle = { borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }
   const labelStyle = { color: 'var(--text-muted)' }
