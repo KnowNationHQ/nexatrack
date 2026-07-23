@@ -1,34 +1,60 @@
 import { NextResponse } from "next/server"
-import { createAdminClient } from "@/lib/server-db"
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const supabase = createAdminClient()
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
-  let { data: parcel } = await supabase
-    .from("parcels")
-    .select("*")
-    .eq("tracking_number", params.id)
-    .maybeSingle()
+function supabaseFetch(path: string) {
+  const url = new URL(path, SUPABASE_URL)
+  url.searchParams.set("_", String(Date.now()))
+  return fetch(url, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      Accept: "application/json",
+    },
+    cache: "no-store",
+  }).then((r) => r.json() as any)
+}
 
-  if (!parcel) {
-    const r = await supabase.from("parcels").select("*").eq("id", params.id).maybeSingle()
-    parcel = r.data
-  }
+function getParcel(id: string) {
+  const orEncoded = encodeURIComponent(
+    `(tracking_number.eq.${id},id.eq.${id})`
+  )
+  return supabaseFetch(
+    `/rest/v1/parcels?select=*&or=${orEncoded}&limit=1`
+  ).then((rows: any[]) => rows[0])
+}
+
+function getDeliveryType(id: string) {
+  return supabaseFetch(
+    `/rest/v1/delivery_types?select=name&id=eq.${id}&limit=1`
+  ).then((rows: any[]) => rows[0]?.name || null)
+}
+
+function getCategory(id: string) {
+  return supabaseFetch(
+    `/rest/v1/delivery_categories?select=name&id=eq.${id}&limit=1`
+  ).then((rows: any[]) => rows[0]?.name || null)
+}
+
+function getEvents(shipmentId: string) {
+  return supabaseFetch(
+    `/rest/v1/tracking_events?select=*&shipment_id=eq.${shipmentId}&order=event_time.desc`
+  ).then((rows: any[]) => rows || [])
+}
+
+export async function GET(_req: Request, { params }: { params: { id: string } }) {
+  const parcel = await getParcel(params.id)
 
   if (!parcel) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 
-  const [typeRes, catRes, eventsRes] = await Promise.all([
-    parcel.delivery_type_id ? supabase.from("delivery_types").select("name").eq("id", parcel.delivery_type_id).single() : Promise.resolve({ data: null }),
-    parcel.category_id ? supabase.from("delivery_categories").select("name").eq("id", parcel.category_id).single() : Promise.resolve({ data: null }),
-    supabase.from("tracking_events").select("*").eq("shipment_id", parcel.id).order("event_time", { ascending: false }),
+  const [serviceType, category, events] = await Promise.all([
+    parcel.delivery_type_id ? getDeliveryType(parcel.delivery_type_id) : null,
+    parcel.category_id ? getCategory(parcel.category_id) : null,
+    getEvents(parcel.id),
   ])
 
-  return NextResponse.json({
-    parcel,
-    serviceType: typeRes.data?.name || null,
-    category: catRes.data?.name || null,
-    events: eventsRes.data || [],
-  })
+  return NextResponse.json({ parcel, serviceType, category, events })
 }
