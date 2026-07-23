@@ -18,11 +18,11 @@ function supabaseFetch(path: string) {
 
 function getParcel(id: string) {
   return supabaseFetch(
-    `/rest/v1/parcels?select=*&tracking_number=eq.${id}&limit=2`
+    `/rest/v1/parcels?select=*&tracking_number=eq.${encodeURIComponent(id)}&limit=1`
   ).then(async (rows: any[]) => {
     if (rows.length) return rows[0]
     const r2 = await supabaseFetch(
-      `/rest/v1/parcels?select=*&id=eq.${id}&limit=2`
+      `/rest/v1/parcels?select=*&id=eq.${encodeURIComponent(id)}&limit=1`
     )
     return r2[0]
   })
