@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server"
+
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
@@ -11,14 +13,15 @@ function supabaseFetch(path: string) {
       Accept: "application/json",
     },
     cache: "no-store",
-  }).then((r) => r.json())
+  }).then((r) => r.json() as any)
 }
 
-import { NextResponse } from "next/server"
-
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
+  const orEncoded = encodeURIComponent(
+    `(tracking_number.eq.${params.id},id.eq.${params.id})`
+  )
   const rows: any[] = await supabaseFetch(
-    `/rest/v1/parcels?select=*&or=(tracking_number.eq.${params.id},id.eq.${params.id})&limit=1`
+    `/rest/v1/parcels?select=*&or=${orEncoded}&limit=1`
   )
   const parcel = rows[0]
 
