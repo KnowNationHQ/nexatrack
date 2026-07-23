@@ -242,8 +242,8 @@ export default function PageShell({ children, activePage }: { children: ReactNod
             <div className="col-lg-3 col-md-6">
               <h4 className="text-light mb-4">Address</h4>
               <p className="mb-2"><i className="fa fa-map-marker-alt me-3"></i>Citrus Park, FL 11950 Sheldon Road. Tampa 33626</p>
-              <p className="mb-2"><i className="fa fa-phone-alt me-3"></i>+1 (506) 501-4402</p>
-              <p className="mb-2"><i className="fa fa-whatsapp me-3"></i>+1 (506) 501-4402</p>
+              <p className="mb-2"><i className="fa fa-phone-alt me-3"></i><a href="tel:+15065014402" className="text-light text-decoration-none">+1 (506) 501-4402</a></p>
+              <p className="mb-2"><i className="fa fa-whatsapp me-3"></i><a href="https://wa.me/15065014402" target="_blank" rel="noopener noreferrer" className="text-light text-decoration-none">+1 (506) 501-4402</a></p>
               <p className="mb-2"><i className="fa fa-envelope me-3"></i>Info@nexatrackcourierservices.com</p>
               <div className="d-flex pt-2">
                 <a className="btn btn-outline-light btn-social" href="#"><i className="fab fa-twitter"></i></a>
