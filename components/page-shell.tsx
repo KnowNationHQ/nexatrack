@@ -2,6 +2,7 @@
 
 import { useEffect, useState, ReactNode } from "react"
 import SmartsuppChat from "@/components/smartsupp-chat"
+import LanguageSwitcher from "@/components/language-switcher"
 
 const CSS_LINKS = [
   "https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css",
@@ -229,8 +230,9 @@ export default function PageShell({ children, activePage }: { children: ReactNod
               </div>
             </div>
             <a href="/contact" className={'nav-item nav-link' + (activePage === 'contact' ? ' active' : '')}>Contact</a>
+            <div className="d-lg-none px-3 py-2 border-top mt-2 pt-3"><LanguageSwitcher /></div>
           </div>
-          <h4 className="m-0 pe-lg-5 d-none d-lg-block text-dark"><i className="fa fa-headphones text-dark me-3"></i>+1 (506) 501-4402</h4>
+          <div className="d-none d-lg-flex align-items-center gap-2 pe-lg-4"><LanguageSwitcher /><h4 className="m-0 text-dark"><i className="fa fa-headphones text-dark me-3"></i>+1 (506) 501-4402</h4></div>
         </div>
       </nav>
 
