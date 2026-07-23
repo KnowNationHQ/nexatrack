@@ -22,7 +22,7 @@ export default function AdminEditShipment() {
 
   useEffect(() => {
     Promise.all([
-      db<any[]>("profiles", "select", { eq: { role: "merchant" }, order: { column: "full_name", ascending: true } }),
+      db<any[]>("profiles", "select", { eq: { role: "merchant" }, order: { column: "created_at", ascending: false } }),
       db<any[]>("delivery_categories", "select", { order: { column: "name", ascending: true } }),
       db<any[]>("delivery_types", "select", { order: { column: "name", ascending: true } }),
       db<any>("parcels", "select", { eq: { id }, single: true }),

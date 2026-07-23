@@ -27,7 +27,7 @@ export default function AdminNewShipment() {
   const { toast } = useToast()
 
   useEffect(() => {
-    db<any[]>("profiles", "select", { eq: { role: "merchant" }, order: { column: "full_name", ascending: true } }).then(d => { if (d) setMerchants(d) })
+    db<any[]>("profiles", "select", { eq: { role: "merchant" }, order: { column: "created_at", ascending: false } }).then(d => { if (d) setMerchants(d) })
     db<any[]>("delivery_categories", "select", { order: { column: "name", ascending: true } }).then(d => { if (d) setCategories(d) })
     db<any[]>("delivery_types", "select", { order: { column: "name", ascending: true } }).then(d => { if (d) setDeliveryTypes(d) })
   }, [])
