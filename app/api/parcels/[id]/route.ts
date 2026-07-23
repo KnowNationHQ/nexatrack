@@ -17,12 +17,15 @@ function supabaseFetch(path: string) {
 }
 
 function getParcel(id: string) {
-  const orEncoded = encodeURIComponent(
-    `(tracking_number.eq.${id},id.eq.${id})`
-  )
   return supabaseFetch(
-    `/rest/v1/parcels?select=*&or=${orEncoded}&limit=1`
-  ).then((rows: any[]) => rows[0])
+    `/rest/v1/parcels?select=*&tracking_number=eq.${id}&limit=2`
+  ).then(async (rows: any[]) => {
+    if (rows.length) return rows[0]
+    const r2 = await supabaseFetch(
+      `/rest/v1/parcels?select=*&id=eq.${id}&limit=2`
+    )
+    return r2[0]
+  })
 }
 
 function getDeliveryType(id: string) {
