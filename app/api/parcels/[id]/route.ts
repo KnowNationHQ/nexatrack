@@ -1,50 +1,34 @@
 import { NextResponse } from "next/server"
+import { createAdminClient } from "@/lib/server-db"
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
+export async function GET(req: Request, { params }: { params: { id: string } }) {
+  const supabase = createAdminClient()
 
-function supabaseFetch(path: string) {
-  const url = new URL(path, SUPABASE_URL)
-  url.searchParams.set("_", String(Date.now()))
-  return fetch(url, {
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      Accept: "application/json",
-    },
-    cache: "no-store",
-  }).then((r) => r.json() as any)
-}
+  let { data: parcel } = await supabase
+    .from("parcels")
+    .select("*")
+    .eq("tracking_number", params.id)
+    .maybeSingle()
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
-  const orEncoded = encodeURIComponent(
-    `(tracking_number.eq.${params.id},id.eq.${params.id})`
-  )
-  const rows: any[] = await supabaseFetch(
-    `/rest/v1/parcels?select=*&or=${orEncoded}&limit=1`
-  )
-  const parcel = rows[0]
+  if (!parcel) {
+    const r = await supabase.from("parcels").select("*").eq("id", params.id).maybeSingle()
+    parcel = r.data
+  }
 
   if (!parcel) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 
   const [typeRes, catRes, eventsRes] = await Promise.all([
-    parcel.delivery_type_id
-      ? supabaseFetch(`/rest/v1/delivery_types?select=name&id=eq.${parcel.delivery_type_id}&limit=1`)
-      : Promise.resolve([null]),
-    parcel.category_id
-      ? supabaseFetch(`/rest/v1/delivery_categories?select=name&id=eq.${parcel.category_id}&limit=1`)
-      : Promise.resolve([null]),
-    supabaseFetch(
-      `/rest/v1/tracking_events?select=*&shipment_id=eq.${parcel.id}&order=event_time.desc`
-    ),
+    parcel.delivery_type_id ? supabase.from("delivery_types").select("name").eq("id", parcel.delivery_type_id).single() : Promise.resolve({ data: null }),
+    parcel.category_id ? supabase.from("delivery_categories").select("name").eq("id", parcel.category_id).single() : Promise.resolve({ data: null }),
+    supabase.from("tracking_events").select("*").eq("shipment_id", parcel.id).order("event_time", { ascending: false }),
   ])
 
   return NextResponse.json({
     parcel,
-    serviceType: typeRes[0]?.name || null,
-    category: catRes[0]?.name || null,
-    events: eventsRes || [],
+    serviceType: typeRes.data?.name || null,
+    category: catRes.data?.name || null,
+    events: eventsRes.data || [],
   })
 }
