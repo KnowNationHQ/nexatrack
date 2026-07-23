@@ -6,7 +6,7 @@ export async function GET(req: Request) {
   if (!shipment_id) {
     return NextResponse.json({ error: "Missing shipment_id" }, { status: 400 })
   }
-  const { createAdminClient } = await import("@/lib/supabase-admin")
+  const { createAdminClient } = await import("@/lib/server-db")
   const supabase = createAdminClient()
   const { data, error } = await supabase
     .from("driver_locations")

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { createAdminClient } from "@/lib/supabase-admin"
+import { createAdminClient } from "@/lib/server-db"
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)

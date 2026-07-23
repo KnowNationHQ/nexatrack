@@ -1,18 +1,23 @@
 import nodemailer from "nodemailer"
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.hostinger.com",
-  port: 465,
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT) || 465,
   secure: true,
   auth: {
-    user: "support@nexatrackcourierservices.com",
-    pass: "Nexatrack123!",
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
   },
 })
 
 export async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
   try {
-    await transporter.sendMail({ from: `"Nexatrack" <support@nexatrackcourierservices.com>`, to, subject, html })
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || `"Nexatrack" <Info@nexatrackcourierservices.com>`,
+      to,
+      subject,
+      html,
+    })
     return { success: true }
   } catch (e: any) {
     console.error("Email error:", e.message)

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { createAdminClient } from "@/lib/supabase-admin"
+import { createAdminClient } from "@/lib/server-db"
 
 export async function POST(req: Request) {
   const { shipment_id, driver_id } = await req.json()

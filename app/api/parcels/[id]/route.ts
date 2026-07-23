@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { createAdminClient } from "@/lib/supabase-admin"
+import { createAdminClient } from "@/lib/server-db"
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   const supabase = createAdminClient()
