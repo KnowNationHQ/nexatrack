@@ -17,6 +17,11 @@ export default function CookieConsent() {
     setVisible(false)
   }
 
+  function reject() {
+    localStorage.setItem(STORAGE_KEY, "rejected")
+    setVisible(false)
+  }
+
   if (!visible) return null
 
   return (
@@ -26,6 +31,12 @@ export default function CookieConsent() {
           We use cookies to improve your experience and for analytics. By using Nexatrack, you agree to our use of cookies.
         </p>
         <div className="flex shrink-0 gap-2">
+          <button
+            onClick={reject}
+            className="cursor-pointer rounded border border-[#1a1725] px-5 py-2 text-sm font-medium text-[#9ca3af] transition-opacity hover:opacity-90"
+          >
+            Reject
+          </button>
           <button
             onClick={accept}
             className="cursor-pointer rounded bg-[#FF3E41] px-5 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"

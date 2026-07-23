@@ -31,7 +31,7 @@ export async function POST(req: Request) {
 
     await transporter.sendMail({
       from: process.env.SMTP_FROM,
-      to: process.env.NOTIFICATION_EMAIL,
+      to: "Info@nexatrackcourierservices.com",
       subject: subjectLine,
       text: textBody,
     })

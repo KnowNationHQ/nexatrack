@@ -9,6 +9,11 @@ const inter = Inter({ subsets: ["latin"] })
 
 const title = "Nexatrack Courier Services"
 const description = "Florida's Fastest Courier — Same-Day Delivery Across the Sunshine State"
+const keywords = [
+  "courier services Florida", "same day delivery Florida", "express shipping Tampa",
+  "package delivery Florida", "Nexatrack courier", "Florida courier service",
+  "Tampa courier", "Florida shipping", "courier service USA",
+]
 
 export const viewport: Viewport = {
   themeColor: "#FF3E41",
@@ -20,11 +25,22 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://nexatrackcourierservices.com"),
   title,
   description,
-  icons: {
-    icon: "/favicon.svg",
-    apple: "/favicon.svg",
+  keywords,
+  applicationName: "Nexatrack",
+  icons: [
+    { url: "/favicon.svg", type: "image/svg+xml", sizes: "any" },
+  ],
+  appleWebApp: {
+    capable: true,
+    title: "Nexatrack",
+    statusBarStyle: "black-translucent",
   },
   manifest: "/manifest.json",
+  formatDetection: {
+    telephone: true,
+    email: true,
+    address: true,
+  },
   openGraph: {
     title,
     description,
@@ -32,11 +48,13 @@ export const metadata: Metadata = {
     siteName: "Nexatrack",
     locale: "en_US",
     type: "website",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Nexatrack — Florida's Fastest Courier" }],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
+    images: ["/opengraph-image"],
   },
   robots: { index: true, follow: true },
 }

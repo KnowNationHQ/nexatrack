@@ -38,7 +38,7 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.smartsuppchat.com https://*.smartsuppcdn.com https://*.supabase.co https://code.jquery.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+"script-src 'self' 'unsafe-inline' https://*.smartsuppchat.com https://*.smartsuppcdn.com https://*.supabase.co https://code.jquery.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
 "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://*.smartsuppcdn.com",
               "img-src 'self' data: blob: https://*.supabase.co https://cdnjs.cloudflare.com",
               "font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net",
