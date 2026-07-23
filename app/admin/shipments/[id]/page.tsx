@@ -29,6 +29,8 @@ export default function AdminShipmentDetail() {
   const [newStatus, setNewStatus] = useState("")
   const [newLocation, setNewLocation] = useState("")
   const [updating, setUpdating] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [successStatus, setSuccessStatus] = useState("")
   const router = useRouter()
   const { toast } = useToast()
 
@@ -79,7 +81,9 @@ export default function AdminShipmentDetail() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
-      toast({ title: "Status updated", description: `Changed to ${STATUS_LABELS[newStatus]}` })
+      setSuccessStatus(newStatus)
+      setShowSuccess(true)
+      setTimeout(() => setShowSuccess(false), 2500)
       await new Promise(r => setTimeout(r, 200))
       const refreshed = await fetch(`/api/parcels/${id}`).then(r => r.json())
       if (refreshed.parcel) setShipment(refreshed.parcel)
@@ -356,5 +360,24 @@ export default function AdminShipmentDetail() {
         </CardContent>
       </Card>
     </div>
+
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          onClick={() => setShowSuccess(false)}>
+          <div className="mx-4 w-full max-w-sm animate-in zoom-in-95 fade-in rounded-2xl p-6 text-center shadow-2xl duration-200"
+            style={{ backgroundColor: 'var(--card-bg)', border: '1px solid var(--card-border)' }}
+            onClick={(e) => e.stopPropagation()}>
+            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full" style={{ backgroundColor: 'rgba(34,197,94,0.15)' }}>
+              <svg className="h-7 w-7 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            </div>
+            <p className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Status Updated</p>
+            <p className="mt-1 text-sm" style={{ color: 'var(--text-muted)' }}>
+              Changed to {STATUS_LABELS[successStatus] || successStatus?.replace(/_/g, " ")}
+            </p>
+          </div>
+        </div>
+      )}
   )
 }
