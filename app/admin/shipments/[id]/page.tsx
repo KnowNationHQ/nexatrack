@@ -104,8 +104,9 @@ export default function AdminShipmentDetail() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <Button variant="ghost" onClick={() => router.push("/admin/shipments")}
+          className="self-start sm:self-auto"
           style={{ color: 'var(--text-muted)' }}
           onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
           onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}>
