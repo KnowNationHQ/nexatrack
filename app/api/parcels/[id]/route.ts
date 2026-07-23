@@ -3,12 +3,22 @@ import { createAdminClient } from "@/lib/server-db"
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   const supabase = createAdminClient()
+  const supabase2 = createAdminClient()
 
-  const { data: parcel } = await supabase
+  let { data: parcel } = await supabase
     .from("parcels")
     .select("*")
-    .or(`tracking_number.eq.${params.id},id.eq.${params.id}`)
+    .eq("tracking_number", params.id)
     .maybeSingle()
+
+  if (!parcel) {
+    const { data: p2 } = await supabase2
+      .from("parcels")
+      .select("*")
+      .eq("id", params.id)
+      .maybeSingle()
+    parcel = p2
+  }
 
   if (!parcel) {
     return NextResponse.json({ error: "Not found" }, { status: 404 })
