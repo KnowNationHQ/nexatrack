@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/hooks/use-toast"
 import { ArrowLeft } from "lucide-react"
+import { DetailSkeleton } from "@/components/ui/skeleton-table"
 
 export default function AdminEditShipment() {
   const { id } = useParams<{ id: string }>()
@@ -110,7 +111,7 @@ export default function AdminEditShipment() {
     setLoading(false)
   }
 
-  if (fetching) return <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
+  if (fetching) return <DetailSkeleton />
   if (!form) return <p style={{ color: 'var(--text-muted)' }}>Shipment not found.</p>
 
   const inputStyle = { borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }

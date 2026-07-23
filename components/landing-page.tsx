@@ -61,7 +61,7 @@ export default function LandingPage() {
             <div className="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
               <h6 className="text-secondary text-uppercase mb-3">About Us</h6>
               <h1 className="mb-5">Quick Courier and Delivery Solutions</h1>
-              <p className="mb-5">Nexatrack Express Courier Services is a trusted name in the Florida courier industry, offering fast, secure, and affordable delivery solutions across the Sunshine State. We leverage modern logistics technology to provide real-time tracking and seamless delivery experiences for businesses and individuals throughout the Southeast.</p>
+              <p className="mb-5">Nexatrack Courier Services is a trusted name in the Florida courier industry, offering fast, secure, and affordable delivery solutions across the Sunshine State. We leverage modern logistics technology to provide real-time tracking and seamless delivery experiences for businesses and individuals throughout the Southeast.</p>
               <div className="row g-4 mb-5">
                 <div className="col-sm-6 wow fadeIn" data-wow-delay="0.5s">
                   <i className="fa fa-globe fa-3x text-primary mb-3"></i>
@@ -76,10 +76,8 @@ export default function LandingPage() {
               </div>
               <a href="/service" className="btn btn-primary py-3 px-5">Explore More</a>
             </div>
-            <div className="col-lg-6 wow fadeInRight d-flex" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
-              <div className="position-relative h-100">
-                <img className="position-absolute img-fluid w-100 h-100" src="/img/about.jpg" style={{ objectFit: "cover" }} alt="" />
-              </div>
+            <div className="col-lg-6 wow fadeInRight" data-wow-delay="0.1s">
+              <img className="img-fluid w-100 rounded" src="/img/about.jpg" style={{ maxHeight: "400px", objectFit: "cover" }} alt="About Nexatrack" />
             </div>
           </div>
         </div>
@@ -142,10 +140,8 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-            <div className="col-lg-6 pe-lg-0 wow fadeInRight d-flex" data-wow-delay="0.1s" style={{ minHeight: "400px" }}>
-              <div className="position-relative h-100">
-                <img className="position-absolute img-fluid w-100 h-100" src="/img/feature.jpg" style={{ objectFit: "cover" }} alt="" />
-              </div>
+            <div className="col-lg-6 pe-lg-0 wow fadeInRight" data-wow-delay="0.1s">
+              <img className="img-fluid w-100 rounded" src="/img/feature.jpg" style={{ maxHeight: "400px", objectFit: "cover" }} alt="Nexatrack Features" />
             </div>
           </div>
         </div>
@@ -162,7 +158,7 @@ export default function LandingPage() {
                 <i className="fa fa-headphones fa-2x flex-shrink-0 bg-primary p-3 text-white"></i>
                 <div className="ps-4">
                   <h6>Call for any query!</h6>
-                  <h3 className="text-primary m-0">+1 305 555 0199</h3>
+                  <h3 className="text-primary m-0">+1 (506) 501-4402</h3>
                 </div>
               </div>
             </div>

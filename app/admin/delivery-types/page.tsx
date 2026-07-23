@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
+import { TableSkeleton } from "@/components/ui/skeleton-table"
 
 const blank = { name: "" }
 
@@ -20,7 +21,8 @@ export default function DeliveryTypesPage() {
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState(blank)
 
-  const load = () => db<any[]>("delivery_types", "select", { order: { column: "created_at", ascending: false } }).then((d) => { if (d) setItems(d) })
+  const [pageLoading, setPageLoading] = useState(true)
+  const load = () => db<any[]>("delivery_types", "select", { order: { column: "created_at", ascending: false } }).then((d) => { if (d) setItems(d) }).finally(() => setPageLoading(false))
   useEffect(() => { load() }, [])
 
   const openAdd = () => { setEditing(null); setForm(blank); setDialog(true) }
@@ -55,6 +57,11 @@ export default function DeliveryTypesPage() {
         <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Delivery Types</h1>
         <Button onClick={openAdd} className="bg-[#FF3E41] hover:bg-[#d92e31]"><Plus size={16} className="mr-1" /> Add</Button>
       </div>
+      {pageLoading ? (
+        <div className="rounded-xl border p-5" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+          <TableSkeleton rows={5} />
+        </div>
+      ) : (
       <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -72,6 +79,7 @@ export default function DeliveryTypesPage() {
           />
         </CardContent>
       </Card>
+      )}
 
       <Dialog open={dialog} onOpenChange={setDialog}>
         <DialogContent style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)', color: 'var(--text-primary)' }}>

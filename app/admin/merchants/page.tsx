@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { MobileTable } from "@/components/mobile-table"
 import { useToast } from "@/components/hooks/use-toast"
 import { Search, Plus, Trash2, Loader2, ExternalLink, Edit3 } from "lucide-react"
+import { TableSkeleton } from "@/components/ui/skeleton-table"
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -23,6 +24,7 @@ export default function MerchantsPage() {
   const [search, setSearch] = useState("")
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [pageLoading, setPageLoading] = useState(true)
   const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", address: "" })
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
@@ -31,7 +33,7 @@ export default function MerchantsPage() {
   const load = () => {
     db<any[]>("profiles", "select", { eq: { role: "merchant" }, order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setMerchants(data)
-    })
+    }).finally(() => setPageLoading(false))
   }
   useEffect(() => { load() }, [])
 
@@ -124,6 +126,11 @@ export default function MerchantsPage() {
         </Dialog>
       </div>
 
+      {pageLoading ? (
+        <div className="rounded-xl border p-5" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+          <TableSkeleton rows={5} />
+        </div>
+      ) : (
       <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -163,6 +170,7 @@ export default function MerchantsPage() {
           />
         </CardContent>
       </Card>
+      )}
 
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>

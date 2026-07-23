@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+import { StatCardSkeleton, ChartSkeleton } from "@/components/ui/skeleton-table"
 import { ArrowUpRight, Package, TrendingUp } from "lucide-react"
 import dynamic from "next/dynamic"
 
@@ -42,6 +44,7 @@ export default function AdminDashboard() {
 
   const [chartData, setChartData] = useState<{ dailyRev: number[]; dailyShip: number[]; statusCounts: Record<string, number> }>({ dailyRev: [], dailyShip: [], statusCounts: {} })
   const [chartLabels, setChartLabels] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function loadStats() {
@@ -73,7 +76,7 @@ export default function AdminDashboard() {
       setChartLabels(days)
       setChartData({ dailyRev: rev, dailyShip: ship, statusCounts: { pending: pending || 0, in_transit: inTransit || 0, delivered: delivered || 0 } })
     }
-    loadStats()
+    loadStats().finally(() => setLoading(false))
   }, [])
 
   const values = [
@@ -87,6 +90,17 @@ export default function AdminDashboard() {
         <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Admin Portal</h1>
         <p className="mt-1 text-sm" style={{ color: 'var(--text-muted)' }}>Overview of your courier operations</p>
       </div>
+      {loading ? (
+        <>
+          <StatCardSkeleton count={8} />
+          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            <ChartSkeleton height={250} />
+            <ChartSkeleton height={280} />
+            <ChartSkeleton height={220} />
+          </div>
+        </>
+      ) : (
+      <>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
         {cardStyle.map((card, i) => {
           const val = values[i]
@@ -163,6 +177,8 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         </div>
+      )}
+      </>
       )}
     </div>
   )

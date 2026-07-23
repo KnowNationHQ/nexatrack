@@ -230,7 +230,7 @@ export default function PageShell({ children, activePage }: { children: ReactNod
             </div>
             <a href="/contact" className={'nav-item nav-link' + (activePage === 'contact' ? ' active' : '')}>Contact</a>
           </div>
-          <h4 className="m-0 pe-lg-5 d-none d-lg-block text-dark"><i className="fa fa-headphones text-dark me-3"></i>+1 305 555 0199</h4>
+          <h4 className="m-0 pe-lg-5 d-none d-lg-block text-dark"><i className="fa fa-headphones text-dark me-3"></i>+1 (506) 501-4402</h4>
         </div>
       </nav>
 
@@ -241,8 +241,9 @@ export default function PageShell({ children, activePage }: { children: ReactNod
           <div className="row g-5">
             <div className="col-lg-3 col-md-6">
               <h4 className="text-light mb-4">Address</h4>
-              <p className="mb-2"><i className="fa fa-map-marker-alt me-3"></i>Miami, FL 33101, USA</p>
-              <p className="mb-2"><i className="fa fa-phone-alt me-3"></i>+1 305 555 0199</p>
+              <p className="mb-2"><i className="fa fa-map-marker-alt me-3"></i>Citrus Park, FL 11950 Sheldon Road. Tampa 33626</p>
+              <p className="mb-2"><i className="fa fa-phone-alt me-3"></i>+1 (506) 501-4402</p>
+              <p className="mb-2"><i className="fa fa-whatsapp me-3"></i>+1 (506) 501-4402</p>
               <p className="mb-2"><i className="fa fa-envelope me-3"></i>info@nexatrack.com</p>
               <div className="d-flex pt-2">
                 <a className="btn btn-outline-light btn-social" href="#"><i className="fab fa-twitter"></i></a>
@@ -282,7 +283,7 @@ export default function PageShell({ children, activePage }: { children: ReactNod
           <div className="copyright">
             <div className="row">
               <div className="col-12 text-center">
-                &copy; <a className="border-bottom" href="/">Nexatrack Express Courier Services</a>, All Right Reserved.
+                &copy; <a className="border-bottom" href="/">Nexatrack Courier Services</a>, All Right Reserved.
               </div>
             </div>
           </div>

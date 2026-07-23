@@ -1,14 +1,44 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages, getLocale } from "next-intl/server"
+import CookieConsent from "@/components/CookieConsent"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
 
+const title = "Nexatrack Courier Services"
+const description = "Florida's Fastest Courier — Same-Day Delivery Across the Sunshine State"
+
+export const viewport: Viewport = {
+  themeColor: "#FF3E41",
+  width: "device-width",
+  initialScale: 1,
+}
+
 export const metadata: Metadata = {
-  title: "Nexatrack — Courier Services",
-  description: "Florida's Fastest Courier — Same-Day Delivery Across the Sunshine State",
+  metadataBase: new URL("https://nexatrackcourierservices.com"),
+  title,
+  description,
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
+  manifest: "/manifest.json",
+  openGraph: {
+    title,
+    description,
+    url: "https://nexatrackcourierservices.com",
+    siteName: "Nexatrack",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
+  robots: { index: true, follow: true },
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -30,6 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
+          <CookieConsent />
         </NextIntlClientProvider>
       </body>
     </html>

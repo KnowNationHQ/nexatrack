@@ -63,7 +63,7 @@ export default function NotificationsList() {
         {unreadCount > 0 && (
           <button
             onClick={markAllRead}
-            className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all hover:bg-[#FF3E41] hover:text-white"
+            className="inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-all hover:bg-[#FF3E41] hover:text-white"
             style={{ borderColor: 'var(--card-border)', color: 'var(--text-secondary)' }}
           >
             <CheckCheck size={14} />

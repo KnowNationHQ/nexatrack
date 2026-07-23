@@ -43,7 +43,7 @@ export default function FreeQuotePage() {
                 <i className="fa fa-headphones fa-2x flex-shrink-0 bg-primary p-3 text-white"></i>
                 <div className="ps-4">
                   <h6>Call for any query!</h6>
-                  <h3 className="text-primary m-0">+1 305 555 0199</h3>
+                  <h3 className="text-primary m-0">+1 (506) 501-4402</h3>
                 </div>
               </div>
             </div>

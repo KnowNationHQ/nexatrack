@@ -8,14 +8,16 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus } from "lucide-react"
+import { TableSkeleton } from "@/components/ui/skeleton-table"
 
 export default function PendingShipmentsPage() {
   const [shipments, setShipments] = useState<any[]>([])
   const [search, setSearch] = useState("")
+  const [loading, setLoading] = useState(true)
   useEffect(() => {
     db<any[]>("parcels", "select", { eq: { status: "pending" }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
       if (data) setShipments(data)
-    })
+    }).finally(() => setLoading(false))
   }, [])
 
   const filtered = shipments.filter((s) =>
@@ -29,6 +31,11 @@ export default function PendingShipmentsPage() {
         <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Pending Shipments</h1>
         <Button className="bg-[#FF3E41] hover:bg-[#d92e31]"><Plus size={16} className="mr-1" /> New</Button>
       </div>
+      {loading ? (
+        <div className="rounded-xl border p-5" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+          <TableSkeleton rows={5} />
+        </div>
+      ) : (
       <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardHeader><div className="flex items-center gap-2"><Search size={16} style={{ color: 'var(--text-muted)' }} /><Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div></CardHeader>
         <CardContent>
@@ -44,6 +51,7 @@ export default function PendingShipmentsPage() {
           />
         </CardContent>
       </Card>
+      )}
     </div>
   )
 }

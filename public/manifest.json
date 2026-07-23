@@ -1,0 +1,12 @@
+{
+  "name": "Nexatrack Courier Services",
+  "short_name": "Nexatrack",
+  "description": "Florida's Fastest Courier — Same-Day Delivery Across the Sunshine State",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07050f",
+  "theme_color": "#FF3E41",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

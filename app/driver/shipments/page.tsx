@@ -2,17 +2,19 @@
 
 import { useEffect, useState } from "react"
 import { db } from "@/lib/db-client"
+import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 export default function AllJobsPage() {
   const [shipments, setShipments] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     db<{ data: any[] }>("parcels", "select", { neq: [{ col: "status", val: "delivered" }, { col: "status", val: "cancelled" }], order: { column: "created_at", ascending: false } }).then(({ data }) => {
       if (data) setShipments(data)
-    })
+    }).finally(() => setLoading(false))
   }, [])
 
   const statusColors: Record<string, {color:string;borderColor:string;backgroundColor:string}> = {
@@ -24,6 +26,11 @@ export default function AllJobsPage() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Available Jobs</h1>
+      {loading ? (
+        <div className="space-y-3">
+          {Array.from({length:5}).map((_,i)=><Skeleton key={i} className="h-20 w-full rounded-xl" />)}
+        </div>
+      ) : (
       <div className="space-y-3">
         {shipments.map((s) => (
           <Link key={s.id} href={`/driver/shipments/${s.id}`}>
@@ -44,6 +51,7 @@ export default function AllJobsPage() {
         ))}
         {shipments.length === 0 && <p style={{ color: 'var(--text-muted)' }}>No available jobs.</p>}
       </div>
+      )}
     </div>
   )
 }

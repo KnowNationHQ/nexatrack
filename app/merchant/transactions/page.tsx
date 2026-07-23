@@ -5,9 +5,11 @@ import { createClient } from "@/lib/supabase-browser"
 import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { TableSkeleton } from "@/components/ui/skeleton-table"
 
 export default function MerchantTransactions() {
   const [items, setItems] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
   useEffect(() => {
@@ -16,7 +18,7 @@ export default function MerchantTransactions() {
       db("wallets", "select", { columns: "id", eq: { merchant_id: user.id }, single: true }).then((wallet) => {
         if (!wallet) return
         db<any[]>("transactions", "select", { eq: { wallet_id: wallet.id }, order: { column: "created_at", ascending: false }, limit: 50 }).then((data) => {
-          if (data) setItems(data)
+          if (data) setItems(data); setLoading(false)
         })
       })
     })
@@ -25,7 +27,12 @@ export default function MerchantTransactions() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>My Transactions</h1>
-      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+{loading ? (
+  <div className="rounded-xl border p-5" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+    <TableSkeleton rows={5} />
+  </div>
+) : (
+  <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardHeader><h2 className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>Recent Transactions</h2></CardHeader>
         <CardContent>
           {items.map((i) => (
@@ -43,6 +50,7 @@ export default function MerchantTransactions() {
           ))}
         </CardContent>
       </Card>
+    )}
     </div>
   )
 }

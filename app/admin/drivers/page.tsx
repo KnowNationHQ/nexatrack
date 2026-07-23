@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { MobileTable } from "@/components/mobile-table"
 import { useToast } from "@/components/hooks/use-toast"
 import { Search, Plus, Trash2, Loader2 } from "lucide-react"
+import { TableSkeleton } from "@/components/ui/skeleton-table"
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -23,13 +24,14 @@ export default function DriversPage() {
   const [loading, setLoading] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [pageLoading, setPageLoading] = useState(true)
   const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", nid: "", address: "" })
   const { toast } = useToast()
 
   const load = () => {
     db<any[]>("profiles", "select", { eq: { role: "driver" }, order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setDrivers(data)
-    })
+    }).finally(() => setPageLoading(false))
   }
   useEffect(() => { load() }, [])
 
@@ -128,6 +130,11 @@ export default function DriversPage() {
         </Dialog>
       </div>
 
+      {pageLoading ? (
+        <div className="rounded-xl border p-5" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+          <TableSkeleton rows={5} />
+        </div>
+      ) : (
       <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -163,6 +170,7 @@ export default function DriversPage() {
           />
         </CardContent>
       </Card>
+      )}
 
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>

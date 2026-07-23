@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/components/hooks/use-toast"
 import { Loader2, Truck, Map as MapIcon, CheckSquare, Square } from "lucide-react"
+import { StatCardSkeleton } from "@/components/ui/skeleton-table"
 
 const MockMap = dynamic(() => import("@/components/mock-map"), { ssr: false })
 
@@ -38,11 +39,17 @@ export default function DispatchPage() {
   const [batchDriver, setBatchDriver] = useState<string>("")
   const [batching, setBatching] = useState(false)
   const [routeDriver, setRouteDriver] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
   const { toast } = useToast()
 
   useEffect(() => {
-    db("parcels", "select", { order: { column: "created_at", ascending: false } }).then(setShipments)
-    db("profiles", "select", { eq: { role: "driver" } }).then(setDrivers)
+    Promise.all([
+      db("parcels", "select", { order: { column: "created_at", ascending: false } }),
+      db("profiles", "select", { eq: { role: "driver" } }),
+    ]).then(([s, d]) => {
+      if (s) setShipments(s)
+      if (d) setDrivers(d)
+    }).finally(() => setLoading(false))
   }, [])
 
   const assignDriver = async (driverId: string) => {
@@ -129,7 +136,7 @@ export default function DispatchPage() {
                   ))}
                 </SelectContent>
               </Select>
-              <Button size="sm" className="h-8 bg-[#FF3E41] hover:bg-[#d92e31]" disabled={!batchDriver || batching} onClick={batchAssign}>
+              <Button size="sm" className="h-10 bg-[#FF3E41] hover:bg-[#d92e31]" disabled={!batchDriver || batching} onClick={batchAssign}>
                 {batching ? <Loader2 className="h-3 w-3 animate-spin" /> : "Assign"}
               </Button>
             </div>
@@ -142,6 +149,9 @@ export default function DispatchPage() {
           ))}
         </div>
       </div>
+      {loading ? (
+        <StatCardSkeleton count={6} />
+      ) : (
       <div className="space-y-6">
         {grouped.filter(g => g.items.length > 0).map(group => (
           <div key={group.status}>
@@ -180,6 +190,7 @@ export default function DispatchPage() {
           <p className="py-12 text-center text-sm" style={{ color: 'var(--text-muted)' }}>No shipments to dispatch</p>
         )}
       </div>
+      )}
 
       <Sheet open={!!selected} onOpenChange={(o) => { if (!o) setSelected(null) }}>
         <SheetContent side="right" className="w-[400px] border-l" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)', color: 'var(--text-primary)' }}>

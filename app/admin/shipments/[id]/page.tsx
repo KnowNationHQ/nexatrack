@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import QRCode from "qrcode"
 import { useToast } from "@/components/hooks/use-toast"
+import { DetailSkeleton, TableSkeleton } from "@/components/ui/skeleton-table"
 import {
   ArrowLeft, Package, MapPin, User, Phone, Map, Weight, CreditCard,
   Clock, Share2, Copy, Check, QrCode, FileText, PenSquare,
@@ -120,7 +121,7 @@ export default function AdminShipmentDetail() {
     setUpdating(false)
   }
 
-  if (!shipment) return <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
+  if (!shipment) return <DetailSkeleton />
 
   const currentIdx = ALL_STATUSES.indexOf(shipment.status)
   const chargeItems = [

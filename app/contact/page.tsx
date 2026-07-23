@@ -73,7 +73,7 @@ export default function ContactPage() {
               </div>
             </div>
             <div className="col-md-6 pe-lg-0 wow fadeInRight" data-wow-delay="0.1s">
-              <div className="position-relative h-100" style={{ minHeight: "400px" }}>
+              <div className="position-relative h-100 md:min-h-[400px]" style={{ minHeight: "250px" }}>
                 <iframe className="position-absolute w-100 h-100" style={{ objectFit: "cover", border: 0 }}
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d56346.11901384147!2d-82.632783!3d28.082255!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88c2f8f1f1f1f1f1%3A0x1f1f1f1f1f1f1f1f!2sTampa%2C+FL!5e0!3m2!1sen!2sus!4v1"
                   allowFullScreen aria-hidden="false" tabIndex={0}></iframe>

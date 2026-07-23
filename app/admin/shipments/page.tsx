@@ -5,8 +5,10 @@ import Link from "next/link"
 import { db } from "@/lib/db-client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { TableSkeleton } from "@/components/ui/skeleton-table"
 import { MobileTable } from "@/components/mobile-table"
 import { Plus, Search, Pencil, ExternalLink } from "lucide-react"
 
@@ -41,7 +43,17 @@ export default function ShipmentsPage() {
       s.receiver_name?.toLowerCase().includes(search.toLowerCase())
   )
 
-  if (loading) return <div className="text-center py-8" style={{ color: 'var(--text-muted)' }}>Loading...</div>
+  if (loading) return (
+    <div>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Shipments</h1>
+        <Skeleton className="h-10 w-36 rounded-lg" />
+      </div>
+      <div className="rounded-xl border p-5" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+        <TableSkeleton rows={5} />
+      </div>
+    </div>
+  )
 
   return (
     <div>

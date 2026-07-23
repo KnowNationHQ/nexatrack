@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase-browser"
 import { db } from "@/lib/db-client"
 import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { DetailSkeleton } from "@/components/ui/skeleton-table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/hooks/use-toast"
@@ -112,7 +113,7 @@ export default function ShipmentDetail() {
     setUploading(false)
   }
 
-  if (!shipment) return <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
+  if (!shipment) return <DetailSkeleton />
   const statusActions: Record<string, string[]> = {
     pending: ["picked_up"],
     delivery_man_assign: ["picked_up"],

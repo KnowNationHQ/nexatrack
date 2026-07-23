@@ -114,10 +114,10 @@ export default function SignaturePad({ onSave, width = 400, height = 200 }: Sign
         )}
       </div>
       <div className="flex gap-2">
-        <Button type="button" variant="outline" size="sm" onClick={clear}>
+        <Button type="button" variant="outline" size="sm" onClick={clear} className="h-11">
           Clear
         </Button>
-        <Button type="button" size="sm" onClick={save} disabled={!hasDrawn} className="bg-[#FF3E41] hover:bg-[#d92e31]">
+        <Button type="button" size="sm" onClick={save} disabled={!hasDrawn} className="h-11 bg-[#FF3E41] hover:bg-[#d92e31]">
           Save Signature
         </Button>
       </div>

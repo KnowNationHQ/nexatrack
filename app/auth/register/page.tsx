@@ -83,7 +83,7 @@ export default function RegisterPage() {
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <Button
               type="submit"
-              className="w-full bg-[#FF3E41] hover:bg-[#d92e31]"
+              className="w-full h-11 bg-[#FF3E41] hover:bg-[#d92e31]"
               disabled={loading}
             >
               {loading ? "Creating account..." : "Create Account"}

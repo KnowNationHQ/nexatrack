@@ -4,9 +4,11 @@ import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
 import { Card, CardContent } from "@/components/ui/card"
 import { Package, CheckCircle, Truck, DollarSign, Clock } from "lucide-react"
+import { StatCardSkeleton } from "@/components/ui/skeleton-table"
 
 export default function MerchantDashboard() {
   const [stats, setStats] = useState({ total: 0, inTransit: 0, delivered: 0, balance: 0 })
+  const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
   useEffect(() => {
@@ -24,7 +26,7 @@ export default function MerchantDashboard() {
           delivered: delivered.count || 0,
           balance: Number((wallet.data as any)?.balance || 0),
         })
-      })
+      }).finally(() => setLoading(false))
     })
   }, [])
 
@@ -39,8 +41,11 @@ export default function MerchantDashboard() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Merchant Portal</h1>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((s) => {
+{loading ? (
+  <StatCardSkeleton count={4} />
+) : (
+  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {statCards.map((s) => {
           const Icon = s.icon
           return (
             <Card key={s.label} className="border transition-all cursor-default"
@@ -61,6 +66,7 @@ export default function MerchantDashboard() {
           )
         })}
       </div>
+    )}
     </div>
   )
 }

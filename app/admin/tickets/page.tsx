@@ -7,15 +7,17 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { MobileTable } from "@/components/mobile-table"
 import { Search } from "lucide-react"
+import { TableSkeleton } from "@/components/ui/skeleton-table"
 
 export default function TicketsPage() {
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     db<any[]>("support_tickets", "select", { columns: "*, profiles:user_id(full_name, email)", order: { column: "created_at", ascending: false } }).then((data) => {
       if (data) setItems(data)
-    })
+    }).finally(() => setLoading(false))
   }, [])
 
   const filtered = items.filter((i) =>
@@ -26,6 +28,11 @@ export default function TicketsPage() {
   return (
     <div>
       <h1 style={{color:'var(--text-primary)'}} className="mb-6 text-2xl font-bold">Support Tickets</h1>
+      {loading ? (
+        <div className="rounded-xl border p-5" style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
+          <TableSkeleton rows={5} />
+        </div>
+      ) : (
       <Card style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -45,6 +52,7 @@ export default function TicketsPage() {
           />
         </CardContent>
       </Card>
+      )}
     </div>
   )
 }

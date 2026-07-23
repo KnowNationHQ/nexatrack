@@ -5,12 +5,14 @@ import { createClient } from "@/lib/supabase-browser"
 import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/hooks/use-toast"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const PRESETS = [20, 50, 100, 200]
 
 export default function WalletPage() {
   const [wallet, setWallet] = useState<any>(null)
   const [amount, setAmount] = useState(50)
+  const [pageLoading, setPageLoading] = useState(true)
   const [loading, setLoading] = useState(false)
   const [txns, setTxns] = useState<any[]>([])
   const { toast } = useToast()
@@ -21,6 +23,7 @@ export default function WalletPage() {
     if (!user) return
     const w = await db<any>("wallets", "select", { eq: { merchant_id: user.id }, single: true })
     if (w) { setWallet(w); loadTxns(w.id) }
+    setPageLoading(false)
   }, [])
 
   const loadTxns = async (walletId: string) => {
@@ -53,45 +56,59 @@ export default function WalletPage() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold" style={{ color: "var(--text-primary)" }}>Wallet</h1>
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card style={{ borderColor: "var(--card-border)", backgroundColor: "var(--card-bg)" }}>
-          <CardHeader><CardTitle style={{ color: "var(--text-primary)" }}>Balance</CardTitle></CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold" style={{ color: "var(--text-primary)" }}>
-              ${Number(wallet?.balance || 0).toFixed(2)}
-            </div>
-            <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>Available for shipments</p>
-          </CardContent>
-        </Card>
+{pageLoading ? (
+  <div className="grid gap-6 md:grid-cols-2">
+    <div className="rounded-xl border p-5" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+      <Skeleton className="mb-3 h-5 w-20" />
+      <Skeleton className="h-10 w-40" />
+    </div>
+    <div className="rounded-xl border p-5" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+      <Skeleton className="mb-3 h-5 w-20" />
+      <div className="flex flex-wrap gap-2">{Array.from({length:4}).map((_,i)=><Skeleton key={i} className="h-9 w-16 rounded-lg" />)}</div>
+      <Skeleton className="mt-4 h-9 w-full rounded-lg" />
+    </div>
+  </div>
+) : (
+  <div className="grid gap-6 md:grid-cols-2">
+    <Card style={{ borderColor: "var(--card-border)", backgroundColor: "var(--card-bg)" }}>
+      <CardHeader><CardTitle style={{ color: "var(--text-primary)" }}>Balance</CardTitle></CardHeader>
+      <CardContent>
+        <div className="text-4xl font-bold" style={{ color: "var(--text-primary)" }}>
+          ${Number(wallet?.balance || 0).toFixed(2)}
+        </div>
+        <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>Available for shipments</p>
+      </CardContent>
+    </Card>
 
-        <Card style={{ borderColor: "var(--card-border)", backgroundColor: "var(--card-bg)" }}>
-          <CardHeader><CardTitle style={{ color: "var(--text-primary)" }}>Top Up</CardTitle></CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-wrap gap-2">
-              {PRESETS.map((p) => (
-                <button key={p} onClick={() => setAmount(p)}
-                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                    amount === p
-                      ? "bg-[#FF3E41] text-white"
-                      : "border border-[var(--card-border)] text-[var(--text-primary)] hover:bg-[var(--input-bg)]"
-                  }`}
-                >${p}</button>
-              ))}
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium" style={{ color: "var(--text-muted)" }}>Custom Amount</label>
-              <input type="number" min="1" value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
-                className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
-                style={{ borderColor: "var(--card-border)", backgroundColor: "var(--input-bg)", color: "var(--text-primary)" }}
-              />
-            </div>
-            <button onClick={topUp} disabled={loading || amount < 1}
-              className="w-full rounded-lg bg-[#FF3E41] px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-            >{loading ? "Processing..." : `Top Up $${amount}`}</button>
-          </CardContent>
-        </Card>
-      </div>
+    <Card style={{ borderColor: "var(--card-border)", backgroundColor: "var(--card-bg)" }}>
+      <CardHeader><CardTitle style={{ color: "var(--text-primary)" }}>Top Up</CardTitle></CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex flex-wrap gap-2">
+          {PRESETS.map((p) => (
+            <button key={p} onClick={() => setAmount(p)}
+              className={`rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+                amount === p
+                  ? "bg-[#FF3E41] text-white"
+                  : "border border-[var(--card-border)] text-[var(--text-primary)] hover:bg-[var(--input-bg)]"
+              }`}
+            >${p}</button>
+          ))}
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium" style={{ color: "var(--text-muted)" }}>Custom Amount</label>
+          <input type="number" min="1" value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            className="w-full rounded-lg border px-3 py-2 text-sm outline-none"
+            style={{ borderColor: "var(--card-border)", backgroundColor: "var(--input-bg)", color: "var(--text-primary)" }}
+          />
+        </div>
+        <button onClick={topUp} disabled={loading || amount < 1}
+          className="w-full rounded-lg bg-[#FF3E41] px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+        >{loading ? "Processing..." : `Top Up $${amount}`}</button>
+      </CardContent>
+    </Card>
+  </div>
+)}
 
       {txns.length > 0 && (
         <Card className="mt-6" style={{ borderColor: "var(--card-border)", backgroundColor: "var(--card-bg)" }}>

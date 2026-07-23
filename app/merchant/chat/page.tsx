@@ -71,7 +71,7 @@ export default function MerchantChatPage() {
                   </div>
                   <button
                     onClick={() => setConfig({ ...config, enabled: !config.enabled })}
-                    className={`relative h-6 w-11 rounded-full transition-colors ${config.enabled ? 'bg-green-500' : 'bg-gray-600'}`}
+                    className={`relative h-11 w-11 rounded-full transition-colors ${config.enabled ? 'bg-green-500' : 'bg-gray-600'}`}
                   >
                     <span className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${config.enabled ? 'translate-x-5' : ''}`} />
                   </button>

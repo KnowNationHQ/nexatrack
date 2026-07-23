@@ -6,16 +6,18 @@ import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MobileTable } from "@/components/mobile-table"
+import { TableSkeleton } from "@/components/ui/skeleton-table"
 
 export default function MerchantInvoices() {
   const [items, setItems] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
       db<any[]>("invoices", "select", { eq: { merchant_id: user.id }, order: { column: "created_at", ascending: false } }).then((data) => {
-        if (data) setItems(data)
+        if (data) setItems(data); setLoading(false)
       })
     })
   }, [])
@@ -23,7 +25,12 @@ export default function MerchantInvoices() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>My Invoices</h1>
-      <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+{loading ? (
+  <div className="rounded-xl border p-5" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+    <TableSkeleton rows={5} />
+  </div>
+) : (
+  <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardContent className="pt-6">
           <MobileTable
             cols={[
@@ -36,6 +43,7 @@ export default function MerchantInvoices() {
           />
         </CardContent>
       </Card>
+    )}
     </div>
   )
 }

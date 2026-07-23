@@ -139,6 +139,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         .sidebar-scroll::-webkit-scrollbar-thumb { background: #FF3E41; border-radius: 4px; }
         .sidebar-scroll::-webkit-scrollbar-thumb:hover { background: #d92e31; }
         .sidebar-scroll { scrollbar-width: thin; scrollbar-color: #FF3E41 transparent; }
+        nav a, nav button:not(.h-10):not(.h-11):not(.h-9), header button, .flex.items-stretch button { min-height:44px; min-width:44px; }
       `}} />
       <aside
         className={`${

@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/hooks/use-toast"
 import { MobileTable } from "@/components/mobile-table"
 import { Search, Loader2, Truck } from "lucide-react"
+import { TableSkeleton } from "@/components/ui/skeleton-table"
 
 const STATUSES = ["pending", "assigned", "picked_up", "completed", "cancelled"]
 const STATUS_LABELS: Record<string, string> = { pending: "Pending", assigned: "Assigned", picked_up: "Picked Up", completed: "Completed", cancelled: "Cancelled" }
@@ -23,11 +24,17 @@ export default function PickupsPage() {
   const [filter, setFilter] = useState("all")
   const [selected, setSelected] = useState<any>(null)
   const [saving, setSaving] = useState(false)
+  const [loading, setLoading] = useState(true)
   const { toast } = useToast()
 
   useEffect(() => {
-    db<any[]>("pickup_requests", "select", { order: { column: "created_at", ascending: false } }).then((data) => { if (data) setPickups(data) })
-    db("profiles", "select", { eq: { role: "driver" } }).then(setDrivers)
+    Promise.all([
+      db<any[]>("pickup_requests", "select", { order: { column: "created_at", ascending: false } }),
+      db("profiles", "select", { eq: { role: "driver" } }),
+    ]).then(([p, d]) => {
+      if (p) setPickups(p)
+      if (d) setDrivers(d)
+    }).finally(() => setLoading(false))
   }, [])
 
   const filtered = pickups.filter((p) => {
@@ -57,17 +64,22 @@ export default function PickupsPage() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Pickup Requests</h1>
+      {loading ? (
+        <div className="rounded-xl border p-5" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+          <TableSkeleton rows={5} />
+        </div>
+      ) : (
       <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardHeader>
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center gap-2">
               <Search size={16} style={{ color: 'var(--text-muted)' }} />
-              <Input placeholder="Search address..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-48" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} />
+              <Input placeholder="Search address..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full sm:w-48" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} />
             </div>
             <div className="flex flex-wrap gap-1">
               {["all", ...STATUSES].map(s => (
                 <button key={s} onClick={() => setFilter(s)}
-                  className="rounded-md px-2.5 py-1 text-xs font-medium transition-colors"
+                  className="rounded-md px-3 py-2 text-sm font-medium transition-colors"
                   style={{ backgroundColor: filter === s ? '#FF3E41' : 'var(--input-bg)', color: filter === s ? 'white' : 'var(--text-muted)' }}>
                   {s === "all" ? "All" : STATUS_LABELS[s]}
                 </button>
@@ -102,6 +114,7 @@ export default function PickupsPage() {
           />
         </CardContent>
       </Card>
+      )}
 
       <Sheet open={!!selected} onOpenChange={(o) => { if (!o) setSelected(null) }}>
         <SheetContent side="right" className="w-[400px] border-l" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)', color: 'var(--text-primary)' }}>

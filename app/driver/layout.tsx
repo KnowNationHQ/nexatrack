@@ -92,6 +92,7 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
         .sidebar-scroll::-webkit-scrollbar-thumb { background: #FF3E41; border-radius: 4px; }
         .sidebar-scroll::-webkit-scrollbar-thumb:hover { background: #d92e31; }
         .sidebar-scroll { scrollbar-width: thin; scrollbar-color: #FF3E41 transparent; }
+        nav a, nav button, header button, .flex.items-stretch button { min-height:44px; min-width:44px; }
       `}} />
       <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} fixed inset-y-0 left-0 z-50 flex h-full w-64 transform flex-col transition-all lg:relative lg:translate-x-0`}
         style={{ background: `linear-gradient(to bottom, var(--sidebar-bg), var(--sidebar-bg-end))`, borderRight: `1px solid var(--sidebar-border)` }}>

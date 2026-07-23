@@ -32,9 +32,9 @@ export function MobileTable({ cols, data, onRowClick }: { cols: Col[]; data: any
         {data.map((item, i) => (
           <div key={item.id || i} className="rounded-lg border p-3 hover:opacity-80" onClick={() => onRowClick?.(item)} style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
             {cols.map((c) => (
-              <div key={c.key} className="flex items-center justify-between py-1">
+              <div key={c.key} className="flex items-center justify-between py-1 min-h-[44px]">
                 <span className="text-xs" style={{color:'var(--text-muted)'}}>{c.label}</span>
-                <span className="text-sm" style={{color:'var(--text-primary)'}}>{c.render ? c.render(item) : item[c.key] ?? "—"}</span>
+                <span className="flex items-center text-sm" style={{color:'var(--text-primary)'}}>{c.render ? c.render(item) : item[c.key] ?? "—"}</span>
               </div>
             ))}
           </div>

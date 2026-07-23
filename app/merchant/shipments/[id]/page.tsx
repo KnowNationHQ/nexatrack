@@ -10,6 +10,7 @@ import {
   ArrowLeft, Package, MapPin, User, Phone, Map, Weight, CreditCard,
   Clock, Share2, Copy, Check, QrCode, FileText, ChevronDown,
 } from "lucide-react"
+import { DetailSkeleton } from "@/components/ui/skeleton-table"
 
 const ALL_STATUSES = [
   "pending", "pickup_assign", "picked_up", "received_warehouse",
@@ -90,7 +91,7 @@ export default function MerchantShipmentDetail() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  if (!shipment) return <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
+  if (!shipment) return <DetailSkeleton />
 
   const currentIdx = ALL_STATUSES.indexOf(shipment.status)
   const chargeItems = [
@@ -146,7 +147,7 @@ export default function MerchantShipmentDetail() {
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-4">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
                 <div className="space-y-1">
                   <p className="flex items-center gap-1 text-sm" style={{ color: 'var(--text-muted)' }}><Map size={12} /> Route</p>
                   <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{shipment.origin_city} → {shipment.destination_city}</p>

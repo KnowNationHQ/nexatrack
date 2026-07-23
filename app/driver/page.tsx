@@ -4,6 +4,8 @@ import dynamic from "next/dynamic"
 import { useEffect, useMemo, useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
 import { db } from "@/lib/db-client"
+import { StatCardSkeleton, ChartSkeleton } from "@/components/ui/skeleton-table"
+import { Skeleton } from "@/components/ui/skeleton"
 import { getCityCoords } from "@/lib/florida-cities"
 import { optimizeRoute, totalRouteDistance } from "@/lib/route-optimizer"
 import Link from "next/link"
@@ -15,6 +17,7 @@ const MockMap = dynamic(() => import("@/components/mock-map"), { ssr: false })
 
 export default function DriverDashboard() {
   const [shipments, setShipments] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
   useEffect(() => {
@@ -27,7 +30,7 @@ export default function DriverDashboard() {
         const ids = new Set((mine || []).map(s => s.id))
         const combined = [...(mine || []), ...(available || []).filter(s => !ids.has(s.id))]
         setShipments(combined)
-      })
+      }).finally(() => setLoading(false))
     })
   }, [])
 
@@ -78,92 +81,110 @@ export default function DriverDashboard() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Driver Portal</h1>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((s) => {
-          const Icon = s.icon
-          return (
-            <Card key={s.label} className="border transition-all cursor-default"
-              style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{s.label}</p>
-                    <div className="flex items-baseline gap-2">
-                      <p className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>{s.value}</p>
-                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{s.sub}</p>
-                    </div>
-                  </div>
-                  <Icon size={24} className={`${s.color} opacity-80`} />
-                </div>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
-
-      {routeStops.length > 0 && (
-        <div>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>My Route</h2>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{routeStops.length} stops · {routeDist.toFixed(1)} mi</p>
-          </div>
-          <div className="mb-6">
-            <MockMap
-              origin={routeStops[0]}
-              destination={routeStops[routeStops.length - 1]}
-              originLabel={routeStops[0]?.label}
-              destLabel={routeStops[routeStops.length - 1]?.label}
-            />
-          </div>
-          <div className="mb-6 flex flex-wrap gap-1">
-            <Navigation size={14} className="mr-1" style={{ color: 'var(--text-muted)' }} />
-            {routeStops.map((s, i) => (
-              <Badge key={i} variant="outline" className="text-[10px]" style={i === 0 ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : i === routeStops.length - 1 ? {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'} : {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'}}>
-                {i + 1}. {s.label}
-              </Badge>
+      {loading ? (
+        <>
+          <StatCardSkeleton count={4} />
+          <ChartSkeleton height={300} />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+            {Array.from({length:3}).map((_,i)=>(
+              <div key={i} className="rounded-xl border p-5" style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
+                <Skeleton className="mb-3 h-4 w-24" />
+                <Skeleton className="mb-2 h-5 w-32" />
+                <Skeleton className="h-4 w-40" />
+              </div>
             ))}
           </div>
-        </div>
-      )}
+        </>
+      ) : (
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {statCards.map((s) => {
+              const Icon = s.icon
+              return (
+                <Card key={s.label} className="border transition-all cursor-default"
+                  style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+                  <CardContent className="p-5">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{s.label}</p>
+                        <div className="flex items-baseline gap-2">
+                          <p className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>{s.value}</p>
+                          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{s.sub}</p>
+                        </div>
+                      </div>
+                      <Icon size={24} className={`${s.color} opacity-80`} />
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
 
-      <h2 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>My Jobs</h2>
-      {shipments.length === 0 && <p style={{ color: 'var(--text-muted)' }}>No shipments assigned yet.</p>}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {shipments.map((s) => (
-          <Link key={s.id} href={`/driver/shipments/${s.id}`} className="group">
-            <Card className="h-full border transition-all"
-              style={{
-                borderColor: 'var(--card-border)',
-                backgroundColor: 'var(--card-bg)',
-              }}>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>{s.tracking_number || "—"}</span>
-                  <span className={`h-2 w-2 rounded-full ${dotColors[s.status] || "bg-gray-400"} shadow-sm`} />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2">
-                    <User size={14} className="mt-0.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
-                    <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{s.receiver_name || "—"}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <MapPin size={14} className="mt-0.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
-                    <span className="text-sm truncate" style={{ color: 'var(--text-secondary)' }}>
-                      {s.origin_city || "—"} <ArrowRight size={12} className="inline" style={{ color: 'var(--text-muted)' }} /> {s.destination_city || s.receiver_address || "—"}
-                    </span>
-                  </div>
-                </div>
-                <div className="mt-4 flex items-center justify-between pt-3" style={{ borderTop: '1px solid var(--card-border)' }}>
-                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{s.weight ? `${s.weight} kg` : "—"}</span>
-                  <Badge variant="outline" className="text-[11px] px-2 py-0" style={statusColors[s.status] || {color:'var(--badge-neutral-text)',borderColor:'var(--badge-neutral-bg)',backgroundColor:'var(--badge-neutral-bg)'}}>
-                    {s.status?.replace(/_/g, " ") || "available"}
+          {routeStops.length > 0 && (
+            <div>
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>My Route</h2>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{routeStops.length} stops · {routeDist.toFixed(1)} mi</p>
+              </div>
+              <div className="mb-6">
+                <MockMap
+                  origin={routeStops[0]}
+                  destination={routeStops[routeStops.length - 1]}
+                  originLabel={routeStops[0]?.label}
+                  destLabel={routeStops[routeStops.length - 1]?.label}
+                />
+              </div>
+              <div className="mb-6 flex flex-wrap gap-1">
+                <Navigation size={14} className="mr-1" style={{ color: 'var(--text-muted)' }} />
+                {routeStops.map((s, i) => (
+                  <Badge key={i} variant="outline" className="text-[10px]" style={i === 0 ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : i === routeStops.length - 1 ? {backgroundColor:'var(--badge-error-bg)',color:'var(--badge-error-text)'} : {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'}}>
+                    {i + 1}. {s.label}
                   </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <h2 className="text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>My Jobs</h2>
+          {shipments.length === 0 && <p style={{ color: 'var(--text-muted)' }}>No shipments assigned yet.</p>}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+            {shipments.map((s) => (
+              <Link key={s.id} href={`/driver/shipments/${s.id}`} className="group">
+                <Card className="h-full border transition-all"
+                  style={{
+                    borderColor: 'var(--card-border)',
+                    backgroundColor: 'var(--card-bg)',
+                  }}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>{s.tracking_number || "—"}</span>
+                      <span className={`h-2 w-2 rounded-full ${dotColors[s.status] || "bg-gray-400"} shadow-sm`} />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <User size={14} className="mt-0.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
+                        <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{s.receiver_name || "—"}</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <MapPin size={14} className="mt-0.5 shrink-0" style={{ color: 'var(--text-muted)' }} />
+                        <span className="text-sm truncate" style={{ color: 'var(--text-secondary)' }}>
+                          {s.origin_city || "—"} <ArrowRight size={12} className="inline" style={{ color: 'var(--text-muted)' }} /> {s.destination_city || s.receiver_address || "—"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-4 flex items-center justify-between pt-3" style={{ borderTop: '1px solid var(--card-border)' }}>
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{s.weight ? `${s.weight} kg` : "—"}</span>
+                      <Badge variant="outline" className="text-[11px] px-2 py-0" style={statusColors[s.status] || {color:'var(--badge-neutral-text)',borderColor:'var(--badge-neutral-bg)',backgroundColor:'var(--badge-neutral-bg)'}}>
+                        {s.status?.replace(/_/g, " ") || "available"}
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }

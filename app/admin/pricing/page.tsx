@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
+import { TableSkeleton } from "@/components/ui/skeleton-table"
 
 const blank = { category_id: "", weight: 0, same_day: 0, next_day: 0, sub_city: 0, outside_city: 0 }
 
@@ -21,9 +22,15 @@ export default function PricingPage() {
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState(blank)
 
+  const [pageLoading, setPageLoading] = useState(true)
   const load = () => {
-    db<any[]>("delivery_charges", "select", { columns: "*, delivery_categories(name)", order: { column: "created_at", ascending: false } }).then((d) => { if (d) setItems(d) })
-    db<any[]>("delivery_categories", "select", { order: { column: "name", ascending: true } }).then((d) => { if (d) setCategories(d) })
+    Promise.all([
+      db<any[]>("delivery_charges", "select", { columns: "*, delivery_categories(name)", order: { column: "created_at", ascending: false } }),
+      db<any[]>("delivery_categories", "select", { order: { column: "name", ascending: true } }),
+    ]).then(([d, c]) => {
+      if (d) setItems(d)
+      if (c) setCategories(c)
+    }).finally(() => setPageLoading(false))
   }
   useEffect(() => { load() }, [])
 
@@ -74,6 +81,11 @@ export default function PricingPage() {
         <h1 style={{color:'var(--text-primary)'}} className="text-2xl font-bold">Pricing</h1>
         <Button onClick={openAdd} className="bg-[#FF3E41] hover:bg-[#d92e31]"><Plus size={16} className="mr-1" /> Add</Button>
       </div>
+      {pageLoading ? (
+        <div className="rounded-xl border p-5" style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
+          <TableSkeleton rows={5} />
+        </div>
+      ) : (
       <Card style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}}>
         <CardHeader>
           <div className="flex items-center gap-2">
@@ -96,6 +108,7 @@ export default function PricingPage() {
           />
         </CardContent>
       </Card>
+      )}
 
       <Dialog open={dialog} onOpenChange={setDialog}>
         <DialogContent style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)',color:'var(--text-primary)'}}>
@@ -109,7 +122,7 @@ export default function PricingPage() {
               </select>
             </div>
             <div><label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Weight (kg)</label><Input type="number" step="0.1" value={form.weight} onChange={set("weight")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} /></div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div><label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Same Day ($)</label><Input type="number" step="0.01" value={form.same_day} onChange={set("same_day")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} /></div>
               <div><label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Next Day ($)</label><Input type="number" step="0.01" value={form.next_day} onChange={set("next_day")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} /></div>
               <div><label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Sub City ($)</label><Input type="number" step="0.01" value={form.sub_city} onChange={set("sub_city")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} /></div>

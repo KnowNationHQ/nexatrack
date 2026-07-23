@@ -25,7 +25,7 @@ export default function PrivacyPage() {
               <p className="text-muted mb-4"><em>Last updated: July 22, 2026</em></p>
 
               <h2 className="mb-4">1. Introduction</h2>
-              <p className="mb-5">Nexatrack Express Courier Services ("Nexatrack," "we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our courier and delivery services. Please read this policy carefully. If you do not agree with the terms, do not access the site or use our services.</p>
+              <p className="mb-5">Nexatrack Courier Services ("Nexatrack," "we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our courier and delivery services. Please read this policy carefully. If you do not agree with the terms, do not access the site or use our services.</p>
 
               <h2 className="mb-4">2. Information We Collect</h2>
               <h5 className="mb-3">Personal Data</h5>
@@ -90,8 +90,9 @@ export default function PrivacyPage() {
               <p className="mb-2">If you have questions or concerns about this Privacy Policy or wish to exercise your data protection rights, please contact us:</p>
               <div className="bg-light p-4 rounded mb-4">
                 <p className="mb-1"><strong>Email:</strong> privacy@nexatrack.com</p>
-                <p className="mb-1"><strong>Phone:</strong> +1 305 555 0199</p>
-                <p className="mb-1"><strong>Address:</strong> Miami, FL 33101, USA</p>
+                <p className="mb-1"><strong>Phone:</strong> +1 (506) 501-4402</p>
+                <p className="mb-1"><strong>WhatsApp:</strong> +1 (506) 501-4402</p>
+                <p className="mb-1"><strong>Address:</strong> Citrus Park, FL 11950 Sheldon Road. Tampa 33626</p>
                 <p className="mb-0"><strong>DPO:</strong> Data Protection Officer — dpo@nexatrack.com</p>
               </div>
             </div>
