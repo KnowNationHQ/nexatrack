@@ -224,36 +224,66 @@ export default function AdminShipmentDetail() {
           <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
             <CardHeader><CardTitle className="flex items-center gap-2" style={{ color: 'var(--text-primary)' }}><FileText size={16} /> Receipt</CardTitle></CardHeader>
             <CardContent>
-              <div className="rounded-lg border border-dashed p-4 font-mono text-sm" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
-                <div className="mb-3 text-center">
-                  <p className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>NEXATRACK</p>
-                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Florida&apos;s Fastest Courier</p>
-                  <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>
-                </div>
-                <div className="mb-3 border-t border-dashed" style={{ borderColor: 'var(--card-border)' }} />
-                <div className="space-y-1">
-                  <div className="flex justify-between" style={{ color: 'var(--text-muted)' }}><span>Date</span><span style={{ color: 'var(--text-primary)' }}>{new Date(shipment.created_at).toLocaleDateString()}</span></div>
-                  <div className="flex justify-between" style={{ color: 'var(--text-muted)' }}><span>From</span><span className="text-right max-w-[200px] truncate" style={{ color: 'var(--text-primary)' }}>{shipment.origin_city || "—"}</span></div>
-                  <div className="flex justify-between" style={{ color: 'var(--text-muted)' }}><span>To</span><span className="text-right max-w-[200px] truncate" style={{ color: 'var(--text-primary)' }}>{shipment.destination_city || "—"}</span></div>
-                  <div className="flex justify-between" style={{ color: 'var(--text-muted)' }}><span>Weight</span><span style={{ color: 'var(--text-primary)' }}>{shipment.weight} kg</span></div>
-                  <div className="flex justify-between" style={{ color: 'var(--text-muted)' }}><span>Receiver</span><span className="text-right max-w-[200px] truncate" style={{ color: 'var(--text-primary)' }}>{shipment.receiver_name || "—"}</span></div>
-                </div>
-                <div className="my-3 border-t border-dashed" style={{ borderColor: 'var(--card-border)' }} />
-                <div className="space-y-1">
-                  {chargeItems.filter(c => Number(c.value)).map(c => (
-                    <div key={c.label} className="flex justify-between" style={{ color: 'var(--text-muted)' }}>
-                      <span>{c.label}</span>
-                      <span style={{ color: 'var(--text-primary)' }}>${Number(c.value).toFixed(2)}</span>
+              <div className="relative overflow-hidden rounded-xl border text-sm" style={{ borderColor: 'var(--card-border)', background: 'linear-gradient(135deg, var(--card-bg) 0%, color-mix(in srgb, var(--card-bg) 95%, #FF3E41) 100%)' }}>
+                <div className="relative z-10 p-5">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div>
+                      <p className="text-lg font-bold tracking-wider" style={{ color: 'var(--text-primary)' }}>NEXATRACK</p>
+                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Florida&apos;s Fastest Courier</p>
                     </div>
-                  ))}
-                </div>
-                <div className="mt-3 border-t border-dashed pt-2" style={{ borderColor: 'var(--card-border)' }}>
-                  <div className="flex justify-between text-base font-bold">
-                    <span style={{ color: 'var(--text-primary)' }}>TOTAL</span>
-                    <span style={{ color: '#FF3E41' }}>${Number(shipment.total_charge || 0).toFixed(2)}</span>
+                    <div className="hidden sm:block text-right">
+                      <p className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>
+                    </div>
+                  </div>
+
+                  <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--card-bg) 60%, transparent)' }}>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: 'var(--text-muted)' }}>
+                      <span><span className="font-medium" style={{ color: 'var(--text-primary)' }}>{new Date(shipment.created_at).toLocaleDateString()}</span></span>
+                      <span>{shipment.origin_city || "—"} <span className="mx-1">→</span> {shipment.destination_city || "—"}</span>
+                      <span><span className="font-medium" style={{ color: 'var(--text-primary)' }}>{shipment.weight}</span> kg</span>
+                    </div>
+                    <p className="font-mono text-xs sm:hidden" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>
+                  </div>
+
+                  <div className="mb-4 space-y-1.5">
+                    <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+                      <User size={12} /> {shipment.receiver_name || "—"}
+                    </div>
+                    {chargeItems.filter(c => Number(c.value)).length > 0 && (
+                      <>
+                        <div className="my-3 border-t" style={{ borderColor: 'var(--card-border)', opacity: 0.4 }} />
+                        {chargeItems.filter(c => Number(c.value)).map(c => (
+                          <div key={c.label} className="flex justify-between text-xs">
+                            <span style={{ color: 'var(--text-muted)' }}>{c.label}</span>
+                            <span style={{ color: 'var(--text-primary)' }}>${Number(c.value).toFixed(2)}</span>
+                          </div>
+                        ))}
+                      </>
+                    )}
+                    <div className="border-t pt-2" style={{ borderColor: 'var(--card-border)', opacity: 0.4 }}>
+                      <div className="flex justify-between text-sm font-bold">
+                        <span style={{ color: 'var(--text-primary)' }}>TOTAL</span>
+                        <span style={{ color: '#FF3E41' }}>${Number(shipment.total_charge || 0).toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-t pt-3" style={{ borderColor: 'var(--card-border)', opacity: 0.4 }}>
+                    <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Thank you for choosing Nexatrack</p>
+                    <div className="flex gap-2 w-full sm:w-auto">
+                      <Button size="sm" variant="outline" onClick={share} className="flex-1 sm:flex-none text-xs h-7"
+                        style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
+                        <Share2 size={12} className="mr-1" /> Share
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={copyLink} className="flex-1 sm:flex-none text-xs h-7"
+                        style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
+                        {copied ? <Check size={12} className="mr-1 text-green-400" /> : <Copy size={12} className="mr-1" />}
+                        {copied ? "Copied" : "Copy"}
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                <div className="mt-3 text-center text-xs" style={{ color: 'var(--text-muted)' }}>Thank you for choosing Nexatrack</div>
+                <div className="absolute right-0 top-0 h-full w-1" style={{ background: 'linear-gradient(to bottom, #FF3E41, #FF8A8A)' }} />
               </div>
             </CardContent>
           </Card>
