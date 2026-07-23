@@ -7,8 +7,8 @@ export default function SmartsuppPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Smartsupp Login</h1>
-        <p className="mt-1 text-sm" style={{ color: 'var(--text-muted)' }}>Manage your live chat from the Smartsupp dashboard</p>
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>LiveChat — Smartsupp</h1>
+        <p className="mt-1 text-sm" style={{ color: 'var(--text-muted)' }}>Manage your visitor live chat from the Smartsupp dashboard</p>
       </div>
 
       <Card className="max-w-2xl" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>

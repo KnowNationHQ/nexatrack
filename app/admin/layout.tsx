@@ -39,7 +39,7 @@ const menuGroups = [
     { href: "/admin/tickets", label: "Tickets", icon: Ticket },
     { href: "/admin/chat", label: "Live Chat", icon: MessageSquare },
     { href: "/admin/faq", label: "FAQ", icon: HelpCircle },
-    { href: "/admin/smartsupp", label: "Smartsupp Login", icon: MessageSquare },
+    { href: "/admin/smartsupp", label: "LiveChat", icon: MessageSquare },
   ]},
   { label: "System", items: [
     { href: "/admin/subscribers", label: "Subscribers", icon: Mail },
