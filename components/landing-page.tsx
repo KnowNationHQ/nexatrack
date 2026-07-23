@@ -19,7 +19,7 @@ export default function LandingPage() {
   return (
     <PageShell activePage="home">
       <div className="container-fluid p-0 pb-5">
-        <div className="owl-carousel header-carousel position-relative mb-5">
+        <div className="owl-carousel header-carousel position-relative mb-5" translate="no">
           <div className="owl-carousel-item position-relative">
             <img className="img-fluid" src="/img/carousel-1.jpg" alt="" />
             <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style={{ background: "rgba(6, 3, 21, .5)" }}>
