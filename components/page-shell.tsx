@@ -244,7 +244,7 @@ export default function PageShell({ children, activePage }: { children: ReactNod
               <p className="mb-2"><i className="fa fa-map-marker-alt me-3"></i>Citrus Park, FL 11950 Sheldon Road. Tampa 33626</p>
               <p className="mb-2"><i className="fa fa-phone-alt me-3"></i>+1 (506) 501-4402</p>
               <p className="mb-2"><i className="fa fa-whatsapp me-3"></i>+1 (506) 501-4402</p>
-              <p className="mb-2"><i className="fa fa-envelope me-3"></i>info@nexatrack.com</p>
+              <p className="mb-2"><i className="fa fa-envelope me-3"></i>Info@nexatrackcourierservices.com</p>
               <div className="d-flex pt-2">
                 <a className="btn btn-outline-light btn-social" href="#"><i className="fab fa-twitter"></i></a>
                 <a className="btn btn-outline-light btn-social" href="#"><i className="fab fa-facebook-f"></i></a>

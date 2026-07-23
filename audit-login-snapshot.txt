@@ -1,0 +1,13 @@
+uid=28_0 RootWebArea "Nexatrack — Courier Services" url="http://localhost:3000/auth/login"
+  uid=28_1 StaticText "Nexatrack "
+  uid=28_2 StaticText "Admin"
+  uid=28_3 form
+    uid=28_4 textbox "Email" required
+    uid=28_5 textbox "Password" required
+    uid=28_6 button "Sign In"
+  uid=28_7 StaticText "Don't have an account?"
+  uid=28_8 link "Register" url="http://localhost:3000/auth/register"
+    uid=28_9 StaticText "Register"
+  uid=28_10 alert atomic live="assertive" relevant="additions text"
+  uid=28_11 StaticText "We use cookies to improve your experience and for analytics. By using Nexatrack, you agree to our use of cookies."
+  uid=28_12 button "Accept"

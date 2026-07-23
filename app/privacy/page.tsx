@@ -60,7 +60,7 @@ export default function PrivacyPage() {
                   </div>
                 ))}
               </div>
-              <p className="mb-5">To exercise any of these rights, please contact us at <strong>privacy@nexatrack.com</strong>. We will respond to your request within 30 days.</p>
+              <p className="mb-5">To exercise any of these rights, please contact us at <strong>Info@nexatrackcourierservices.com</strong>. We will respond to your request within 30 days.</p>
 
               <h2 className="mb-4">5. Lawful Basis for Processing (GDPR)</h2>
               <p className="mb-5">We process your personal data under the following lawful bases: <strong>Contractual necessity</strong> — to fulfill shipment and delivery requests; <strong>Consent</strong> — for marketing communications and non-essential cookies; <strong>Legitimate interests</strong> — to improve our services, prevent fraud, and ensure network security; and <strong>Legal obligation</strong> — to comply with applicable laws and regulatory requirements.</p>
@@ -75,7 +75,7 @@ export default function PrivacyPage() {
               <p className="mb-5">We may share your data with trusted third parties who assist us in operating our website and services, including payment processors, shipping carriers, and analytics providers. These third parties are contractually obligated to keep your data confidential and process it only for the specified purposes. We use <strong>Smartsupp</strong> for live chat support — your chat interactions are subject to Smartsupp's privacy policy.</p>
 
               <h2 className="mb-4">9. CCPA — California Privacy Rights</h2>
-              <p className="mb-5">California residents have the right to: request disclosure of categories and specific pieces of personal data collected; request deletion of personal data; opt out of the sale of personal data (we do not sell your data). To exercise your CCPA rights, email <strong>privacy@nexatrack.com</strong>.</p>
+              <p className="mb-5">California residents have the right to: request disclosure of categories and specific pieces of personal data collected; request deletion of personal data; opt out of the sale of personal data (we do not sell your data). To exercise your CCPA rights, email <strong>Info@nexatrackcourierservices.com</strong>.</p>
 
               <h2 className="mb-4">10. International Data Transfers</h2>
               <p className="mb-5">Your information may be transferred to and processed in countries outside your country of residence, including the United States. We ensure appropriate safeguards are in place through Standard Contractual Clauses or equivalent mechanisms to protect your data in accordance with GDPR requirements.</p>
@@ -89,11 +89,11 @@ export default function PrivacyPage() {
               <h2 className="mb-4">13. Contact Us</h2>
               <p className="mb-2">If you have questions or concerns about this Privacy Policy or wish to exercise your data protection rights, please contact us:</p>
               <div className="bg-light p-4 rounded mb-4">
-                <p className="mb-1"><strong>Email:</strong> privacy@nexatrack.com</p>
+                <p className="mb-1"><strong>Email:</strong> Info@nexatrackcourierservices.com</p>
                 <p className="mb-1"><strong>Phone:</strong> +1 (506) 501-4402</p>
                 <p className="mb-1"><strong>WhatsApp:</strong> +1 (506) 501-4402</p>
                 <p className="mb-1"><strong>Address:</strong> Citrus Park, FL 11950 Sheldon Road. Tampa 33626</p>
-                <p className="mb-0"><strong>DPO:</strong> Data Protection Officer — dpo@nexatrack.com</p>
+                <p className="mb-0"><strong>DPO:</strong> Data Protection Officer — Info@nexatrackcourierservices.com</p>
               </div>
             </div>
           </div>
