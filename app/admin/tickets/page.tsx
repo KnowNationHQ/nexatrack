@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { db } from "@/lib/db-client"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -10,6 +11,7 @@ import { Search } from "lucide-react"
 import { TableSkeleton } from "@/components/ui/skeleton-table"
 
 export default function TicketsPage() {
+  const router = useRouter()
   const [items, setItems] = useState<any[]>([])
   const [search, setSearch] = useState("")
   const [loading, setLoading] = useState(true)
@@ -49,6 +51,7 @@ export default function TicketsPage() {
               { label: "Date", key: "created_at", render: (i) => <span style={{color:'var(--text-muted)'}}>{i.created_at ? new Date(i.created_at).toLocaleDateString() : "—"}</span> },
             ]}
             data={filtered}
+            onRowClick={(item) => router.push(`/admin/tickets/${item.id}`)}
           />
         </CardContent>
       </Card>

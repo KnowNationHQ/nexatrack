@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase-browser"
 import { db } from "@/lib/db-client"
 import { Button } from "@/components/ui/button"
@@ -11,6 +12,7 @@ import { useToast } from "@/components/hooks/use-toast"
 import { TableSkeleton } from "@/components/ui/skeleton-table"
 
 export default function MerchantTickets() {
+  const router = useRouter()
   const [tickets, setTickets] = useState<any[]>([])
   const [pageLoading, setPageLoading] = useState(true)
   const [subject, setSubject] = useState("")
@@ -72,7 +74,7 @@ export default function MerchantTickets() {
   <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
         <CardContent className="pt-6">
           {tickets.map((t) => (
-            <div key={t.id} className="flex items-center justify-between border-b py-3" style={{ borderBottomColor: 'var(--card-border)', color: 'var(--text-primary)' }}>
+            <div key={t.id} className="flex cursor-pointer items-center justify-between border-b py-3 hover:opacity-80" onClick={() => router.push(`/merchant/tickets/${t.id}`)} style={{ borderBottomColor: 'var(--card-border)', color: 'var(--text-primary)' }}>
               <div><p className="font-medium">{t.subject}</p><p className="text-xs" style={{ color: 'var(--text-muted)' }}>{new Date(t.created_at).toLocaleDateString()}</p></div>
               <Badge variant="outline" style={t.status === "open" ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : t.status === "in_progress" ? {backgroundColor:'var(--badge-info-bg)',color:'var(--badge-info-text)'} : {backgroundColor:'var(--badge-neutral-bg)',color:'var(--badge-neutral-text)'}}>{t.status}</Badge>
             </div>
