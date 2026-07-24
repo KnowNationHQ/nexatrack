@@ -75,31 +75,43 @@ export default function AdminShipmentDetail() {
   }
 
   const shareAsPdf = async () => {
-    if (!receiptRef.current) return
+    if (!receiptRef.current) { console.log("[pdf] receiptRef null"); return }
+    console.log("[pdf] receiptRef OK")
     setSending(true)
     try {
+      console.log("[pdf] html2canvas starting")
       const canvas = await html2canvas(receiptRef.current, {
         scale: 2,
         backgroundColor: null,
         logging: false,
       })
+      console.log("[pdf] html2canvas OK, canvas", canvas.width, "x", canvas.height)
 
       const imgData = canvas.toDataURL("image/png")
+      console.log("[pdf] imgData length", imgData.length)
       const pdf = new jsPDF({ format: "a5", unit: "px", orientation: "portrait" })
+      console.log("[pdf] jsPDF created")
       const pdfW = pdf.internal.pageSize.getWidth()
       const pdfH = (canvas.height * pdfW) / canvas.width
       pdf.addImage(imgData, "PNG", 0, 0, pdfW, pdfH)
+      console.log("[pdf] addImage OK")
 
       const blob = pdf.output("blob")
+      console.log("[pdf] blob size", blob.size)
       const url = URL.createObjectURL(blob)
+      console.log("[pdf] blob url", url)
       const a = document.createElement("a")
       a.href = url
       a.download = `nexatrack-${shipment.tracking_number}.pdf`
       document.body.appendChild(a)
+      console.log("[pdf] about to click")
       a.click()
+      console.log("[pdf] clicked")
       document.body.removeChild(a)
       setTimeout(() => URL.revokeObjectURL(url), 5000)
+      console.log("[pdf] done OK")
     } catch (e) {
+      console.log("[pdf] ERROR", e)
       toast({ title: "PDF Error", description: String(e), variant: "destructive" })
     }
     setSending(false)
