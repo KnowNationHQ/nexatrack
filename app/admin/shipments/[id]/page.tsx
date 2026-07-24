@@ -47,7 +47,7 @@ export default function AdminShipmentDetail() {
       if (data.category) setCategory(data.category)
       if (data.events) setEvents(data.events)
 
-      const url = `https://nexatrackcourierservices.com/track?number=${data.parcel.tracking_number}`
+      const url = `${location.origin}/track?number=${data.parcel.tracking_number}`
       try {
         const isDark = document.documentElement.getAttribute("data-theme") !== "light"
         const dataUrl = await QRCode.toDataURL(url, { width: 180, margin: 2, color: { dark: isDark ? "#ffffff" : "#0a0715", light: isDark ? "#0a0715" : "#ffffff" } })
@@ -308,20 +308,22 @@ export default function AdminShipmentDetail() {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #e5e7eb', paddingTop: '12px' }}>
+                  <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '12px' }}>
                     <p style={{ margin: 0, fontSize: '10px', color: '#9ca3af' }}>Thank you for choosing Nexatrack</p>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button onClick={shareAsPdf} disabled={sending}
-                        style={{ padding: '4px 12px', fontSize: '12px', border: '1px solid #e5e7eb', borderRadius: '6px', background: '#fff', color: '#6b7280', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                        {sending ? "PDF..." : "PDF"}
-                      </button>
-                      <button onClick={copyLink}
-                        style={{ padding: '4px 12px', fontSize: '12px', border: '1px solid #e5e7eb', borderRadius: '6px', background: '#fff', color: '#6b7280', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                        {copied ? "Copied" : "Copy"}
-                      </button>
-                    </div>
                   </div>
                 </div>
+              </div>
+              <div className="mt-3 flex justify-end gap-2">
+                <button onClick={shareAsPdf} disabled={sending}
+                  className="px-3 py-1.5 text-xs border rounded-md inline-flex items-center gap-1"
+                  style={{ borderColor: '#e5e7eb', color: '#6b7280', background: '#fff', cursor: 'pointer' }}>
+                  {sending ? "PDF..." : "PDF"}
+                </button>
+                <button onClick={copyLink}
+                  className="px-3 py-1.5 text-xs border rounded-md inline-flex items-center gap-1"
+                  style={{ borderColor: '#e5e7eb', color: '#6b7280', background: '#fff', cursor: 'pointer' }}>
+                  {copied ? "Copied" : "Copy"}
+                </button>
               </div>
             </CardContent>
           </Card>

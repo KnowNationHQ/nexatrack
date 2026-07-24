@@ -104,7 +104,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
         {cardStyle.map((card, i) => {
           const val = values[i]
-          const display = card.isCurrency ? `$${Number(val).toLocaleString()}` : val
+          const display = card.isCurrency ? `$${Number(val).toFixed(2)}` : val
           return (
             <Link key={card.label} href={card.href} className="block">
             <Card className="group relative overflow-hidden shadow-lg shadow-black/20 transition-all duration-300 hover:border-[#FF3E41]/20 hover:shadow-[#FF3E41]/5 cursor-pointer" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>

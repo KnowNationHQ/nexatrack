@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { MobileTable } from "@/components/mobile-table"
+import Link from "next/link"
 import { Search, Plus } from "lucide-react"
 import { TableSkeleton } from "@/components/ui/skeleton-table"
 
@@ -29,7 +30,7 @@ export default function PendingShipmentsPage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Pending Shipments</h1>
-        <Button className="bg-[#FF3E41] hover:bg-[#d92e31]"><Plus size={16} className="mr-1" /> New</Button>
+        <Link href="/admin/shipments/new"><Button className="bg-[#FF3E41] hover:bg-[#d92e31]"><Plus size={16} className="mr-1" /> New</Button></Link>
       </div>
       {loading ? (
         <div className="rounded-xl border p-5" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>

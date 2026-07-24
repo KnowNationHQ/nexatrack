@@ -106,7 +106,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           --text-secondary: #d1d5db;
           --text-muted: #9ca3af;
           --input-bg: #1a1725;
-          --badge-bg: rgba(26,23,37,0.5);
+           --badge-bg: rgba(26,23,37,0.5);
+           --badge-success-bg: rgba(34,197,94,0.15); --badge-success-text: #4ade80;
+           --badge-warning-bg: rgba(251,191,36,0.15); --badge-warning-text: #fbbf24;
+           --badge-error-bg: rgba(239,68,68,0.15); --badge-error-text: #f87171;
+           --badge-info-bg: rgba(59,130,246,0.15); --badge-info-text: #60a5fa;
+           --badge-neutral-bg: rgba(156,163,175,0.15); --badge-neutral-text: #d1d5db;
+           --badge-purple-bg: rgba(168,85,247,0.15); --badge-purple-text: #c084fc;
+           --badge-green-bg: rgba(34,197,94,0.15); --badge-green-text: #4ade80;
+           --accent: #FF3E41; --accent-bg: rgba(255,62,65,0.1);
         }
         [data-theme=light] {
           --sidebar-bg: #ffffff;
@@ -127,7 +135,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           --text-secondary: #374151;
           --text-muted: #6b7280;
           --input-bg: #f3f4f6;
-          --badge-bg: rgba(243,244,246,0.5);
+                     --badge-bg: rgba(243,244,246,0.5);
+           --badge-success-bg: #d1fae5; --badge-success-text: #059669;
+           --badge-warning-bg: #fef3c7; --badge-warning-text: #d97706;
+           --badge-error-bg: #fee2e2; --badge-error-text: #dc2626;
+           --badge-info-bg: #dbeafe; --badge-info-text: #2563eb;
+           --badge-neutral-bg: #f3f4f6; --badge-neutral-text: #6b7280;
+           --badge-purple-bg: #f3e8ff; --badge-purple-text: #9333ea;
+           --badge-green-bg: #d1fae5; --badge-green-text: #059669;
+           --accent: #FF3E41; --accent-bg: rgba(255,62,65,0.08);
         }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }

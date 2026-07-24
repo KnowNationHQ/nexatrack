@@ -81,7 +81,7 @@ export default function DispatchPage() {
     setChecked(new Set())
     setBatchDriver("")
     setBatching(false)
-    setShipments(await db("parcels", "select", { order: { column: "created_at", ascending: false } }))
+    const reship = await db("parcels", "select", { order: { column: "created_at", ascending: false } }); if (reship) setShipments(reship)
   }
 
   const toggleCheck = (id: string) => {

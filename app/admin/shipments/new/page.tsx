@@ -38,7 +38,7 @@ export default function AdminNewShipment() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    const tracking = "NXT-" + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase()
+    const tracking = "NXT-" + Date.now().toString(36).toUpperCase() + Math.random().toString(36).slice(2, 6).toUpperCase().padEnd(4, "0")
     try {
       const payload: Record<string, any> = {
         tracking_number: tracking,
