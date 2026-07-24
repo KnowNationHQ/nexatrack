@@ -17,7 +17,7 @@ const HIDE_GT_CSS = `
 body{top:0!important}
 .lang-wrap{position:relative;display:inline-block;z-index:1021}
 .lang-dd{position:absolute;right:0;min-width:150px;z-index:1022;margin-top:6px}
-@media(max-width:991.98px){.lang-wrap{display:block}.lang-dd{position:static!important;width:100%;margin-top:6px}.lang-dd button{font-size:.9rem!important;padding:10px 16px!important}}
+@media(max-width:991.98px){.lang-wrap{display:block}.lang-dd{display:flex!important;flex-wrap:wrap;gap:4px;position:static!important;width:100%;margin:0!important;border:none!important;background:transparent!important;box-shadow:none!important;padding:0!important}.lang-dd button{display:inline-flex!important;width:auto!important;font-size:.85rem!important;padding:6px 10px!important;border-radius:6px!important;color:#333!important;background:#f9fafb!important;border:1px solid #e5e7eb!important;margin:0!important;text-align:left!important}.lang-dd button.fw-bold{background:#fee2e2!important;border-color:#fecaca!important;color:#dc2626!important}}
 `
 
 export default function LanguageSwitcher() {
@@ -78,7 +78,7 @@ export default function LanguageSwitcher() {
         {LANGUAGES.find(l => l.code === current)?.flag}
       </button>
       {open && (
-        <div className="lang-dd bg-white shadow rounded border py-1">
+        <div className="lang-dd">
           {LANGUAGES.map(l => (
             <button
               key={l.code}
