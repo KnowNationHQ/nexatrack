@@ -5,11 +5,12 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase-browser"
 import NotificationBell from "@/components/notification-bell"
-import { Package, LogOut, Menu, X, MapPin, MessageSquare, Sun, Moon, Bell } from "lucide-react"
+import { Package, LogOut, Menu, X, MapPin, MessageSquare, Sun, Moon, Bell, Ticket } from "lucide-react"
 
 export default function DriverLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isDark, setIsDark] = useState(true)
+  const [smartsuppConnected, setSmartsuppConnected] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -20,6 +21,10 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
     setIsDark(dark)
     document.documentElement.setAttribute("data-theme", dark ? "dark" : "light")
     if (dark) document.documentElement.classList.add("dark"); else document.documentElement.classList.remove("dark")
+  }, [])
+
+  useEffect(() => {
+    fetch("/api/smartsupp-config").then(r => r.json()).then(d => setSmartsuppConnected(!!(d.key && d.enabled))).catch(() => {})
   }, [])
 
   const toggleTheme = () => {
@@ -41,6 +46,7 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
     { href: "/driver/shipments", label: "All Jobs", icon: MapPin },
     { href: "/driver/notifications", label: "Notifications", icon: Bell },
     { href: "/driver/chat", label: "Chat", icon: MessageSquare },
+    { href: "/driver/tickets", label: "Support", icon: Ticket },
   ]
 
   return (
@@ -118,7 +124,10 @@ export default function DriverLayout({ children }: { children: React.ReactNode }
                 onMouseEnter={(e) => { if (!active) { e.currentTarget.style.borderColor = 'rgba(255,62,65,0.3)'; e.currentTarget.style.backgroundColor = 'var(--sidebar-hover-bg)'; e.currentTarget.style.color = 'var(--text-primary)'; }}}
                 onMouseLeave={(e) => { if (!active) { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--sidebar-text)'; }}}
               >
-                <Icon size={18} /><span>{item.label}</span>
+                <Icon size={18} /><span className="flex-1">{item.label}</span>
+                {item.href === "/driver/chat" && (
+                  <span className={`flex h-2 w-2 rounded-full ${smartsuppConnected ? 'bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.6)]'}`} />
+                )}
               </Link>
             )
           })}
