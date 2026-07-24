@@ -15,6 +15,9 @@ const HIDE_GT_CSS = `
 .goog-te-banner-frame,.goog-te-balloon-frame,.goog-te-gadget-simple,.goog-te-menu-frame{display:none!important}
 .goog-te-gadget{font-size:0!important;height:0!important}
 body{top:0!important}
+.lang-wrap{position:relative;display:inline-block;z-index:1021}
+.lang-dd{position:absolute;right:0;min-width:150px;z-index:1022;margin-top:6px}
+@media(max-width:991.98px){.lang-wrap{display:block}.lang-dd{position:static!important;width:100%;margin-top:6px}.lang-dd button{font-size:.9rem!important;padding:10px 16px!important}}
 `
 
 export default function LanguageSwitcher() {
@@ -65,7 +68,7 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <div ref={ref} className="position-relative d-inline-block" style={{ zIndex: 1021 }}>
+    <div ref={ref} className="lang-wrap">
       <button
         onClick={() => setOpen(!open)}
         className="btn btn-sm border-0 px-2"
@@ -75,7 +78,7 @@ export default function LanguageSwitcher() {
         {LANGUAGES.find(l => l.code === current)?.flag}
       </button>
       {open && (
-        <div className="position-absolute end-0 mt-1 bg-white shadow rounded border py-1" style={{ minWidth: "150px", zIndex: 1022 }}>
+        <div className="lang-dd bg-white shadow rounded border py-1">
           {LANGUAGES.map(l => (
             <button
               key={l.code}
