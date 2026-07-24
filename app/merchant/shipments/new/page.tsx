@@ -12,8 +12,8 @@ import { useToast } from "@/components/hooks/use-toast"
 export default function NewShipment() {
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
-    sender_name: "", sender_phone: "", sender_address: "",
-    receiver_name: "", receiver_phone: "", receiver_address: "",
+    sender_name: "", sender_phone: "", sender_email: "", sender_address: "",
+    receiver_name: "", receiver_phone: "", receiver_email: "", receiver_address: "",
     origin_city: "", destination_city: "",
     weight: "", category_id: "", delivery_type_id: "",
   })
@@ -35,9 +35,11 @@ export default function NewShipment() {
           merchant_id: user.id,
           tracking_number: tracking,
           sender_name: form.sender_name,
+          sender_email: form.sender_email || null,
           sender_phone: form.sender_phone,
           sender_address: form.sender_address,
           receiver_name: form.receiver_name,
+          receiver_email: form.receiver_email || null,
           receiver_phone: form.receiver_phone,
           receiver_address: form.receiver_address,
           origin_city: form.origin_city,
@@ -67,11 +69,13 @@ export default function NewShipment() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Sender Name</label><Input value={form.sender_name} onChange={set("sender_name")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Sender Email</label><Input type="email" value={form.sender_email} onChange={set("sender_email")} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
               <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Sender Phone</label><Input value={form.sender_phone} onChange={set("sender_phone")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             </div>
             <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Sender Address</label><Input value={form.sender_address} onChange={set("sender_address")} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Receiver Name</label><Input value={form.receiver_name} onChange={set("receiver_name")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
+              <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Receiver Email</label><Input type="email" value={form.receiver_email} onChange={set("receiver_email")} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
               <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Receiver Phone</label><Input value={form.receiver_phone} onChange={set("receiver_phone")} required style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>
             </div>
             <div><label className="mb-1 block text-sm" style={{ color: 'var(--text-muted)' }}>Receiver Address</label><Input value={form.receiver_address} onChange={set("receiver_address")} style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--input-bg)', color: 'var(--text-primary)' }} /></div>

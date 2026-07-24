@@ -15,8 +15,8 @@ export default function AdminNewShipment() {
   const [categories, setCategories] = useState<any[]>([])
   const [deliveryTypes, setDeliveryTypes] = useState<any[]>([])
   const [form, setForm] = useState({
-    merchant_id: "", sender_name: "", sender_phone: "", sender_address: "",
-    receiver_name: "", receiver_phone: "", receiver_address: "",
+    merchant_id: "", sender_name: "", sender_phone: "", sender_email: "", sender_address: "",
+    receiver_name: "", receiver_phone: "", receiver_email: "", receiver_address: "",
     origin_city: "", destination_city: "",
     weight: "", category_id: "", delivery_type_id: "", priority: "normal",
     delivery_charge: "", vat_amount: "", cod_charge: "", packaging_charge: "",
@@ -43,9 +43,11 @@ export default function AdminNewShipment() {
       const payload: Record<string, any> = {
         tracking_number: tracking,
         sender_name: form.sender_name,
+        sender_email: form.sender_email || null,
         sender_phone: form.sender_phone || null,
         sender_address: form.sender_address || null,
         receiver_name: form.receiver_name,
+        receiver_email: form.receiver_email || null,
         receiver_phone: form.receiver_phone || null,
         receiver_address: form.receiver_address || null,
         origin_city: form.origin_city || null,
@@ -110,6 +112,7 @@ export default function AdminNewShipment() {
               <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Sender</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div><label className="mb-1 block text-sm" style={labelStyle}>Name *</label><Input value={form.sender_name} onChange={set("sender_name")} required style={inputStyle} /></div>
+                <div><label className="mb-1 block text-sm" style={labelStyle}>Email</label><Input type="email" value={form.sender_email} onChange={set("sender_email")} style={inputStyle} /></div>
                 <div><label className="mb-1 block text-sm" style={labelStyle}>Phone</label><Input value={form.sender_phone} onChange={set("sender_phone")} style={inputStyle} /></div>
               </div>
               <div className="mt-4"><label className="mb-1 block text-sm" style={labelStyle}>Address</label><Input value={form.sender_address} onChange={set("sender_address")} style={inputStyle} /></div>
@@ -119,6 +122,7 @@ export default function AdminNewShipment() {
               <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Receiver</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div><label className="mb-1 block text-sm" style={labelStyle}>Name *</label><Input value={form.receiver_name} onChange={set("receiver_name")} required style={inputStyle} /></div>
+                <div><label className="mb-1 block text-sm" style={labelStyle}>Email</label><Input type="email" value={form.receiver_email} onChange={set("receiver_email")} style={inputStyle} /></div>
                 <div><label className="mb-1 block text-sm" style={labelStyle}>Phone</label><Input value={form.receiver_phone} onChange={set("receiver_phone")} style={inputStyle} /></div>
               </div>
               <div className="mt-4"><label className="mb-1 block text-sm" style={labelStyle}>Address</label><Input value={form.receiver_address} onChange={set("receiver_address")} style={inputStyle} /></div>
