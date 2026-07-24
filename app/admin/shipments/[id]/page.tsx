@@ -263,67 +263,65 @@ export default function AdminShipmentDetail() {
           <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
             <CardHeader><CardTitle className="flex items-center gap-2" style={{ color: 'var(--text-primary)' }}><FileText size={16} /> Receipt</CardTitle></CardHeader>
             <CardContent>
-              <div ref={receiptRef} className="relative overflow-hidden rounded-xl border text-sm" style={{ borderColor: 'var(--card-border)', background: '#fff' }}>
-                <div className="relative z-10 p-5">
-                  <div className="mb-4 flex items-center justify-between">
+              <div ref={receiptRef} className="relative overflow-hidden rounded-xl border" style={{ borderColor: '#e5e7eb', background: '#ffffff', fontSize: '13px', lineHeight: '1.5', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+                <div className="absolute right-0 top-0 h-full w-1.5" style={{ background: 'linear-gradient(to bottom, #dc2626, #fca5a5)' }} />
+                <div style={{ padding: '24px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
                     <div>
-                      <p className="text-lg font-bold tracking-wider" style={{ color: 'var(--text-primary)' }}>NEXATRACK</p>
-                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Florida&apos;s Fastest Courier</p>
+                      <p style={{ margin: 0, fontSize: '20px', fontWeight: 800, letterSpacing: '0.05em', color: '#111827' }}>NEXATRACK</p>
+                      <p style={{ margin: '2px 0 0 0', fontSize: '11px', color: '#6b7280' }}>Florida&apos;s Fastest Courier</p>
                     </div>
-                    <div className="hidden sm:block text-right">
-                      <p className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>
+                    <div style={{ textAlign: 'right' }}>
+                      <p style={{ margin: 0, fontSize: '11px', fontFamily: 'monospace', color: '#6b7280' }}>{shipment.tracking_number}</p>
                     </div>
                   </div>
 
-                  <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg p-3" style={{ backgroundColor: 'rgba(128,128,128,0.08)' }}>
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: 'var(--text-muted)' }}>
-                      <span><span className="font-medium" style={{ color: 'var(--text-primary)' }}>{new Date(shipment.created_at).toLocaleDateString()}</span></span>
-                      <span>{shipment.origin_city || "—"} <span className="mx-1">→</span> {shipment.destination_city || "—"}</span>
-                      <span><span className="font-medium" style={{ color: 'var(--text-primary)' }}>{shipment.weight}</span> kg</span>
+                  <div style={{ background: '#f9fafb', borderRadius: '8px', padding: '12px 16px', marginBottom: '20px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px 24px', fontSize: '12px', color: '#6b7280' }}>
+                      <span><span style={{ fontWeight: 600, color: '#111827' }}>{new Date(shipment.created_at).toLocaleDateString()}</span></span>
+                      <span>{shipment.origin_city || "—"} <span style={{ margin: '0 4px' }}>→</span> {shipment.destination_city || "—"}</span>
+                      <span><span style={{ fontWeight: 600, color: '#111827' }}>{shipment.weight}</span> kg</span>
                     </div>
-                    <p className="font-mono text-xs sm:hidden" style={{ color: 'var(--text-muted)' }}>{shipment.tracking_number}</p>
                   </div>
 
-                  <div className="mb-4 space-y-1.5">
-                    <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-                      <User size={12} /> {shipment.receiver_name || "—"}
+                  <div style={{ marginBottom: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#6b7280', marginBottom: '4px' }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                      <span style={{ color: '#111827', fontWeight: 500 }}>{shipment.sender_name || "—"}</span>
                     </div>
                     {chargeItems.filter(c => Number(c.value)).length > 0 && (
                       <>
-                        <div className="my-3 border-t" style={{ borderColor: 'var(--card-border)', opacity: 0.4 }} />
+                        <div style={{ margin: '12px 0', borderTop: '1px solid #e5e7eb' }} />
                         {chargeItems.filter(c => Number(c.value)).map(c => (
-                          <div key={c.label} className="flex justify-between text-xs">
-                            <span style={{ color: 'var(--text-muted)' }}>{c.label}</span>
-                            <span style={{ color: 'var(--text-primary)' }}>${Number(c.value).toFixed(2)}</span>
+                          <div key={c.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', padding: '3px 0' }}>
+                            <span style={{ color: '#6b7280' }}>{c.label}</span>
+                            <span style={{ color: '#111827', fontWeight: 500 }}>${Number(c.value).toFixed(2)}</span>
                           </div>
                         ))}
                       </>
                     )}
-                    <div className="border-t pt-2" style={{ borderColor: 'var(--card-border)', opacity: 0.4 }}>
-                      <div className="flex justify-between text-sm font-bold">
-                        <span style={{ color: 'var(--text-primary)' }}>TOTAL</span>
-                        <span style={{ color: '#FF3E41' }}>${Number(shipment.total_charge || 0).toFixed(2)}</span>
+                    <div style={{ borderTop: '2px solid #111827', marginTop: '8px', paddingTop: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '15px', fontWeight: 700 }}>
+                        <span style={{ color: '#111827' }}>TOTAL</span>
+                        <span style={{ color: '#dc2626' }}>${Number(shipment.total_charge || 0).toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-t pt-3" style={{ borderColor: 'var(--card-border)', opacity: 0.4 }}>
-                    <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Thank you for choosing Nexatrack</p>
-                    <div className="flex gap-2 w-full sm:w-auto">
-                      <Button size="sm" variant="outline" onClick={shareAsPdf} disabled={sending} className="flex-1 sm:flex-none text-xs h-7"
-                        style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
-                        {sending ? <Loader2 size={12} className="mr-1 animate-spin" /> : <Share2 size={12} className="mr-1" />}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #e5e7eb', paddingTop: '12px' }}>
+                    <p style={{ margin: 0, fontSize: '10px', color: '#9ca3af' }}>Thank you for choosing Nexatrack</p>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button onClick={shareAsPdf} disabled={sending}
+                        style={{ padding: '4px 12px', fontSize: '12px', border: '1px solid #e5e7eb', borderRadius: '6px', background: '#fff', color: '#6b7280', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                         {sending ? "PDF..." : "PDF"}
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={copyLink} className="flex-1 sm:flex-none text-xs h-7"
-                        style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)' }}>
-                        {copied ? <Check size={12} className="mr-1 text-green-400" /> : <Copy size={12} className="mr-1" />}
+                      </button>
+                      <button onClick={copyLink}
+                        style={{ padding: '4px 12px', fontSize: '12px', border: '1px solid #e5e7eb', borderRadius: '6px', background: '#fff', color: '#6b7280', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                         {copied ? "Copied" : "Copy"}
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 </div>
-                <div className="absolute right-0 top-0 h-full w-1" style={{ background: 'linear-gradient(to bottom, #FF3E41, #FF8A8A)' }} />
               </div>
             </CardContent>
           </Card>
