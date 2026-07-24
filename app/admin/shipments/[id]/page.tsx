@@ -263,7 +263,7 @@ export default function AdminShipmentDetail() {
           <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
             <CardHeader><CardTitle className="flex items-center gap-2" style={{ color: 'var(--text-primary)' }}><FileText size={16} /> Receipt</CardTitle></CardHeader>
             <CardContent>
-              <div ref={receiptRef} className="relative overflow-hidden rounded-xl border text-sm" style={{ borderColor: 'var(--card-border)', background: 'linear-gradient(135deg, var(--card-bg) 0%, rgba(255,62,65,0.04) 100%)' }}>
+              <div ref={receiptRef} className="relative overflow-hidden rounded-xl border text-sm" style={{ borderColor: 'var(--card-border)', background: '#fff' }}>
                 <div className="relative z-10 p-5">
                   <div className="mb-4 flex items-center justify-between">
                     <div>
