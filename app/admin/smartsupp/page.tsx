@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink, Plug, Loader2, X } from "lucide-react"
+import { useToast } from "@/components/hooks/use-toast"
 
 export default function SmartsuppPage() {
+  const { toast } = useToast()
   const [config, setConfig] = useState({ key: "", enabled: false })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -27,7 +29,7 @@ export default function SmartsuppPage() {
         body: JSON.stringify(config),
       })
       const data = await r.json()
-      if (data.success) setShowDialog(true)
+      if (data.success) { toast({ title: "Settings saved" }); setShowDialog(true) }
     } catch {}
     setSaving(false)
   }
@@ -36,7 +38,6 @@ export default function SmartsuppPage() {
     <div>
       <div className="mb-8">
         <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>LiveChat — Smartsupp</h1>
-        <p className="mt-1 text-sm" style={{ color: 'var(--text-muted)' }}>Manage your visitor live chat from the Smartsupp dashboard</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">

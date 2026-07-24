@@ -63,7 +63,6 @@ export default function SettingsPage() {
     <div>
       <div className="mb-8">
         <h1 style={{color:'var(--text-primary)'}} className="text-2xl font-bold">Settings</h1>
-        <p style={{color:'var(--text-muted)'}} className="mt-1 text-sm">Manage application configuration</p>
       </div>
 
       {entries.length === 0 && (
@@ -79,10 +78,10 @@ export default function SettingsPage() {
           const Icon = meta.icon
           const fieldEntries = Object.entries(fields)
           return (
-            <Card key={category} style={{borderColor:'var(--card-border)',background:'linear-gradient(to bottom, var(--card-bg), #0d0a1a)'}} className="overflow-hidden shadow-lg shadow-black/20">
-              <div style={{borderColor:'var(--card-border)',background:'linear-gradient(to right, color-mix(in srgb, var(--input-bg) 30%, transparent), transparent)'}} className="flex items-center gap-3 border-b px-5 py-4">
-                <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${meta.color} shadow-lg`}>
-                  <Icon size={16} style={{color:'var(--text-primary)'}} />
+            <Card key={category} style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}} className="overflow-hidden">
+              <div style={{borderColor:'var(--card-border)',backgroundColor:'var(--card-bg)'}} className="flex items-center gap-3 border-b px-5 py-4">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg" style={{backgroundColor:'var(--accent-bg)'}}>
+                  <Icon size={16} style={{color:'var(--accent)'}} />
                 </div>
                 <div>
                   <h2 style={{color:'var(--text-primary)'}} className="text-sm font-semibold capitalize">{category}</h2>
@@ -97,7 +96,7 @@ export default function SettingsPage() {
                       <Input
                         value={value || ''}
                         onChange={(e) => update(category, name, e.target.value)}
-                        style={{borderColor:'var(--card-border)',backgroundColor:'color-mix(in srgb, var(--input-bg) 50%, transparent)',color:'var(--text-primary)'}}
+                        style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}}
                         className="transition-all"
                       />
                     </div>
@@ -107,7 +106,7 @@ export default function SettingsPage() {
                   <Button
                     onClick={() => handleSave(category)}
                     disabled={saving === category}
-                    className="bg-gradient-to-r from-[#FF3E41] to-[#d92e31] px-6 text-sm font-medium shadow-lg shadow-[#FF3E41]/20 hover:shadow-[#FF3E41]/30 transition-all disabled:opacity-50" style={{color:'var(--text-primary)'}}
+                    className="px-6 text-sm font-medium transition-all disabled:opacity-50" style={{backgroundColor:'var(--accent)',color:'var(--text-primary)'}}
                   >
                     {saving === category ? (
                       <span className="flex items-center gap-2"><span className="h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white" />Saving...</span>

@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
 import { TableSkeleton } from "@/components/ui/skeleton-table"
+import { useToast } from "@/components/hooks/use-toast"
 
 const blank = { name: "", city: "", phone: "", address: "", status: "active" }
 
@@ -22,6 +23,7 @@ export default function BranchesPage() {
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState(blank)
 
+  const { toast } = useToast()
   const [pageLoading, setPageLoading] = useState(true)
   const load = () => db<any[]>("branches", "select", { order: { column: "created_at", ascending: false } }).then((d) => { if (d) setBranches(d) }).finally(() => setPageLoading(false))
   useEffect(() => { load() }, [])
@@ -38,6 +40,7 @@ export default function BranchesPage() {
     }
     setSaving(false)
     setDialog(false)
+    toast({ title: editing ? "Branch updated" : "Branch created" })
     load()
   }
 
@@ -45,6 +48,7 @@ export default function BranchesPage() {
     if (!deleteId) return
     await db("branches", "delete", { eq: { id: deleteId } })
     setDeleteId(null)
+    toast({ title: "Branch deleted" })
     load()
   }
 

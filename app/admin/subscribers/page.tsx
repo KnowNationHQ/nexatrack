@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
 import { TableSkeleton } from "@/components/ui/skeleton-table"
+import { useToast } from "@/components/hooks/use-toast"
 
 const blank = { email: "" }
 
@@ -21,6 +22,7 @@ export default function SubscribersPage() {
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState(blank)
 
+  const { toast } = useToast()
   const [pageLoading, setPageLoading] = useState(true)
   const load = () => db<any[]>("subscribers", "select", { order: { column: "created_at", ascending: false } }).then((d) => { if (d) setItems(d) }).finally(() => setPageLoading(false))
   useEffect(() => { load() }, [])
@@ -37,6 +39,7 @@ export default function SubscribersPage() {
     }
     setSaving(false)
     setDialog(false)
+    toast({ title: editing ? "Subscriber updated" : "Subscriber added" })
     load()
   }
 
@@ -44,6 +47,7 @@ export default function SubscribersPage() {
     if (!deleteId) return
     await db("subscribers", "delete", { eq: { id: deleteId } })
     setDeleteId(null)
+    toast({ title: "Subscriber removed" })
     load()
   }
 

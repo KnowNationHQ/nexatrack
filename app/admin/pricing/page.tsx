@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { MobileTable } from "@/components/mobile-table"
 import { Search, Plus, Pencil, Trash2 } from "lucide-react"
 import { TableSkeleton } from "@/components/ui/skeleton-table"
+import { useToast } from "@/components/hooks/use-toast"
 
 const blank = { category_id: "", weight: 0, same_day: 0, next_day: 0, sub_city: 0, outside_city: 0 }
 
@@ -22,6 +23,7 @@ export default function PricingPage() {
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState(blank)
 
+  const { toast } = useToast()
   const [pageLoading, setPageLoading] = useState(true)
   const load = () => {
     Promise.all([
@@ -56,6 +58,7 @@ export default function PricingPage() {
     }
     setSaving(false)
     setDialog(false)
+    toast({ title: editing ? "Pricing updated" : "Pricing created" })
     load()
   }
 
@@ -63,6 +66,7 @@ export default function PricingPage() {
     if (!deleteId) return
     await db("delivery_charges", "delete", { eq: { id: deleteId } })
     setDeleteId(null)
+    toast({ title: "Pricing deleted" })
     load()
   }
 
