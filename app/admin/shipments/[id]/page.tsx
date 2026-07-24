@@ -75,43 +75,31 @@ export default function AdminShipmentDetail() {
   }
 
   const shareAsPdf = async () => {
-    if (!receiptRef.current) { console.log("[pdf] receiptRef null"); return }
-    console.log("[pdf] receiptRef OK")
+    if (!receiptRef.current) return
     setSending(true)
     try {
-      console.log("[pdf] html2canvas starting")
       const canvas = await html2canvas(receiptRef.current, {
         scale: 2,
         backgroundColor: null,
         logging: false,
       })
-      console.log("[pdf] html2canvas OK, canvas", canvas.width, "x", canvas.height)
 
       const imgData = canvas.toDataURL("image/png")
-      console.log("[pdf] imgData length", imgData.length)
       const pdf = new jsPDF({ format: "a5", unit: "px", orientation: "portrait" })
-      console.log("[pdf] jsPDF created")
       const pdfW = pdf.internal.pageSize.getWidth()
       const pdfH = (canvas.height * pdfW) / canvas.width
       pdf.addImage(imgData, "PNG", 0, 0, pdfW, pdfH)
-      console.log("[pdf] addImage OK")
 
       const blob = pdf.output("blob")
-      console.log("[pdf] blob size", blob.size)
       const url = URL.createObjectURL(blob)
-      console.log("[pdf] blob url", url)
       const a = document.createElement("a")
       a.href = url
       a.download = `nexatrack-${shipment.tracking_number}.pdf`
       document.body.appendChild(a)
-      console.log("[pdf] about to click")
       a.click()
-      console.log("[pdf] clicked")
       document.body.removeChild(a)
       setTimeout(() => URL.revokeObjectURL(url), 5000)
-      console.log("[pdf] done OK")
     } catch (e) {
-      console.log("[pdf] ERROR", e)
       toast({ title: "PDF Error", description: String(e), variant: "destructive" })
     }
     setSending(false)
@@ -275,7 +263,7 @@ export default function AdminShipmentDetail() {
           <Card style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
             <CardHeader><CardTitle className="flex items-center gap-2" style={{ color: 'var(--text-primary)' }}><FileText size={16} /> Receipt</CardTitle></CardHeader>
             <CardContent>
-              <div ref={receiptRef} className="relative overflow-hidden rounded-xl border text-sm" style={{ borderColor: 'var(--card-border)', background: 'linear-gradient(135deg, var(--card-bg) 0%, color-mix(in srgb, var(--card-bg) 95%, #FF3E41) 100%)' }}>
+              <div ref={receiptRef} className="relative overflow-hidden rounded-xl border text-sm" style={{ borderColor: 'var(--card-border)', background: 'linear-gradient(135deg, var(--card-bg) 0%, rgba(255,62,65,0.04) 100%)' }}>
                 <div className="relative z-10 p-5">
                   <div className="mb-4 flex items-center justify-between">
                     <div>
@@ -287,7 +275,7 @@ export default function AdminShipmentDetail() {
                     </div>
                   </div>
 
-                  <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--card-bg) 60%, transparent)' }}>
+                  <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg p-3" style={{ backgroundColor: 'rgba(128,128,128,0.08)' }}>
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: 'var(--text-muted)' }}>
                       <span><span className="font-medium" style={{ color: 'var(--text-primary)' }}>{new Date(shipment.created_at).toLocaleDateString()}</span></span>
                       <span>{shipment.origin_city || "—"} <span className="mx-1">→</span> {shipment.destination_city || "—"}</span>
