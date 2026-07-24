@@ -1,4 +1,5 @@
 import { ImapFlow } from "imapflow"
+import { getEmailSettings } from "./email-settings"
 
 type Email = {
   id: string
@@ -22,14 +23,13 @@ function extractHtml(src: string): string {
 }
 
 export async function fetchInbox(limit = 50): Promise<Email[]> {
+  const s = await getEmailSettings()
+
   const client = new ImapFlow({
-    host: process.env.IMAP_HOST!,
-    port: Number(process.env.IMAP_PORT) || 993,
+    host: s.imapHost,
+    port: s.imapPort,
     secure: true,
-    auth: {
-      user: process.env.IMAP_USER!,
-      pass: process.env.IMAP_PASS!,
-    },
+    auth: { user: s.imapUser, pass: s.imapPass },
     logger: false,
   })
 
@@ -42,21 +42,14 @@ export async function fetchInbox(limit = 50): Promise<Email[]> {
 
     const emails: Email[] = []
     for await (const msg of client.fetch(seq, {
-      uid: true,
-      envelope: true,
-      source: true,
-      flags: true,
-      internalDate: true,
+      uid: true, envelope: true, source: true, flags: true, internalDate: true,
     })) {
       const envelope = msg.envelope!
       const src = msg.source!.toString("utf-8")
       emails.push({
         id: String(msg.uid),
         subject: envelope.subject || "(no subject)",
-        from: {
-          name: envelope.from?.[0]?.name || envelope.from?.[0]?.address || "Unknown",
-          address: envelope.from?.[0]?.address || "",
-        },
+        from: { name: envelope.from?.[0]?.name || envelope.from?.[0]?.address || "Unknown", address: envelope.from?.[0]?.address || "" },
         date: msg.internalDate ? new Date(msg.internalDate).toISOString() : new Date().toISOString(),
         text: stripHtml(src).substring(0, 5000),
         html: extractHtml(src),
