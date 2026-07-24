@@ -1,4 +1,5 @@
 {
+  "framework": "nextjs",
   "rewrites": [
     { "source": "/", "has": [{ "type": "host", "value": "widget.nexatrackcourierservices.com" }], "destination": "/chatbot.html" }
   ]
