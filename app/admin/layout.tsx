@@ -56,6 +56,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
   const [isDark, setIsDark] = useState(true)
   const [smartsuppConnected, setSmartsuppConnected] = useState(false)
+  const [smartsuppActive, setSmartsuppActive] = useState(false)
+  const [smartsuppCount, setSmartsuppCount] = useState(0)
   const [emailConfigured, setEmailConfigured] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
@@ -72,6 +74,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     fetch("/api/smartsupp-config").then(r => r.json()).then(d => setSmartsuppConnected(!!(d.key && d.enabled))).catch(() => {})
     fetch("/api/emails/settings").then(r => r.json()).then(d => { const s = d.db || d.env; setEmailConfigured(!!(s?.imapUser && s?.imapHost)) }).catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const poll = () => fetch("/api/smartsupp/active").then(r => r.json()).then(d => { setSmartsuppActive(d.active); setSmartsuppCount(d.count) }).catch(() => {})
+    poll()
+    const id = setInterval(poll, 30000)
+    return () => clearInterval(id)
   }, [])
 
   const toggleTheme = () => {
@@ -230,6 +239,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                           )}
                           {!collapsed && item.href === "/admin/emails" && (
                             <span className={`flex h-2 w-2 rounded-full ${emailConfigured ? 'bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.6)]'}`} />
+                          )}
+                          {!collapsed && item.href === "/admin/smartsupp" && (
+                            <div className="relative flex items-center gap-1.5">
+                              <span className={`flex h-2 w-2 rounded-full ${smartsuppConnected ? 'bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.6)]'}`} />
+                              {smartsuppActive && (
+                                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-bold text-white shadow-[0_0_8px_rgba(239,68,68,0.6)]">{smartsuppCount}</span>
+                              )}
+                            </div>
                           )}
                         </Link>
                       )

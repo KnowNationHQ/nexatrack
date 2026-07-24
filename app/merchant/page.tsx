@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase-browser"
 import { Card, CardContent } from "@/components/ui/card"
-import { Package, CheckCircle, Truck, DollarSign, Clock } from "lucide-react"
+import { Package, CheckCircle, Truck, DollarSign, Clock, MessageSquare } from "lucide-react"
 import { StatCardSkeleton } from "@/components/ui/skeleton-table"
 
 export default function MerchantDashboard() {
@@ -41,32 +41,46 @@ export default function MerchantDashboard() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Merchant Portal</h1>
 
-{loading ? (
-  <StatCardSkeleton count={4} />
-) : (
-  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-    {statCards.map((s) => {
-          const Icon = s.icon
-          return (
-            <Card key={s.label} className="border transition-all cursor-default"
-              style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{s.label}</p>
-                    <div className="flex items-baseline gap-2">
-                      <p className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>{s.value}</p>
-                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{s.sub}</p>
+      {loading ? (
+        <StatCardSkeleton count={4} />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {statCards.map((s) => {
+            const Icon = s.icon
+            return (
+              <Card key={s.label} className="border transition-all cursor-default"
+                style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+                <CardContent className="p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{s.label}</p>
+                      <div className="flex items-baseline gap-2">
+                        <p className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>{s.value}</p>
+                        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{s.sub}</p>
+                      </div>
                     </div>
+                    <Icon size={24} className={`${s.color} opacity-80`} />
                   </div>
-                  <Icon size={24} className={`${s.color} opacity-80`} />
-                </div>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
-    )}
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+      )}
+
+      <Card className="border" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+        <CardContent className="p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg" style={{ backgroundColor: 'var(--accent-bg)' }}>
+              <MessageSquare size={18} className="text-[#FF3E41]" />
+            </div>
+            <div>
+              <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Need help?</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Use the chat bubble (bottom-right) to message our support team. We typically respond within minutes.</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

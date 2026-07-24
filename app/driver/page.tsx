@@ -11,7 +11,7 @@ import { optimizeRoute, totalRouteDistance } from "@/lib/route-optimizer"
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Package, Truck, CheckCircle, Clock, MapPin, User, ArrowRight, Navigation } from "lucide-react"
+import { Package, Truck, CheckCircle, Clock, MapPin, User, ArrowRight, Navigation, MessageSquare } from "lucide-react"
 import { STATUS_COLORS_3 } from "@/lib/statuses"
 
 const MockMap = dynamic(() => import("@/components/mock-map"), { ssr: false })
@@ -116,6 +116,20 @@ export default function DriverDashboard() {
               )
             })}
           </div>
+
+          <Card className="border" style={{ borderColor: 'var(--card-border)', backgroundColor: 'var(--card-bg)' }}>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg" style={{ backgroundColor: 'var(--accent-bg)' }}>
+                  <MessageSquare size={18} className="text-[#FF3E41]" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Need help?</p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Use the chat bubble (bottom-right) to message our support team. We typically respond within minutes.</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {routeStops.length > 0 && (
             <div>

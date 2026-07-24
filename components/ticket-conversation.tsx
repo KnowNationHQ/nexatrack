@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Send, ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 
 interface Reply {
   id: string
@@ -27,7 +26,7 @@ interface Ticket {
   profiles?: { full_name?: string; email?: string }
 }
 
-export default function TicketConversation({ ticketId, isAdmin }: { ticketId: string; isAdmin?: boolean }) {
+export default function TicketConversation({ ticketId }: { ticketId: string }) {
   const [ticket, setTicket] = useState<Ticket | null>(null)
   const [replies, setReplies] = useState<Reply[]>([])
   const [message, setMessage] = useState("")
@@ -35,7 +34,6 @@ export default function TicketConversation({ ticketId, isAdmin }: { ticketId: st
   const [loading, setLoading] = useState(true)
   const bottomRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
-  const pathname = usePathname()
 
   useEffect(() => {
     Promise.all([
@@ -90,7 +88,7 @@ export default function TicketConversation({ ticketId, isAdmin }: { ticketId: st
   return (
     <div className="flex h-[calc(100vh-12rem)] flex-col rounded-xl border" style={{ borderColor: "var(--card-border)", backgroundColor: "var(--card-bg)" }}>
       <div className="flex items-center gap-3 border-b px-4 py-3" style={{ borderColor: "var(--card-border)" }}>
-        <Link href={isAdmin ? "/admin/tickets" : pathname.includes("/driver/") ? "/driver/tickets" : "/merchant/tickets"}>
+        <Link href="/admin/tickets">
           <Button variant="ghost" size="icon"><ArrowLeft size={18} /></Button>
         </Link>
         <div className="flex-1">

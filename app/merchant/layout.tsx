@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase-browser"
 import NotificationBell from "@/components/notification-bell"
-import { LayoutDashboard, Package, Plus, ClipboardList, Wallet, Receipt, FileText, Ticket, MessageSquare, User, LogOut, Menu, X, Sun, Moon, Bell } from "lucide-react"
+import { LayoutDashboard, Package, Plus, ClipboardList, Wallet, Receipt, FileText, User, LogOut, Menu, X, Sun, Moon, Bell } from "lucide-react"
 
 const menuItems = [
   { href: "/merchant", label: "Dashboard", icon: LayoutDashboard },
@@ -16,8 +16,6 @@ const menuItems = [
   { href: "/merchant/wallet", label: "Wallet", icon: Wallet },
   { href: "/merchant/transactions", label: "Transactions", icon: Receipt },
   { href: "/merchant/invoices", label: "Invoices", icon: FileText },
-  { href: "/merchant/tickets", label: "Support", icon: Ticket },
-  { href: "/merchant/chat", label: "Chat", icon: MessageSquare },
   { href: "/merchant/profile", label: "Profile", icon: User },
 ]
 
