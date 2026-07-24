@@ -78,7 +78,7 @@ export default function SubscribersPage() {
             cols={[
               { label: "Email", key: "email" },
               { label: "Subscribed", key: "created_at", render: (i) => <span style={{color:'var(--text-muted)'}}>{i.created_at ? new Date(i.created_at).toLocaleDateString() : "—"}</span> },
-              { label: "Actions", key: "actions", render: (i) => <div className="flex gap-2"><button onClick={() => openEdit(i)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
+              { label: "Actions", key: "actions", render: (i) => <div className="flex gap-2"><button onClick={() => openEdit(i)} className="text-blue-400 hover:text-[#FF3E41]"><Pencil size={14} /></button><button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-[#d92e31]"><Trash2 size={14} /></button></div> },
             ]}
             data={filtered}
           />
@@ -93,7 +93,7 @@ export default function SubscribersPage() {
             <div><label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Email</label><Input type="email" value={form.email} onChange={set("email")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} /></div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDialog(false)} style={{color:'var(--text-muted)'}}>Cancel</Button>
+            <Button variant="ghost" onClick={() => setDialog(false)} style={{color:'var(--text-muted)'}} onMouseEnter={e => e.currentTarget.style.color = '#FF3E41'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>Cancel</Button>
             <Button onClick={save} disabled={saving} className="bg-[#FF3E41] hover:bg-[#d92e31]">{saving ? "Saving..." : "Save"}</Button>
           </DialogFooter>
         </DialogContent>
@@ -104,8 +104,8 @@ export default function SubscribersPage() {
           <DialogHeader><DialogTitle>Delete Subscriber</DialogTitle></DialogHeader>
           <p style={{color:'var(--text-muted)'}} className="text-sm">Are you sure? This cannot be undone.</p>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDeleteId(null)} style={{color:'var(--text-muted)'}}>Cancel</Button>
-            <Button onClick={remove} className="bg-red-600 hover:bg-red-700">Delete</Button>
+            <Button variant="ghost" onClick={() => setDeleteId(null)} style={{color:'var(--text-muted)'}} onMouseEnter={e => e.currentTarget.style.color = '#FF3E41'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>Cancel</Button>
+            <Button onClick={remove} className="bg-red-600 hover:bg-[#d92e31]">Delete</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

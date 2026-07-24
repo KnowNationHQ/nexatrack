@@ -118,7 +118,7 @@ export default function EmailsPage() {
           {/* mobile: list view */}
           <div className={`flex flex-col sm:hidden ${showDetail ? "hidden" : ""}`} style={{ height: "calc(100vh - 12rem)" }}>
             <div className="flex items-center gap-2 px-3 py-2" style={{ borderBottom: "1px solid var(--card-border)" }}>
-              <button onClick={() => openCompose()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium" style={{ backgroundColor: "var(--accent)", color: "#fff" }}>
+              <button onClick={() => openCompose()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all" style={{ backgroundColor: "var(--accent)", color: "#fff" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#d92e31"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "var(--accent)"}>
                 <Send size={14} /> Compose
               </button>
               <div className="flex-1" />
@@ -162,7 +162,7 @@ export default function EmailsPage() {
                     <ArrowLeft size={20} />
                   </button>
                   <div className="flex-1" />
-                  <button onClick={() => openCompose(selected.from.address, selected.subject)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: "var(--accent)", color: "#fff" }}>
+                  <button onClick={() => openCompose(selected.from.address, selected.subject)} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm transition-all" style={{ backgroundColor: "var(--accent)", color: "#fff" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#d92e31"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "var(--accent)"}>
                     <Send size={14} /> Reply
                   </button>
                 </div>
@@ -192,7 +192,7 @@ export default function EmailsPage() {
           <div className="hidden sm:flex" style={{ height: "calc(100vh - 12rem)" }}>
             <div className="w-80 lg:w-96 flex-shrink-0 flex flex-col rounded-l-xl" style={{ border: "1px solid var(--card-border)", backgroundColor: "var(--card-bg)" }}>
               <div className="flex items-center gap-2 p-3" style={{ borderBottom: "1px solid var(--card-border)" }}>
-                <button onClick={() => openCompose()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium" style={{ backgroundColor: "var(--accent)", color: "#fff" }}>
+                <button onClick={() => openCompose()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all" style={{ backgroundColor: "var(--accent)", color: "#fff" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#d92e31"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "var(--accent)"}>
                   <Send size={14} /> Compose
                 </button>
                 <div className="flex-1" />
@@ -263,40 +263,75 @@ export default function EmailsPage() {
           </div>
         </>
       ) : (
-        <div className="max-w-xl mx-auto mt-4 sm:mt-8 px-0 sm:px-4">
-          <div className="rounded-xl p-4 sm:p-6" style={{ backgroundColor: "var(--card-bg)", border: "1px solid var(--card-border)" }}>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg flex-shrink-0" style={{ backgroundColor: "var(--accent-bg)" }}>
-                <Settings size={18} style={{ color: "var(--accent)" }} />
+        <div className="grid gap-6 lg:grid-cols-3 mt-4 sm:mt-8">
+          <div className="lg:col-span-2">
+            <div className="rounded-xl" style={{ backgroundColor: "var(--card-bg)", border: "1px solid var(--card-border)" }}>
+              <div className="p-4 sm:p-6" style={{ borderBottom: "1px solid var(--card-border)" }}>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg flex-shrink-0" style={{ backgroundColor: "var(--accent-bg)" }}>
+                    <Mail size={18} style={{ color: "var(--accent)" }} />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-semibold" style={{ color: "var(--text-secondary)" }}>IMAP Connection</h2>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h2 className="text-base font-semibold" style={{ color: "var(--text-primary)" }}>Email Connection</h2>
+              <div className="p-4 sm:p-6 space-y-5">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium" style={{ color: "var(--text-secondary)" }}>IMAP Host</label>
+                  <input value={imapHost} onChange={e => setImapHost(e.target.value)} className="w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition-all focus:ring-2 focus:ring-[#FF3E41]/30" style={{ borderColor: "var(--card-border)", backgroundColor: "var(--input-bg)", color: "var(--text-primary)" }} placeholder="e.g. imap.hostinger.com" />
+                  <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>Your email provider's IMAP server address (e.g. imap.hostinger.com)</p>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium" style={{ color: "var(--text-secondary)" }}>IMAP Port</label>
+                  <input value={imapPort} onChange={e => setImapPort(e.target.value)} className="w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition-all focus:ring-2 focus:ring-[#FF3E41]/30" style={{ borderColor: "var(--card-border)", backgroundColor: "var(--input-bg)", color: "var(--text-primary)" }} placeholder="993" />
+                  <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>Usually 993 for SSL/TLS connections</p>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium" style={{ color: "var(--text-secondary)" }}>IMAP Username</label>
+                  <input value={imapUser} onChange={e => setImapUser(e.target.value)} className="w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition-all focus:ring-2 focus:ring-[#FF3E41]/30" style={{ borderColor: "var(--card-border)", backgroundColor: "var(--input-bg)", color: "var(--text-primary)" }} placeholder="e.g. info@yourdomain.com" />
+                  <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>Full email address used to sign in to your mailbox</p>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium" style={{ color: "var(--text-secondary)" }}>IMAP Password</label>
+                  <input type="password" value={imapPass} onChange={e => setImapPass(e.target.value)} className="w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition-all focus:ring-2 focus:ring-[#FF3E41]/30" style={{ borderColor: "var(--card-border)", backgroundColor: "var(--input-bg)", color: "var(--text-primary)" }} placeholder="Your email password" />
+                  <p className="mt-1 text-xs" style={{ color: "var(--text-muted)" }}>The password for your email account</p>
+                </div>
+                <div className="pt-2">
+                  <button onClick={handleSaveSettings} disabled={saving} className="inline-flex items-center gap-2 rounded-lg bg-[#FF3E41] px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#e63538] disabled:opacity-50">
+                    {saving ? <><Loader2 size={14} className="animate-spin" /> Saving...</> : "Save Settings"}
+                  </button>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>IMAP Host</label>
-                <input value={imapHost} onChange={e => setImapHost(e.target.value)} className="w-full rounded-lg px-3 py-2.5 text-sm outline-none" style={{ backgroundColor: "var(--input-bg)", color: "var(--text-primary)", border: "1px solid var(--card-border)" }} />
+          <div>
+            <div className="rounded-xl" style={{ backgroundColor: "var(--card-bg)", border: "1px solid var(--card-border)" }}>
+              <div className="p-4 sm:p-6" style={{ borderBottom: "1px solid var(--card-border)" }}>
+                <div className="flex items-center gap-2">
+                  <Settings size={16} style={{ color: "var(--accent)" }} />
+                  <h2 className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>Status</h2>
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>IMAP Port</label>
-                <input value={imapPort} onChange={e => setImapPort(e.target.value)} className="w-full rounded-lg px-3 py-2.5 text-sm outline-none" style={{ backgroundColor: "var(--input-bg)", color: "var(--text-primary)", border: "1px solid var(--card-border)" }} />
+              <div className="p-4 sm:p-6 space-y-4">
+                <div className="flex items-center gap-3 rounded-lg px-4 py-3" style={{ backgroundColor: imapUser && imapHost ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)' }}>
+                  <div className={`flex h-3 w-3 rounded-full ${imapUser && imapHost ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`} />
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: imapUser && imapHost ? '#22c55e' : '#ef4444' }}>
+                      {imapUser && imapHost ? "Configured" : "Not Configured"}
+                    </p>
+                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                      {imapUser && imapHost ? "IMAP settings are saved. Inbox is ready to receive." : "Enter your IMAP credentials above to connect your mailbox."}
+                    </p>
+                  </div>
+                </div>
+                {imapUser && (
+                  <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                    <span className="font-medium">Account:</span> {imapUser}
+                  </div>
+                )}
               </div>
-              <div>
-                <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>IMAP Username</label>
-                <input value={imapUser} onChange={e => setImapUser(e.target.value)} className="w-full rounded-lg px-3 py-2.5 text-sm outline-none" style={{ backgroundColor: "var(--input-bg)", color: "var(--text-primary)", border: "1px solid var(--card-border)" }} />
-              </div>
-              <div>
-                <label className="block text-xs font-medium uppercase tracking-wider mb-1.5" style={{ color: "var(--text-muted)" }}>IMAP Password</label>
-                <input type="password" value={imapPass} onChange={e => setImapPass(e.target.value)} className="w-full rounded-lg px-3 py-2.5 text-sm outline-none" style={{ backgroundColor: "var(--input-bg)", color: "var(--text-primary)", border: "1px solid var(--card-border)" }} />
-              </div>
-            </div>
-
-            <div className="flex justify-end mt-6 pt-4" style={{ borderTop: "1px solid var(--card-border)" }}>
-              <button onClick={handleSaveSettings} disabled={saving} className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all disabled:opacity-50" style={{ backgroundColor: "var(--accent)", color: "#fff" }}>
-                {saving ? <><Loader2 size={14} className="animate-spin" /> Saving...</> : <><RefreshCw size={14} /> Sync</>}
-              </button>
             </div>
           </div>
         </div>
@@ -314,7 +349,7 @@ export default function EmailsPage() {
               <input type="text" placeholder="Subject" value={subject} onChange={e => setSubject(e.target.value)} required className="w-full rounded-lg px-3 py-2.5 text-sm outline-none" style={{ backgroundColor: "var(--input-bg)", color: "var(--text-primary)", border: "1px solid var(--card-border)" }} />
               <textarea rows={6} placeholder="Write your message..." value={body} onChange={e => setBody(e.target.value)} required className="w-full rounded-lg px-3 py-2.5 text-sm outline-none resize-none" style={{ backgroundColor: "var(--input-bg)", color: "var(--text-primary)", border: "1px solid var(--card-border)" }} />
               <div className="flex justify-end pt-2">
-                <button type="submit" disabled={sending} className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all disabled:opacity-50 w-full sm:w-auto justify-center" style={{ backgroundColor: "var(--accent)", color: "#fff" }}>
+                <button type="submit" disabled={sending} className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all disabled:opacity-50 w-full sm:w-auto justify-center" style={{ backgroundColor: "var(--accent)", color: "#fff" }} onMouseEnter={e => e.currentTarget.style.backgroundColor = "#d92e31"} onMouseLeave={e => e.currentTarget.style.backgroundColor = "var(--accent)"}>
                   {sending ? <><Loader2 size={14} className="animate-spin" /> Sending...</> : <><Send size={14} /> Send</>}
                 </button>
               </div>

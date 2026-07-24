@@ -55,6 +55,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [collapsed, setCollapsed] = useState(false)
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({})
   const [isDark, setIsDark] = useState(true)
+  const [smartsuppConnected, setSmartsuppConnected] = useState(false)
+  const [emailConfigured, setEmailConfigured] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
@@ -65,6 +67,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setIsDark(dark)
     document.documentElement.setAttribute("data-theme", dark ? "dark" : "light")
     if (dark) document.documentElement.classList.add("dark"); else document.documentElement.classList.remove("dark")
+  }, [])
+
+  useEffect(() => {
+    fetch("/api/smartsupp-config").then(r => r.json()).then(d => setSmartsuppConnected(!!(d.key && d.enabled))).catch(() => {})
+    fetch("/api/emails/settings").then(r => r.json()).then(d => { const s = d.db || d.env; setEmailConfigured(!!(s?.imapUser && s?.imapHost)) }).catch(() => {})
   }, [])
 
   const toggleTheme = () => {
@@ -217,7 +224,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                           onMouseLeave={(e) => { if (!active) { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--sidebar-text)'; }}}
                         >
                           <Icon size={18} />
-                          {!collapsed && <span>{item.label}</span>}
+                          {!collapsed && <span className="flex-1">{item.label}</span>}
+                          {!collapsed && item.href === "/admin/smartsupp" && (
+                            <span className={`flex h-2 w-2 rounded-full ${smartsuppConnected ? 'bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.6)]'}`} />
+                          )}
+                          {!collapsed && item.href === "/admin/emails" && (
+                            <span className={`flex h-2 w-2 rounded-full ${emailConfigured ? 'bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.6)]'}`} />
+                          )}
                         </Link>
                       )
                     })}

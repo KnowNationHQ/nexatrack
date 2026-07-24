@@ -106,7 +106,7 @@ export default function SettingsPage() {
                   <Button
                     onClick={() => handleSave(category)}
                     disabled={saving === category}
-                    className="px-6 text-sm font-medium transition-all disabled:opacity-50" style={{backgroundColor:'var(--accent)',color:'var(--text-primary)'}}
+                    className="px-6 text-sm font-medium transition-all disabled:opacity-50" style={{backgroundColor:'var(--accent)',color:'var(--text-primary)'}} onMouseEnter={e => e.currentTarget.style.backgroundColor = '#d92e31'} onMouseLeave={e => e.currentTarget.style.backgroundColor = 'var(--accent)'}
                   >
                     {saving === category ? (
                       <span className="flex items-center gap-2"><span className="h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white" />Saving...</span>

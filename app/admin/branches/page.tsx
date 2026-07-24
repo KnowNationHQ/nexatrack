@@ -84,7 +84,7 @@ export default function BranchesPage() {
               { label: "City", key: "city", render: (b) => <span style={{ color: 'var(--text-muted)' }}>{b.city || "—"}</span> },
               { label: "Phone", key: "phone", render: (b) => <span style={{ color: 'var(--text-muted)' }}>{b.phone || "—"}</span> },
               { label: "Status", key: "status", render: (b) => <Badge variant="outline" style={b.status === "active" ? {backgroundColor:'var(--badge-success-bg)',color:'var(--badge-success-text)'} : {backgroundColor:'var(--badge-warning-bg)',color:'var(--badge-warning-text)'}}>{b.status || "active"}</Badge> },
-              { label: "Actions", key: "actions", render: (b) => <div className="flex gap-2"><button onClick={() => openEdit(b)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(b.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
+              { label: "Actions", key: "actions", render: (b) => <div className="flex gap-2"><button onClick={() => openEdit(b)} className="text-blue-400 hover:text-[#FF3E41]"><Pencil size={14} /></button><button onClick={() => setDeleteId(b.id)} className="text-red-400 hover:text-[#d92e31]"><Trash2 size={14} /></button></div> },
             ]}
             data={filtered}
           />
@@ -109,7 +109,7 @@ export default function BranchesPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDialog(false)} style={{ color: 'var(--text-muted)' }}>Cancel</Button>
+            <Button variant="ghost" onClick={() => setDialog(false)} style={{ color: 'var(--text-muted)' }} onMouseEnter={e => e.currentTarget.style.color = '#FF3E41'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>Cancel</Button>
             <Button onClick={save} disabled={saving} className="bg-[#FF3E41] hover:bg-[#d92e31]">{saving ? "Saving..." : "Save"}</Button>
           </DialogFooter>
         </DialogContent>
@@ -120,8 +120,8 @@ export default function BranchesPage() {
           <DialogHeader><DialogTitle>Delete Branch</DialogTitle></DialogHeader>
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Are you sure? This cannot be undone.</p>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDeleteId(null)} style={{ color: 'var(--text-muted)' }}>Cancel</Button>
-            <Button onClick={remove} className="bg-red-600 hover:bg-red-700">Delete</Button>
+            <Button variant="ghost" onClick={() => setDeleteId(null)} style={{ color: 'var(--text-muted)' }} onMouseEnter={e => e.currentTarget.style.color = '#FF3E41'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>Cancel</Button>
+            <Button onClick={remove} className="bg-red-600 hover:bg-[#d92e31]">Delete</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

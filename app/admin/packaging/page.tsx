@@ -78,7 +78,7 @@ export default function PackagingPage() {
             cols={[
               { label: "Name", key: "name" },
               { label: "Amount", key: "amount", render: (i) => `$${Number(i.amount || 0).toFixed(2)}` },
-              { label: "Actions", key: "actions", render: (i) => <div className="flex gap-2"><button onClick={() => openEdit(i)} className="text-blue-400 hover:text-blue-300"><Pencil size={14} /></button><button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-red-300"><Trash2 size={14} /></button></div> },
+              { label: "Actions", key: "actions", render: (i) => <div className="flex gap-2"><button onClick={() => openEdit(i)} className="text-blue-400 hover:text-[#FF3E41]"><Pencil size={14} /></button><button onClick={() => setDeleteId(i.id)} className="text-red-400 hover:text-[#d92e31]"><Trash2 size={14} /></button></div> },
             ]}
             data={filtered}
           />
@@ -94,7 +94,7 @@ export default function PackagingPage() {
             <div><label style={{color:'var(--text-muted)'}} className="mb-1 block text-sm">Amount</label><Input type="number" step="0.01" value={form.amount} onChange={set("amount")} style={{borderColor:'var(--card-border)',backgroundColor:'var(--input-bg)',color:'var(--text-primary)'}} /></div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDialog(false)} style={{color:'var(--text-muted)'}}>Cancel</Button>
+            <Button variant="ghost" onClick={() => setDialog(false)} style={{color:'var(--text-muted)'}} onMouseEnter={e => e.currentTarget.style.color = '#FF3E41'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>Cancel</Button>
             <Button onClick={save} disabled={saving} className="bg-[#FF3E41] hover:bg-[#d92e31]">{saving ? "Saving..." : "Save"}</Button>
           </DialogFooter>
         </DialogContent>
@@ -105,8 +105,8 @@ export default function PackagingPage() {
           <DialogHeader><DialogTitle>Delete Packaging Option</DialogTitle></DialogHeader>
           <p style={{color:'var(--text-muted)'}} className="text-sm">Are you sure? This cannot be undone.</p>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDeleteId(null)} style={{color:'var(--text-muted)'}}>Cancel</Button>
-            <Button onClick={remove} className="bg-red-600 hover:bg-red-700">Delete</Button>
+            <Button variant="ghost" onClick={() => setDeleteId(null)} style={{color:'var(--text-muted)'}} onMouseEnter={e => e.currentTarget.style.color = '#FF3E41'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>Cancel</Button>
+            <Button onClick={remove} className="bg-red-600 hover:bg-[#d92e31]">Delete</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
