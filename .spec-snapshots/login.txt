@@ -1,0 +1,10 @@
+uid=11_0 RootWebArea "Nexatrack Courier Services" url="http://localhost:3001/auth/login"
+  uid=11_1 StaticText "Nexatrack "
+  uid=11_2 StaticText "Admin"
+  uid=11_3 form
+    uid=11_4 textbox "Email" required
+    uid=11_5 textbox "Password" required
+    uid=11_6 button "Sign In"
+  uid=11_7 StaticText "Don't have an account?"
+  uid=11_8 link "Register" url="http://localhost:3001/auth/register"
+    uid=11_9 StaticText "Register"

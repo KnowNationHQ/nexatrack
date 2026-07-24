@@ -19,7 +19,7 @@ export default function NotificationBell() {
       if (!user) return
       const r = user.app_metadata?.role || "merchant"
       setRole(r)
-      const { count } = await supabase.from("notifications").select("*", { count: "exact", head: true }).eq("user_id", user.id).eq("read", false)
+      const { count } = await supabase.from("notifications").select("*", { count: "exact", head: true }).eq("recipient_id", user.id).eq("read", false)
       setUnread(count ?? 0)
     }
     load()

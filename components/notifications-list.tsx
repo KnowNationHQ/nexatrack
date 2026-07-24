@@ -21,7 +21,7 @@ export default function NotificationsList() {
     const { data } = await supabase
       .from("notifications")
       .select("*")
-      .eq("user_id", user.id)
+      .eq("recipient_id", user.id)
       .order("created_at", { ascending: false })
       .limit(50)
     if (data) setNotifications(data)
@@ -101,7 +101,7 @@ export default function NotificationsList() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{n.title}</p>
-                <p className="mt-0.5 text-xs line-clamp-2" style={{ color: 'var(--text-muted)' }}>{n.body}</p>
+                <p className="mt-0.5 text-xs line-clamp-2" style={{ color: 'var(--text-muted)' }}>{n.message || n.body}</p>
                 <p className="mt-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
                   {new Date(n.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                 </p>
