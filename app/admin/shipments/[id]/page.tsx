@@ -91,18 +91,12 @@ export default function AdminShipmentDetail() {
       pdf.addImage(imgData, "PNG", 0, 0, pdfW, pdfH)
 
       const blob = pdf.output("blob")
-      const file = new File([blob], `nexatrack-${shipment.tracking_number}.pdf`, { type: "application/pdf" })
-
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: `Nexatrack Receipt - ${shipment.tracking_number}` })
-      } else {
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = url
-        a.download = file.name
-        a.click()
-        URL.revokeObjectURL(url)
-      }
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `nexatrack-${shipment.tracking_number}.pdf`
+      a.click()
+      URL.revokeObjectURL(url)
     } catch (e) {
       toast({ title: "PDF Error", description: String(e), variant: "destructive" })
     }
