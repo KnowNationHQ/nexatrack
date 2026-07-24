@@ -95,8 +95,10 @@ export default function AdminShipmentDetail() {
       const a = document.createElement("a")
       a.href = url
       a.download = `nexatrack-${shipment.tracking_number}.pdf`
+      document.body.appendChild(a)
       a.click()
-      URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+      setTimeout(() => URL.revokeObjectURL(url), 5000)
     } catch (e) {
       toast({ title: "PDF Error", description: String(e), variant: "destructive" })
     }
