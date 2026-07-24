@@ -40,6 +40,7 @@ const menuGroups = [
   ]},
   { label: "Support", items: [
     { href: "/admin/tickets", label: "Tickets", icon: Ticket },
+    { href: "/admin/emails", label: "Email Inbox", icon: Mail },
     { href: "/admin/faq", label: "FAQ", icon: HelpCircle },
     { href: "/admin/smartsupp", label: "LiveChat", icon: MessageSquare },
   ]},
