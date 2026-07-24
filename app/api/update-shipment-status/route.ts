@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/server-db"
 import { sendEmail } from "@/lib/email"
-
+import { trackingUpdate, deliveryConfirmed } from "@/lib/email-templates"
 import { ALL_STATUSES, STATUS_LABELS } from "@/lib/statuses"
+
 const VALID_STATUSES = ALL_STATUSES
 
 export async function POST(req: Request) {
@@ -18,9 +19,9 @@ export async function POST(req: Request) {
 
   const supabase = createAdminClient()
 
-  let { data: parcel } = await supabase.from("parcels").select("id, merchant_id, driver_id, tracking_number").eq("tracking_number", shipment_id).single()
+  let { data: parcel } = await supabase.from("parcels").select("id, merchant_id, driver_id, tracking_number, origin_city, destination_city").eq("tracking_number", shipment_id).single()
   if (!parcel) {
-    const r = await supabase.from("parcels").select("id, merchant_id, driver_id, tracking_number").eq("id", shipment_id).single()
+    const r = await supabase.from("parcels").select("id, merchant_id, driver_id, tracking_number, origin_city, destination_city").eq("id", shipment_id).single()
     parcel = r.data
   }
   if (!parcel) {
@@ -63,17 +64,34 @@ export async function POST(req: Request) {
   }
 
   if (parcel.merchant_id) {
-    const { data: profile } = await supabase.from("profiles").select("email").eq("id", parcel.merchant_id).single()
+    const { data: profile } = await supabase.from("profiles").select("email, name").eq("id", parcel.merchant_id).single()
     if (profile?.email) {
-      sendEmail({
-        to: profile.email,
-        subject: `Shipment ${parcel.tracking_number} is now ${label}`,
-        html: `<div style="font-family:sans-serif;padding:24px;max-width:480px;margin:0 auto">
-          <h2 style="color:#FF3E41">Nexatrack Courier</h2>
-          <p>Your shipment <strong>${parcel.tracking_number}</strong> is now <strong>${label}</strong>.</p>
-          <a href="https://nexatrack.vercel.app/track?number=${parcel.tracking_number}" style="display:inline-block;padding:10px 20px;background:#FF3E41;color:white;text-decoration:none;border-radius:6px;margin-top:12px">Track Shipment</a>
-        </div>`,
-      })
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nexatrackcourierservices.com"
+      const trackUrl = `${siteUrl}/track?number=${parcel.tracking_number}`
+      const name = profile.name || "Valued Customer"
+      if (status === "delivered") {
+        const { data: events } = await supabase.from("tracking_events").select("event_time").eq("shipment_id", parcel.id).order("event_time", { ascending: false }).limit(1)
+        const t = deliveryConfirmed({
+          name,
+          trackingNumber: parcel.tracking_number,
+          dest: parcel.destination_city || undefined,
+          deliveredAt: events?.[0]?.event_time
+            ? new Date(events[0].event_time).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })
+            : new Date().toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }),
+        })
+        sendEmail({ to: profile.email, subject: t.subject, html: t.html })
+      } else {
+        const t = trackingUpdate({
+          name,
+          trackingNumber: parcel.tracking_number,
+          status,
+          statusLabel: label,
+          origin: parcel.origin_city || undefined,
+          dest: parcel.destination_city || undefined,
+          trackUrl,
+        })
+        sendEmail({ to: profile.email, subject: t.subject, html: t.html })
+      }
     }
   }
 

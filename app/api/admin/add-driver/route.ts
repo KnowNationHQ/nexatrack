@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/server-db"
+import { sendEmail } from "@/lib/email"
+import { welcomeDriver } from "@/lib/email-templates"
 
 export async function POST(req: Request) {
   const { name, email, phone, password, nid, address } = await req.json()
@@ -30,6 +32,10 @@ export async function POST(req: Request) {
   if (profileError) return NextResponse.json({ error: profileError.message }, { status: 400 })
 
   await supabase.auth.admin.updateUserById(user.user.id, { app_metadata: { role: "driver" } })
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nexatrackcourierservices.com"
+  const t = welcomeDriver({ name, email, loginUrl: `${siteUrl}/auth/login` })
+  sendEmail({ to: email, subject: t.subject, html: t.html })
 
   return NextResponse.json({ ok: true })
 }

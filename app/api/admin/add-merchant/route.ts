@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/server-db"
+import { sendEmail } from "@/lib/email"
+import { welcomeMerchant } from "@/lib/email-templates"
 
 export async function POST(req: Request) {
   const { name, email, phone, password, address } = await req.json()
@@ -38,6 +40,10 @@ export async function POST(req: Request) {
   if (walletError) return NextResponse.json({ error: walletError.message }, { status: 400 })
 
   await supabase.auth.admin.updateUserById(user.user.id, { app_metadata: { role: "merchant" } })
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nexatrackcourierservices.com"
+  const t = welcomeMerchant({ name, email, loginUrl: `${siteUrl}/auth/login` })
+  sendEmail({ to: email, subject: t.subject, html: t.html })
 
   return NextResponse.json({ ok: true })
 }
